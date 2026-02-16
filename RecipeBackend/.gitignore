@@ -1,0 +1,12 @@
+bin/
+obj/
+appsettings.Development.json
+//appsettings.json
+
+.vs/
+*.user
+*.suo
+.env
+
+.DS_Store
+Thumbs.db
