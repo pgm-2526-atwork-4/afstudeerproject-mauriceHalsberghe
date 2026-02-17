@@ -1,3 +1,5 @@
+using System.Security.Claims;
+using Microsoft.AspNetCore.Authorization;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.EntityFrameworkCore;
 using RecipeBackend.Data;
@@ -40,9 +42,12 @@ public class RecipesController : ControllerBase
         return recipe;
     }
 
+    [Authorize]
     [HttpPost]
     public async Task<ActionResult<Recipe>> CreateRecipe(Recipe recipe)
     {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+        
         _context.Recipes.Add(recipe);
         await _context.SaveChangesAsync();
         return Ok(recipe);

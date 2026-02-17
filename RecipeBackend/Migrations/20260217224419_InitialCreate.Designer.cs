@@ -12,8 +12,8 @@ using RecipeBackend.Data;
 namespace RecipeBackend.Migrations
 {
     [DbContext(typeof(ApiDbContext))]
-    [Migration("20260217171414_AddRecipeIngredients")]
-    partial class AddRecipeIngredients
+    [Migration("20260217224419_InitialCreate")]
+    partial class InitialCreate
     {
         /// <inheritdoc />
         protected override void BuildTargetModel(ModelBuilder modelBuilder)
@@ -24,6 +24,57 @@ namespace RecipeBackend.Migrations
                 .HasAnnotation("Relational:MaxIdentifierLength", 63);
 
             NpgsqlModelBuilderExtensions.UseIdentityByDefaultColumns(modelBuilder);
+
+            modelBuilder.Entity("RecipeBackend.Models.Cuisine", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Cuisines");
+                });
+
+            modelBuilder.Entity("RecipeBackend.Models.Diet", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("Diets");
+                });
+
+            modelBuilder.Entity("RecipeBackend.Models.DishType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Name")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.ToTable("DishTypes");
+                });
 
             modelBuilder.Entity("RecipeBackend.Models.Ingredient", b =>
                 {
@@ -75,9 +126,11 @@ namespace RecipeBackend.Migrations
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
                     b.Property<string>("Name")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.Property<string>("ShortName")
+                        .IsRequired()
                         .HasColumnType("text");
 
                     b.HasKey("Id");
@@ -93,6 +146,12 @@ namespace RecipeBackend.Migrations
 
                     NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
 
+                    b.Property<int?>("CuisineId")
+                        .HasColumnType("integer");
+
+                    b.Property<int?>("DietId")
+                        .HasColumnType("integer");
+
                     b.Property<string>("ImageUrl")
                         .HasColumnType("text");
 
@@ -102,9 +161,37 @@ namespace RecipeBackend.Migrations
                     b.Property<string>("Title")
                         .HasColumnType("text");
 
+                    b.Property<int?>("UserId")
+                        .HasColumnType("integer");
+
                     b.HasKey("Id");
 
+                    b.HasIndex("UserId");
+
                     b.ToTable("Recipes");
+                });
+
+            modelBuilder.Entity("RecipeBackend.Models.RecipeDishType", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<int>("DishTypeId")
+                        .HasColumnType("integer");
+
+                    b.Property<int>("RecipeId")
+                        .HasColumnType("integer");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("DishTypeId");
+
+                    b.HasIndex("RecipeId");
+
+                    b.ToTable("RecipeDishTypes");
                 });
 
             modelBuilder.Entity("RecipeBackend.Models.RecipeIngredient", b =>
@@ -128,6 +215,8 @@ namespace RecipeBackend.Migrations
                         .HasColumnType("integer");
 
                     b.HasKey("Id");
+
+                    b.HasIndex("RecipeId");
 
                     b.ToTable("RecipeIngredients");
                 });
@@ -156,11 +245,89 @@ namespace RecipeBackend.Migrations
                     b.ToTable("Steps");
                 });
 
+            modelBuilder.Entity("RecipeBackend.Models.User", b =>
+                {
+                    b.Property<int>("Id")
+                        .ValueGeneratedOnAdd()
+                        .HasColumnType("integer");
+
+                    NpgsqlPropertyBuilderExtensions.UseIdentityByDefaultColumn(b.Property<int>("Id"));
+
+                    b.Property<string>("Avatar")
+                        .HasColumnType("text");
+
+                    b.Property<string>("Bio")
+                        .HasColumnType("text");
+
+                    b.Property<DateTime>("CreatedAt")
+                        .HasColumnType("timestamp with time zone");
+
+                    b.Property<string>("Email")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("PasswordHash")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.Property<string>("Username")
+                        .IsRequired()
+                        .HasColumnType("text");
+
+                    b.HasKey("Id");
+
+                    b.HasIndex("Email")
+                        .IsUnique();
+
+                    b.HasIndex("Username")
+                        .IsUnique();
+
+                    b.ToTable("Users");
+                });
+
             modelBuilder.Entity("RecipeBackend.Models.Ingredient", b =>
                 {
                     b.HasOne("RecipeBackend.Models.IngredientType", null)
                         .WithMany("Ingredients")
                         .HasForeignKey("IngredientTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+                });
+
+            modelBuilder.Entity("RecipeBackend.Models.Recipe", b =>
+                {
+                    b.HasOne("RecipeBackend.Models.User", "User")
+                        .WithMany()
+                        .HasForeignKey("UserId")
+                        .OnDelete(DeleteBehavior.Cascade);
+
+                    b.Navigation("User");
+                });
+
+            modelBuilder.Entity("RecipeBackend.Models.RecipeDishType", b =>
+                {
+                    b.HasOne("RecipeBackend.Models.DishType", "DishType")
+                        .WithMany()
+                        .HasForeignKey("DishTypeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.HasOne("RecipeBackend.Models.Recipe", "Recipe")
+                        .WithMany()
+                        .HasForeignKey("RecipeId")
+                        .OnDelete(DeleteBehavior.Cascade)
+                        .IsRequired();
+
+                    b.Navigation("DishType");
+
+                    b.Navigation("Recipe");
+                });
+
+            modelBuilder.Entity("RecipeBackend.Models.RecipeIngredient", b =>
+                {
+                    b.HasOne("RecipeBackend.Models.Recipe", null)
+                        .WithMany("RecipeIngredients")
+                        .HasForeignKey("RecipeId")
                         .OnDelete(DeleteBehavior.Cascade)
                         .IsRequired();
                 });
@@ -181,6 +348,8 @@ namespace RecipeBackend.Migrations
 
             modelBuilder.Entity("RecipeBackend.Models.Recipe", b =>
                 {
+                    b.Navigation("RecipeIngredients");
+
                     b.Navigation("Steps");
                 });
 #pragma warning restore 612, 618
