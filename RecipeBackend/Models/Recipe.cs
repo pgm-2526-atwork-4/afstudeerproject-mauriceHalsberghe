@@ -12,4 +12,8 @@ public class Recipe
 
     public List<Step> Steps { get; set; } = new();
     public List<RecipeIngredient> RecipeIngredients { get; set; } = new();
+
+    public int? UserId { get; set; }
+    public User? User { get; set; }
+
 }
