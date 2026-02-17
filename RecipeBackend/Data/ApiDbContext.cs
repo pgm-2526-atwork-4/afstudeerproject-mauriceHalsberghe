@@ -8,6 +8,8 @@ public class ApiDbContext : DbContext
     public ApiDbContext(DbContextOptions<ApiDbContext> options) : base(options) { }
 
     public DbSet<Recipe> Recipes { get; set; }
-    public DbSet<Step> Steps => Set<Step>();
+    public DbSet<Step> Steps { get; set; }
+    public DbSet<Ingredient> Ingredients { get; set; }
+    public DbSet<IngredientType> IngredientTypes { get; set; }
 
 }
