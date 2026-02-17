@@ -19,7 +19,13 @@ public class RecipesController : ControllerBase
     [HttpGet]
     public async Task<ActionResult<IEnumerable<Recipe>>> GetRecipes()
     {
-        return await _context.Recipes.ToListAsync();
+        var recipe = await _context.Recipes
+            .Include(r => r.RecipeIngredients)
+            .ToListAsync();
+            
+        if (recipe == null) return NotFound();
+
+        return recipe;
     }
 
     [HttpGet("{id}")]

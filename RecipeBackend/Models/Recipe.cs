@@ -8,4 +8,5 @@ public class Recipe
     public int? Time { get; set; }
 
     public List<Step> Steps { get; set; } = new();
+    public List<RecipeIngredient> RecipeIngredients { get; set; } = new();
 }

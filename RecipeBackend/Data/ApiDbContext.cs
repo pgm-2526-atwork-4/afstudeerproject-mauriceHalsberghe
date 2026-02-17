@@ -11,5 +11,7 @@ public class ApiDbContext : DbContext
     public DbSet<Step> Steps { get; set; }
     public DbSet<Ingredient> Ingredients { get; set; }
     public DbSet<IngredientType> IngredientTypes { get; set; }
+    public DbSet<RecipeIngredient> RecipeIngredients { get; set; }
+    public DbSet<QuantityUnit> QuantityUnits { get; set; }
 
 }
