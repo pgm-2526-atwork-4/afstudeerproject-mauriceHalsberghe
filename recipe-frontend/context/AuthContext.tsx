@@ -4,8 +4,8 @@ import { createContext, useState, ReactNode } from "react";
 
 type AuthUser = {
   token: string;
-  username?: string;
-  email?: string;
+  username: string;
+  email: string;
   avatar?: string;
   bio?: string;
 };
@@ -19,15 +19,17 @@ type AuthContextType = {
 export const AuthContext = createContext<AuthContextType | null>(null);
 
 export function AuthProvider({ children }: { children: ReactNode }) {
+
   const [user, setUser] = useState<AuthUser | null>(() => {
+    
     if (typeof window === "undefined") return null;
 
-    const token = window.localStorage.getItem("token");    
-    return token ? { token } : null;
+    const stored = window.localStorage.getItem("user");
+    return stored ? JSON.parse(stored) : null;
   });
 
   function logout() {
-    window.localStorage.removeItem("token");
+    window.localStorage.removeItem("user");
     setUser(null);
   }
 

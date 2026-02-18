@@ -3,6 +3,9 @@ import { useState } from "react";
 import { registerUser } from "@/lib/api";
 import { useRouter } from "next/navigation";
 
+import { useContext } from "react";
+import { AuthContext } from "@/context/AuthContext";
+
 export default function RegisterPage() {
   const router = useRouter();
   const [form, setForm] = useState({
@@ -12,11 +15,15 @@ export default function RegisterPage() {
   });
   const [error, setError] = useState("");
 
+  const auth = useContext(AuthContext);
+
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     try {
       const res = await registerUser(form);
-      localStorage.setItem("token", res.token);
+      localStorage.setItem("user", JSON.stringify(res));
+      auth?.setUser(res);
       router.push("/");
     } catch (err: unknown) {
         if (err instanceof Error) {

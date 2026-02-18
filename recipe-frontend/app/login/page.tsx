@@ -3,6 +3,9 @@ import { useState } from "react";
 import { loginUser } from "@/lib/api";
 import { useRouter } from "next/navigation";
 
+import { useContext } from "react";
+import { AuthContext } from "@/context/AuthContext";
+
 export default function LoginPage() {
   const router = useRouter();
   const [form, setForm] = useState({
@@ -11,12 +14,19 @@ export default function LoginPage() {
   });
   const [error, setError] = useState("");
 
+  const auth = useContext(AuthContext);
+
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     try {
-      const res = await loginUser(form);
-      localStorage.setItem("token", res.token);
-      router.push("/");
+        const res = await loginUser(form);
+
+        localStorage.setItem("user", JSON.stringify(res));
+
+        auth?.setUser(res);
+
+        router.push("/");
+        
     } catch (err: unknown) {
     if (err instanceof Error) {
         setError(err.message);
