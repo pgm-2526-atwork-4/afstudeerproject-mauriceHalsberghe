@@ -1,0 +1,12 @@
+.button {
+    padding: 0.5rem 1.2rem;
+    font-size: 1.2rem;
+    border-radius: 2rem;
+    color: var(--gray-100);
+    background-color: var(--green-200);
+    cursor: pointer;
+
+    &:active {
+        background-color: var(--green-100);
+    }
+}
