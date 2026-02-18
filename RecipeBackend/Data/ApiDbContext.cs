@@ -17,6 +17,7 @@ public class ApiDbContext : DbContext
     public DbSet<Cuisine> Cuisines { get; set; }
     public DbSet<DishType> DishTypes { get; set; }
     public DbSet<RecipeDishType> RecipeDishTypes { get; set; }
+    public DbSet<Allergy> Allergies { get; set; }
 
     public DbSet<User> Users { get; set; }
     
