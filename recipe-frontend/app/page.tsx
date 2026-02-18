@@ -1,9 +1,12 @@
 "use client";
 
 import RecipeCard from './components/RecipeCard';
-import { useEffect, useState } from "react";
+import LogoutButton from "./components/LogoutButton";
+import { useContext, useEffect, useState } from "react";
 
 import HomeStyles from '@/app//styles/home.module.css';
+import { AuthContext } from '@/context/AuthContext';
+import Link from 'next/link';
 
 
 type Recipe = {
@@ -35,9 +38,20 @@ export default function Home() {
   fetchRecipes();
 }, []);
 
+  const auth = useContext(AuthContext);
 
   return (
     <div>
+      
+      {auth?.user ? (
+        <>
+          Logged in as {auth.user.username}
+          <LogoutButton />
+        </>
+      ) : (
+        <Link href="./login">Login</Link>
+      )}
+
       <h1>Recipes</h1>
       <ul className={HomeStyles.recipes}>
         {recipes.map((recipe) => (
