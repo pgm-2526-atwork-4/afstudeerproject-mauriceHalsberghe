@@ -32,6 +32,9 @@ public class AuthController : ControllerBase
         if (await _db.Users.AnyAsync(u => u.Username == dto.Username))
             return BadRequest("Username already taken.");
 
+        if (dto.Password.Length < 8 )
+            return BadRequest("Password must be 8 characters.");
+
         var user = new User
         {
             Username = dto.Username,
