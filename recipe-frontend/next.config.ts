@@ -1,8 +1,8 @@
-import type { NextConfig } from 'next';
-
+import type { NextConfig } from "next";
 
 const nextConfig: NextConfig = {
   devIndicators: false,
+
   images: {
     remotePatterns: [
       {
@@ -13,6 +13,15 @@ const nextConfig: NextConfig = {
       },
     ],
     dangerouslyAllowLocalIP: true,
+  },
+
+  turbopack: {
+    rules: {
+      "*.svg": {
+        loaders: ["@svgr/webpack"],
+        as: "*.js",
+      },
+    },
   },
 };
 
