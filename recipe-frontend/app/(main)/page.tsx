@@ -1,7 +1,7 @@
 "use client";
 
-import RecipeCard from './components/RecipeCard';
-import LogoutButton from "./components/LogoutButton";
+import RecipeCard from '../components/RecipeCard';
+import LogoutButton from "../components/LogoutButton";
 import { useContext, useEffect, useState } from "react";
 
 import HomeStyles from '@/app/styles//pages/home.module.css';
@@ -41,7 +41,7 @@ export default function Home() {
   const auth = useContext(AuthContext);
 
   return (
-    <div>
+    <main className={HomeStyles.home}>
       
       {auth?.user ? (
         <div>
@@ -62,6 +62,6 @@ export default function Home() {
 
         ))}
       </ul>
-    </div>
+    </main>
   );
 }
