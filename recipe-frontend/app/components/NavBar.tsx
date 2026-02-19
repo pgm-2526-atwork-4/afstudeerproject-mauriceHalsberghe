@@ -19,10 +19,10 @@ function NavBar() {
                 <Link href={'./ingredients'}><AppleIcon />Ingedients</Link>
             </li>
             <li className={NavBarStyles.navitem}>
-                <Link href={'./liked-recipes'}><HeartIcon />Liked Recipes</Link>
+                <Link href={'./liked-recipes'}><HeartIcon />Liked</Link>
             </li>
             <li className={NavBarStyles.navitem}>
-                <Link href={'./shopping-list'}><CartIcon />Shopping List</Link>
+                <Link href={'./shopping-list'}><CartIcon />List</Link>
             </li>
             <li className={NavBarStyles.navitem}>
                 <Link href={'./profile'}><ProfileIcon />Profile</Link>
