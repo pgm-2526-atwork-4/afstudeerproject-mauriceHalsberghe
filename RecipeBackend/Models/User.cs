@@ -9,4 +9,5 @@ public class User
     public string? Avatar { get; set; }
     public string? Bio { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+    public int? DietId { get; set; } 
 }
