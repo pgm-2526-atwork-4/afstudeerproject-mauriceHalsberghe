@@ -21,7 +21,6 @@ public class ApiDbContext : DbContext
     public DbSet<Comment> Comments { get; set; }
     public DbSet<Like> Likes { get; set; }
     public DbSet<Review> Reviews { get; set; }
-    public DbSet<UserDiet> UserDiets { get; set; }
     public DbSet<User> Users { get; set; }
     public DbSet<InventoryIngredient> InventoryIngredients { get; set; }
     public DbSet<ListIngredient> ListIngredients { get; set; }

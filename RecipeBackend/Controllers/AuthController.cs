@@ -27,13 +27,13 @@ public class AuthController : ControllerBase
     public async Task<IActionResult> Register(RegisterDto dto)
     {
         if (await _db.Users.AnyAsync(u => u.Email == dto.Email))
-            return BadRequest("Email already in use.");
+            return BadRequest("Email already in use");
 
         if (await _db.Users.AnyAsync(u => u.Username == dto.Username))
-            return BadRequest("Username already taken.");
+            return BadRequest("Username already taken");
 
         if (dto.Password.Length < 8 )
-            return BadRequest("Password must be 8 characters.");
+            return BadRequest("Password must be 8 characters");
 
         var user = new User
         {
@@ -62,7 +62,7 @@ public class AuthController : ControllerBase
         var user = await _db.Users.FirstOrDefaultAsync(u => u.Email == dto.Email);
 
         if (user == null || !BCrypt.Net.BCrypt.Verify(dto.Password, user.PasswordHash))
-            return Unauthorized("Invalid credentials.");
+            return Unauthorized("Invalid credentials");
 
         return Ok(new AuthResponseDto(
             GenerateToken(user),
