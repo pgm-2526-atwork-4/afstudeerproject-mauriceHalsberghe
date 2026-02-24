@@ -1,0 +1,32 @@
+.profile {
+    display: flex;
+    flex-direction: column;
+    width: fit-content;
+    justify-content: center;
+    align-items: center;
+    margin: auto;
+    height: 90vh;
+    gap: 2rem;
+}
+
+.title {
+    width: fit-content;
+    font-size: 1.2rem;
+}
+
+.icon {
+  color: var(--gray-200);
+}
+
+.profileInfo {
+    display: flex;
+    align-items: center;
+    flex-direction: row;
+    gap: 2rem;
+}
+
+.names {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
