@@ -36,7 +36,7 @@ type Props = {
 
 function RecipeCard({ recipe }: Props) {
   return (
-    <Link className={RecipeCardStyles.card} href={`./recipes/${recipe.title.replace(/\s+/g, '-').toLowerCase()}`}>
+    <Link className={RecipeCardStyles.card} href={`/recipes/${recipe.id}/${recipe.title.replace(/\s+/g, '-').toLowerCase()}`}>
       <Image
         className={RecipeCardStyles.image}
         width={200}
