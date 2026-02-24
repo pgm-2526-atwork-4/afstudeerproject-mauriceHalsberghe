@@ -1,6 +1,7 @@
 import Image from 'next/image';
 
 import RecipeCardStyles from '@/app/styles/components/recipecard.module.css';
+import Link from 'next/link';
 
 type Diet = {
   id: number;
@@ -35,7 +36,7 @@ type Props = {
 
 function RecipeCard({ recipe }: Props) {
   return (
-    <div className={RecipeCardStyles.card}>
+    <Link className={RecipeCardStyles.card} href={`./recipes/${recipe.title.replace(/\s+/g, '-').toLowerCase()}`}>
       <Image
         className={RecipeCardStyles.image}
         width={200}
@@ -60,7 +61,7 @@ function RecipeCard({ recipe }: Props) {
           { recipe.cuisine && <p className={RecipeCardStyles.tag}>{recipe.cuisine.name}</p> }
         </div>
       </div>
-    </div>
+    </Link>
   );
 }
 
