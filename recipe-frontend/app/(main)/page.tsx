@@ -16,6 +16,12 @@ type Cuisine = {
   name: string;
 };
 
+type User = {
+  id: number;
+  username: string;
+  avatar: string;
+};
+
 type Recipe = {
   id: number;
   title: string;
@@ -24,6 +30,7 @@ type Recipe = {
   time: number;
   diet?: Diet;
   cuisine?: Cuisine;
+  user?: User;
 };
 
 export default function Home() {
@@ -38,6 +45,8 @@ export default function Home() {
   
   const [cuisines, setCuisines] = useState<Cuisine[]>([]);
   const [selectedCuisine, setSelectedCuisine] = useState(0);
+
+  const [onlyUsers, setOnlyUsers] = useState(false);
 
   const [time, setTime] = useState(15);
   const displayTime = time === 90 ? "90+" : time;
@@ -93,7 +102,8 @@ export default function Home() {
     const matchesCuisine = selectedCuisine === 0 || recipe.cuisine?.id === selectedCuisine;
     const matchesTime = time === 0 || recipe.time === time;
     const matchesTitle = search === '' || recipe.title.toLowerCase().includes(search.toLowerCase());
-    return matchesDiet && matchesCuisine && matchesTitle;// && matchesTime;
+    const matchesOnlyUsers = onlyUsers === false || recipe.user !== null;
+    return matchesDiet && matchesCuisine && matchesTitle && matchesOnlyUsers;// && matchesTime;
   });
 
   return (
@@ -137,18 +147,27 @@ export default function Home() {
           ))}
         </select>
 
-      <div>
-        <p>Time</p>
-        <input
-          type="range"
-          min={5}
-          max={90}
-          step={5}
-          value={time}
-          onChange={(e) => setTime(Number(e.target.value))}
-        />
-        <output>{displayTime}</output>
-      </div>
+        <div>
+          <p>Time</p>
+          <input
+            type="range"
+            min={5}
+            max={90}
+            step={5}
+            value={time}
+            onChange={(e) => setTime(Number(e.target.value))}
+          />
+          <output>{displayTime}</output>
+        </div>
+
+        <label>
+          Only user recipes
+          <input
+            type="checkbox"
+            checked={onlyUsers}
+            onChange={(e) => setOnlyUsers(e.target.checked)}
+          />
+        </label>
 
       </div>
       

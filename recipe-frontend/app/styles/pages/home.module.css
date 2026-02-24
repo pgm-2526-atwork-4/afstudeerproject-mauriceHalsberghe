@@ -44,6 +44,9 @@
 .filters {
     display: flex;
     align-items: center;
+    max-width: 500px;
+    overflow-x: scroll;
+    
     gap: 1rem;
     margin: 1rem 0;
     input {
