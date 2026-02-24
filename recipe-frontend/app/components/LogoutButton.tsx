@@ -4,6 +4,8 @@ import { useContext } from "react";
 import { AuthContext } from "@/context/AuthContext";
 import { useRouter } from "next/navigation";
 
+import ButtonStyles from '@/app/styles/components/button.module.css'
+
 export default function LogoutButton() {
   const auth = useContext(AuthContext);
   const router = useRouter();
@@ -17,5 +19,5 @@ export default function LogoutButton() {
     router.push("/login");
   }
 
-  return <button onClick={handleLogout}>Logout</button>;
+  return <button className={ButtonStyles.button} onClick={handleLogout}>Logout</button>;
 }
