@@ -12,6 +12,12 @@ type Cuisine = {
   name: string;
 };
 
+type User = {
+  id: number;
+  username: string;
+  avatar: string;
+};
+
 type Recipe = {
   id: number;
   title: string;
@@ -20,6 +26,7 @@ type Recipe = {
   time: number;
   diet?: Diet;
   cuisine?: Cuisine;
+  user?: User;
 };
 
 type Props = {
@@ -33,10 +40,19 @@ function RecipeCard({ recipe }: Props) {
         className={RecipeCardStyles.image}
         width={200}
         height={100}
-        src={`http://localhost:5041/uploads/${recipe.imageUrl}`}
+        src={`http://localhost:5041/uploads/recipe-images/${recipe.imageUrl}`}
         alt={recipe.title}
       />
       <div className={RecipeCardStyles.text}>
+        { recipe.user && 
+          <Image 
+            className={RecipeCardStyles.avatar} 
+            width={32} 
+            height={32} 
+            alt={recipe.user.username}
+            src={recipe.user.avatar ? `http://localhost:5041/uploads/avatars/${recipe.user.avatar}` : '/avatar.svg'} 
+          />
+        }
         <h2 className={RecipeCardStyles.title}>{recipe.title}</h2>
         <p className={RecipeCardStyles.time}>{recipe.time} min</p>
         <div className={RecipeCardStyles.tags}>

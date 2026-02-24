@@ -37,7 +37,7 @@
     display: flex;
     position: absolute;
     gap: 1rem;
-    right: 0.5rem;
+    left: 0.5rem;
     top: -2.25rem;
 }
 
@@ -46,4 +46,10 @@
     color: var(--white);
     padding: 0.125rem 0.5rem;
     border-radius: 5rem;
+}
+
+.avatar {
+    position: absolute;
+    top: -2.5rem;
+    right: 0.5rem;
 }
