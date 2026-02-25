@@ -2,6 +2,11 @@
 
 import { useState } from "react";
 
+import LikeButtonStyles from '@/app/styles/components/likebutton.module.css'
+
+import LikeFilledIcon from '@/public/like_filled.svg'
+import LikeUnfilledIcon from '@/public/like_unfilled.svg'
+
 type LikeButtonProps = {
   recipeId: number;
   initialLiked: boolean;
@@ -64,8 +69,13 @@ export default function LikeButton({
   };
 
   return (
-    <button onClick={toggleLike} disabled={loading}>
-      {liked ? "❤️" : "🤍"} {likeCount}
-    </button>
+    <div className={LikeButtonStyles.like}>
+      <p className={LikeButtonStyles.count}>
+        {likeCount}
+      </p>
+      <button className={LikeButtonStyles.button} onClick={toggleLike} disabled={loading}>
+        {liked ? <LikeFilledIcon /> : <LikeUnfilledIcon />}
+      </button>
+    </div>
   );
 }
