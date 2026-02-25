@@ -1,17 +1,17 @@
 "use client";
 
 import { useState } from "react";
+import LikeButtonStyles from '@/app/styles/components/likebutton.module.css';
 
-import LikeButtonStyles from '@/app/styles/components/likebutton.module.css'
-
-import LikeFilledIcon from '@/public/like_filled.svg'
-import LikeUnfilledIcon from '@/public/like_unfilled.svg'
+import LikeFilledIcon from '@/public/like_filled.svg';
+import LikeUnfilledIcon from '@/public/like_unfilled.svg';
 
 type LikeButtonProps = {
   recipeId: number;
   initialLiked: boolean;
   initialLikeCount: number;
   userId?: number;
+  onUnlike?: () => void;
 };
 
 export default function LikeButton({
@@ -19,6 +19,7 @@ export default function LikeButton({
   initialLiked,
   initialLikeCount,
   userId,
+  onUnlike,
 }: LikeButtonProps) {
   const [liked, setLiked] = useState(initialLiked);
   const [likeCount, setLikeCount] = useState(initialLikeCount);
@@ -35,7 +36,6 @@ export default function LikeButton({
 
     try {
       if (!liked) {
-        //like
         await fetch("http://localhost:5041/api/likes", {
           method: "POST",
           headers: {
@@ -50,7 +50,6 @@ export default function LikeButton({
         setLiked(true);
         setLikeCount((prev) => prev + 1);
       } else {
-        //unlike
         await fetch(
           `http://localhost:5041/api/likes?userId=${userId}&recipeId=${recipeId}`,
           {
@@ -60,6 +59,8 @@ export default function LikeButton({
 
         setLiked(false);
         setLikeCount((prev) => Math.max(prev - 1, 0));
+
+        onUnlike?.();
       }
     } catch (err) {
       console.error("Error toggling like:", err);
@@ -70,10 +71,12 @@ export default function LikeButton({
 
   return (
     <div className={LikeButtonStyles.like}>
-      <p className={LikeButtonStyles.count}>
-        {likeCount}
-      </p>
-      <button className={LikeButtonStyles.button} onClick={toggleLike} disabled={loading}>
+      <p className={LikeButtonStyles.count}>{likeCount}</p>
+      <button
+        className={LikeButtonStyles.button}
+        onClick={toggleLike}
+        disabled={loading}
+      >
         {liked ? <LikeFilledIcon /> : <LikeUnfilledIcon />}
       </button>
     </div>
