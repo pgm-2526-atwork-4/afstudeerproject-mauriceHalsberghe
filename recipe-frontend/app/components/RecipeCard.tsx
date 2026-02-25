@@ -37,9 +37,10 @@ type Recipe = {
 
 type Props = {
   recipe: Recipe;
+  onUnlike?: (recipeId: number) => void; 
 };
 
-function RecipeCard({ recipe }: Props) {
+function RecipeCard({ recipe, onUnlike }: Props) {
   const auth = useContext(AuthContext);  
 
   return (
@@ -75,6 +76,7 @@ function RecipeCard({ recipe }: Props) {
         initialLiked={recipe.isLikedByCurrentUser}
         initialLikeCount={recipe.likeCount}
         userId={auth?.user?.id}
+        onUnlike={() => onUnlike?.(recipe.id)}
       />
     </div>
   );
