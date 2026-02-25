@@ -4,6 +4,8 @@ import Image from "next/image";
 import { useParams } from "next/navigation";
 import { useEffect, useState } from "react";
 
+import DetailStyles from "@/app/styles/pages/recipe-detail.module.css"
+
 type Diet = {
     id: number;
     name: string;
@@ -44,7 +46,6 @@ type Ingredient = {
     name: string;
 }
 
-
 type Recipe = {
     id: number;
     title: string;
@@ -84,25 +85,55 @@ export default function RecipeDetail() {
     }
 
     return (
-        <div>
-            <h1>Recipe Detail</h1>
-            {recipe.title}
-            {recipe.user?.username}
-            <Image width={360} height={200} alt={recipe.title} src={`http://localhost:5041/uploads/recipe-images/${recipe.imageUrl}`}/>
+        <div className={DetailStyles.page}>
+            <div className={DetailStyles.header}>
+                <h1 className={DetailStyles.title}>{recipe.title}</h1>
+                {
+                    recipe.user &&
+                    <div className={DetailStyles.user}>
+                        <Image 
+                            className={DetailStyles.avatar} 
+                            width={24} 
+                            height={24} 
+                            alt={recipe.user.username}
+                            src={recipe.user.avatar ? `http://localhost:5041/uploads/avatars/${recipe.user.avatar}` : '/avatar.svg'} 
+                        />
+                        <p className={DetailStyles.username}>{recipe.user.username}</p>
+                    </div>
+                }
+            </div>
             
-            {recipe.recipeIngredients.map((recipeIngredient) => (
-                <div key={recipeIngredient.id}>
-                    <p>{recipeIngredient.quantity} {recipeIngredient.quantityUnit?.shortName}</p>
-                    <p>{recipeIngredient.ingredient.name}</p>
-                </div>
-            ))}
+            <Image className={DetailStyles.image} width={360} height={200} alt={recipe.title} src={`http://localhost:5041/uploads/recipe-images/${recipe.imageUrl}`}/>
             
-            {recipe.steps.map((step) => (
-                <div key={step.id}>
-                    <p>{step.stepNumber}</p>
-                    <p>{step.description}</p>
-                </div>
-            ))}
+            <p className={DetailStyles.duration}>{recipe.time} min</p>
+            
+            <h2 className={DetailStyles.subtitle}>Ingredients</h2>
+            <ul className={DetailStyles.ingredients}>
+                {recipe.recipeIngredients.map((recipeIngredient) => (
+                    <li className={DetailStyles.ingredient} key={recipeIngredient.id}>
+                        {
+                            recipeIngredient.quantity &&
+                            <p className={DetailStyles.ingredientAmount}>
+                                {recipeIngredient.quantity}
+                                {recipeIngredient.quantityUnit?.shortName}
+                            </p>
+                        }
+                        <p className={DetailStyles.ingredientName}>
+                            {recipeIngredient.ingredient.name}
+                            </p>
+                    </li>
+                ))}
+            </ul>
+            
+            <h2 className={DetailStyles.subtitle}>Preparation</h2>
+            <ul className={DetailStyles.steps}>
+                {recipe.steps.map((step) => (
+                    <li className={DetailStyles.step} key={step.id}>
+                        <p className={DetailStyles.stepNumber}>{step.stepNumber}</p>
+                        <p className={DetailStyles.stepDescription}>{step.description}</p>
+                    </li>
+                ))}
+            </ul>
         </div>
     );
 }

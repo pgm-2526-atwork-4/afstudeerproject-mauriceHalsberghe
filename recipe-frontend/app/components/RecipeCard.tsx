@@ -19,16 +19,10 @@ type User = {
   avatar: string;
 };
 
-type Ingredient = {
-  id: number;
-  
-}
-
 type Recipe = {
   id: number;
   title: string;
   imageUrl: string;
-  ingredients: Ingredient[];
   time: number;
   diet?: Diet;
   cuisine?: Cuisine;
@@ -53,8 +47,8 @@ function RecipeCard({ recipe }: Props) {
         { recipe.user && 
           <Image 
             className={RecipeCardStyles.avatar} 
-            width={32} 
-            height={32} 
+            width={40} 
+            height={40} 
             alt={recipe.user.username}
             src={recipe.user.avatar ? `http://localhost:5041/uploads/avatars/${recipe.user.avatar}` : '/avatar.svg'} 
           />

@@ -50,6 +50,7 @@
 
 .avatar {
     position: absolute;
-    top: -2.5rem;
+    top: -2.75rem;
     right: 0.5rem;
+    border-radius: 3rem;
 }
