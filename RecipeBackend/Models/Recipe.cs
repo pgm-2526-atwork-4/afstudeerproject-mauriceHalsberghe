@@ -19,4 +19,6 @@ public class Recipe
     public int? UserId { get; set; }
     public User? User { get; set; }
 
+    public ICollection<Like> Likes { get; set; } = new List<Like>();
+    
 }

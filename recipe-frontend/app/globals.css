@@ -2,7 +2,7 @@
 
 :root {
   --gray-100: #ededed;
-  --gray-200: #a4a4a4;
+  --gray-200: #c6c6c6;
   --gray-300: #575757;
 
   --black: #191919;
@@ -18,8 +18,4 @@
 
 html {
   background-color: var(--gray-100);
-}
-
-ul {
-  list-style: none;
 }

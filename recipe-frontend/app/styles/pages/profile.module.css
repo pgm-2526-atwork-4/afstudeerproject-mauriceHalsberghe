@@ -14,10 +14,6 @@
     font-size: 1.2rem;
 }
 
-.icon {
-  color: var(--gray-200);
-}
-
 .profileInfo {
     display: flex;
     align-items: center;

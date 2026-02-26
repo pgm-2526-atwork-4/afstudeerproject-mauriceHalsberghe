@@ -26,7 +26,6 @@ export default function RegisterPage() {
     e.preventDefault();
     try {
       const res = await registerUser(form);
-      localStorage.setItem("user", JSON.stringify(res));
 
       auth?.login(res.user, res.token);
 

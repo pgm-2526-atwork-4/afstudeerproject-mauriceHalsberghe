@@ -15,6 +15,11 @@ public record LoginDto(
 
 public record AuthResponseDto(
     string Token,
+    UserDto User
+);
+
+public record UserDto(
+    int Id,
     string Username,
     string Email,
     string? Avatar,

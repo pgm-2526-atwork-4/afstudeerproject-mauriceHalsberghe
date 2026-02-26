@@ -49,10 +49,7 @@ public class AuthController : ControllerBase
 
         return Ok(new AuthResponseDto(
             GenerateToken(user),
-            user.Username,
-            user.Email,
-            user.Avatar,
-            user.Bio
+            new UserDto(user.Id, user.Username, user.Email, user.Avatar, user.Bio)
         ));
     }
 
@@ -66,10 +63,7 @@ public class AuthController : ControllerBase
 
         return Ok(new AuthResponseDto(
             GenerateToken(user),
-            user.Username,
-            user.Email,
-            user.Avatar,
-            user.Bio
+            new UserDto(user.Id, user.Username, user.Email, user.Avatar, user.Bio)
         ));
     }
 

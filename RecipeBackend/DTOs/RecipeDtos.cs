@@ -12,6 +12,9 @@ public class RecipeDto
     public DietDto? Diet { get; set; }
     public CuisineDto? Cuisine { get; set; }
     public UserSummaryDto? User { get; set; }
+
+    public int LikeCount { get; set; }
+    public bool IsLikedByCurrentUser { get; set; }
 }
 
 public class UserSummaryDto

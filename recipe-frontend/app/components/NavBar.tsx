@@ -22,31 +22,31 @@ function NavBar() {
                     className={`${NavBarStyles.navitem} ${
                     isActive("/") ? NavBarStyles["navitem-current"] : ""}`}  
                 >
-                    <Link href={'./'}><HomeIcon className={NavBarStyles.icon} />Home</Link>
+                    <Link href={'/'}><HomeIcon className={NavBarStyles.icon} />Home</Link>
                 </li>
                 <li 
                     className={`${NavBarStyles.navitem} ${
                     isActive("/ingredients") ? NavBarStyles["navitem-current"] : ""}`}  
                 >
-                    <Link href={'./ingredients'}><AppleIcon className={NavBarStyles.icon} />Ingedients</Link>
+                    <Link href={'/ingredients'}><AppleIcon className={NavBarStyles.icon} />Ingedients</Link>
                 </li>
                 <li 
                     className={`${NavBarStyles.navitem} ${
                     isActive("/liked-recipes") ? NavBarStyles["navitem-current"] : ""}`}  
                 >
-                    <Link href={'./liked-recipes'}><HeartIcon className={NavBarStyles.icon} />Liked</Link>
+                    <Link href={'/liked-recipes'}><HeartIcon className={NavBarStyles.icon} />Liked</Link>
                 </li>
                 <li 
                     className={`${NavBarStyles.navitem} ${
                     isActive("/shopping-list") ? NavBarStyles["navitem-current"] : ""}`}  
                 >
-                    <Link href={'./shopping-list'}><CartIcon className={NavBarStyles.icon} />List</Link>
+                    <Link href={'/shopping-list'}><CartIcon className={NavBarStyles.icon} />List</Link>
                 </li>
                 <li 
                     className={`${NavBarStyles.navitem} ${
                     isActive("/profile") ? NavBarStyles["navitem-current"] : ""}`}  
                 >
-                    <Link href={'./profile'}><ProfileIcon className={NavBarStyles.icon} />Profile</Link>
+                    <Link href={'/profile'}><ProfileIcon className={NavBarStyles.icon} />Profile</Link>
                 </li>
             </ul>
         </nav>

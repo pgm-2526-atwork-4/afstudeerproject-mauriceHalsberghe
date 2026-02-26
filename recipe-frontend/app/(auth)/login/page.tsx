@@ -25,8 +25,6 @@ export default function LoginPage() {
     try {
         const res = await loginUser(form);
 
-        localStorage.setItem("user", JSON.stringify(res));
-
         auth?.login(res.user, res.token);
 
         router.push("/");
