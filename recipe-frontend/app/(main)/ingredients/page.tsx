@@ -4,6 +4,9 @@ import { AuthContext } from "@/context/AuthContext";
 import { useContext, useState, useEffect } from "react";
 import IngredientSearch from "@/app/components/IngredientSearch";
 
+import IngredientStyles from '@/app/styles/pages/ingredients.module.css';
+import ButtonStyles from '@/app/styles/components/button.module.css';
+
 type InventoryIngredient = {
   id: number;
   quantity?: number;
@@ -20,6 +23,7 @@ type QuantityUnit = {
 type Ingredient = {
   id: number;
   name: string;
+  ingredientTypeId: number;
 };
 
 export default function Ingredients() {
@@ -90,8 +94,6 @@ export default function Ingredients() {
       ingredientId: selectedIngredient
     };
 
-    console.log(formData);
-
     try {
         await fetch("http://localhost:5041/api/InventoryIngredient", {
           method: "POST",
@@ -109,54 +111,64 @@ export default function Ingredients() {
   };
 
   return (
-    <>
-      <h1>Ingredients</h1>
+    <main className={IngredientStyles.page}>
+      <h1 className={IngredientStyles.title}>Ingredient Inventory</h1>
 
-      <form onSubmit={handleAddIngredient}>
-        <h2>Add ingredient</h2>
+      <form className={IngredientStyles.form} onSubmit={handleAddIngredient}>
 
-        <IngredientSearch
-          onIngredientChange={((ingredient: number | null )=> setSelectedIngredient(ingredient))}
-        />
+        <div className={IngredientStyles.input}>
+          <div className={IngredientStyles.searchWrapper}>
+            <IngredientSearch
+              onIngredientChange={((ingredient: number | null )=> setSelectedIngredient(ingredient))}
+            />
+          </div>
 
-        <div>
-          <input
-            type="number"
-            placeholder="Quantity"
-            value={quantity ?? ""}
-            onChange={(e) => setQuantity(Number(e.target.value))}
-          />
+          <button className={`${ButtonStyles.button} ${ButtonStyles.smallButton}`} type="submit" disabled={selectedIngredient === null}>
+            + Add
+          </button>
         </div>
 
-        <div>
-          <select
-            value={selectedUnitId ?? ""}
-            onChange={(e) => setSelectedUnitId(Number(e.target.value))}
-          >
-            <option value="">Select unit</option>
+        {selectedIngredient !== null && (
+          <div className={IngredientStyles.quantityInput}>
+            <div className={IngredientStyles.quantity}>
+              <input
+                type="number"
+                placeholder="Quantity"
+                value={quantity ?? ""}
+                onChange={(e) => setQuantity(Number(e.target.value))}
+              />
+            </div>
 
-            {units.map((unit) => (
-              <option key={unit.id} value={unit.id}>
-                {unit.name}
-              </option>
-            ))}
-          </select>
-        </div>
+            <div className={IngredientStyles.unit}>
+              <select
+                value={selectedUnitId ?? ""}
+                onChange={(e) => setSelectedUnitId(Number(e.target.value))}
+              >
+                <option value="">Select unit</option>
+                {units.map((unit) => (
+                  <option key={unit.id} value={unit.id}>
+                    {unit.name}
+                  </option>
+                ))}
+              </select>
+            </div>
+          </div>
+        )}
 
-        <button type="submit">
-          Add
-        </button>
       </form>
 
       {loading ? (
         <p>Loading...</p>
       ) : (
-        <ul>
+        <ul className={IngredientStyles.list}>
           {ingredients.map((ingredient) => (
-            <li key={ingredient.id}>
-              <p>{ingredient.ingredient.name}</p>
+            <li className={IngredientStyles.ingredient} key={ingredient.id}>
+              <div>
+                {ingredient.ingredient.ingredientTypeId}
+                <p className={IngredientStyles.ingredientName}>{ingredient.ingredient.name}</p>
+              </div>
               {ingredient.quantity != null && ingredient.quantityUnit && (
-                <p>
+                <p className={IngredientStyles.ingredientQuantity}>
                   {ingredient.quantity} {ingredient.quantityUnit?.shortName ?? ""}
                 </p>
               )}
@@ -165,6 +177,6 @@ export default function Ingredients() {
         </ul>
       )}
 
-    </>
+    </main>
   );
 }

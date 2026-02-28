@@ -4,6 +4,7 @@
     bottom: 1.25rem;
     display: flex;
     gap: 0.5rem;
+    align-items: center;
 }
 
 .count {

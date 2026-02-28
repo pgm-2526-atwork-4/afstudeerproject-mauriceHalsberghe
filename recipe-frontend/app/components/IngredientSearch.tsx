@@ -3,6 +3,8 @@
 import { useState, useEffect } from "react";
 import Select from "react-select";
 
+import IngredientSearchStyles from '@/app/styles/components/ingredientsearch.module.css'
+
 type Ingredient = {
   id: number;
   name: string;
@@ -54,10 +56,33 @@ export default function IngredientSearch({ onIngredientChange }: Props) {
     <Select
       instanceId="ingredient-select"
       value={selectedIngredient}
+      placeholder='Add Ingredient...'
       onChange={handleChange}
       options={ingredients}
       isClearable
       isSearchable
+      styles={{
+        control: () => ({
+          display: "flex",
+          borderWidth: '2px',
+          borderColor: 'var(--gray-200)',
+          borderRadius: '5rem',
+          padding: '0 6px',          
+        }),
+        placeholder:(baseStyles) => ({
+          ...baseStyles,
+          color: 'var(--gray-300)'
+        }),
+        option: (baseStyles, state) => ({
+          ...baseStyles,
+          color: state.isSelected ? 'var(--green-300)' : 'black',
+          backgroundColor: state.isSelected
+            ? 'var(--green-100)'
+            : state.isFocused
+            ? 'var(--gray-100)'
+            : baseStyles.backgroundColor,
+        })
+      }}
     />
   );
 }
