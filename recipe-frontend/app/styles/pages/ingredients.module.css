@@ -1,6 +1,9 @@
 .page {
-    padding: 2rem;
     padding-bottom: 7rem;
+}
+
+.main {
+    padding: 1rem 2rem;
 }
 
 .header {
@@ -8,7 +11,7 @@
     width: 100%;
     top: 0;
     left: 0;
-    position: fixed;
+    position: sticky;
     background-color: var(--white);
 }
 
@@ -63,7 +66,7 @@
     }
 }
 
-.unit {
+.select {
     padding: 0 0.5rem;
     height: 36px;
     display: flex;
@@ -75,11 +78,14 @@
     option {
         font-size: 1rem;
     }
+    &:focus-visible {
+        outline: none;
+    }
 }
 
 
 .list {
-    margin-top: 16rem;
+    margin-top: 1rem;
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -108,4 +114,10 @@
 .error {
     font-style: italic;
     color: var(--gray-300);
+}
+
+.loader, .empty {
+    color: var(--gray-300);
+    margin-top: 1rem;
+    padding-left: 1rem;
 }
