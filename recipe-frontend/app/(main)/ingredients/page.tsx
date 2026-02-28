@@ -39,6 +39,8 @@ export default function Ingredients() {
   const fetchIngredients = async () => {
     if (!loggedUserId) return;
 
+    setLoading(true);
+
     try {
       const res = await fetch(
         `http://localhost:5041/api/InventoryIngredient/user/${loggedUserId}`
@@ -49,6 +51,8 @@ export default function Ingredients() {
       setIngredients(data);
     } catch (err) {
       console.error(err);
+    } finally {
+      setLoading(false);
     }
   };
 
@@ -96,6 +100,7 @@ export default function Ingredients() {
           },
           body: JSON.stringify(formData),
         });
+        await fetchIngredients();
     } catch (err) {
       console.error(err);
     }
@@ -143,18 +148,23 @@ export default function Ingredients() {
         </button>
       </form>
 
-      <ul>
-        {ingredients.map((ingredient) => (
-          <li key={ingredient.id}>
-            <p>{ingredient.ingredient.name}</p>
+      {loading ? (
+        <p>Loading...</p>
+      ) : (
+        <ul>
+          {ingredients.map((ingredient) => (
+            <li key={ingredient.id}>
+              <p>{ingredient.ingredient.name}</p>
               {ingredient.quantity != null && ingredient.quantityUnit && (
                 <p>
                   {ingredient.quantity} {ingredient.quantityUnit?.shortName ?? ""}
                 </p>
               )}
-          </li>
-        ))}
-      </ul>
+            </li>
+          ))}
+        </ul>
+      )}
+
     </>
   );
 }
