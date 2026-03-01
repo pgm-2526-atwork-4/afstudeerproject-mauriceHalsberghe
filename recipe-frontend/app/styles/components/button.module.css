@@ -1,8 +1,8 @@
 .button {
-    padding: 0.75rem 1.2rem;
+    padding: 0 1.2rem;
     font-size: 1.2rem;
     width: fit-content;
-    height: fit-content;
+    height: 40px;
     border-radius: 2rem;
     color: var(--gray-100);
     background-color: var(--green-200);
@@ -11,4 +11,26 @@
     &:active {
         background-color: var(--green-100);
     }
+
+    &:disabled {
+        background-color: var(--gray-200);
+        color: white;
+        cursor: not-allowed;
+    }
+}
+
+.disabledButton {
+    background-color: var(--gray-200);
+    color: white;
+    cursor: not-allowed;
+
+    &:active {
+        background-color: var(--gray-200);
+    }
+
+}
+
+.smallButton {
+    font-size: 1rem;
+    min-width: max-content;
 }

@@ -14,8 +14,6 @@ import EmptyView from '@/app/components/EmptyView';
 export default function Profile() {
     const auth = useContext(AuthContext);
 
-    console.log(auth);
-
     if (auth?.loading) {
         return <main>Loading...</main>;
     }
