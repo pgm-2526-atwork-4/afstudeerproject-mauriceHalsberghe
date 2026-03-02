@@ -1,17 +1,24 @@
-import { useState } from "react";
+import { useEffect, useState } from "react";
 
 import CheckboxChecked from '@/public/checkbox_checked.svg';
 import CheckboxUnchecked from '@/public/checkbox_unchecked.svg';
+
+import CheckboxStyles from '@/app/styles/components/checkbox.module.css'
 
 type Props = {
     initialChecked: boolean;
     listIngredientId: number;
     userId: number;
-}
+    onChange: (id: number, checked: boolean) => void;
+};
 
-export default function Checkbox({ initialChecked, userId, listIngredientId }: Props) {
+export default function Checkbox({ initialChecked, userId, listIngredientId, onChange }: Props) {
     const [checked, setChecked] = useState(initialChecked);
     const [loading, setLoading] = useState(false);
+
+    useEffect(() => {
+        setChecked(initialChecked);
+    }, [initialChecked]);
 
     const toggleCheck = async () => {
         if (!userId) {
@@ -21,13 +28,18 @@ export default function Checkbox({ initialChecked, userId, listIngredientId }: P
 
         if (loading) return;
 
+        const newChecked = !checked;
+        setChecked(newChecked);
+        onChange(listIngredientId, newChecked);
+
         setLoading(true);
+
 
         try {
             const response = await fetch(
                 `http://localhost:5041/api/ListIngredients/toggle?userId=${userId}&listIngredientId=${listIngredientId}`,
                 {
-                    method: "PUT", // Match backend
+                    method: "PUT",
                     headers: {
                         "Content-Type": "application/json",
                     },
@@ -38,22 +50,25 @@ export default function Checkbox({ initialChecked, userId, listIngredientId }: P
                 throw new Error("Failed to update ingredient");
             }
 
-            // Option 1: Optimistic update
-            setChecked(prev => !prev);
-
-            // Option 2 (safer): Use server response
-            // const updatedItem = await response.json();
-            // setChecked(updatedItem.checked);
-
         } catch (error) {
-            console.error("Error updating ingredient:", error);
+            console.error("Error updating ingredient", error);
+
+            setChecked(!newChecked);
+            onChange(listIngredientId, !newChecked);
         } finally {
             setLoading(false);
         }
     };
 
+    useEffect(() => {
+        setChecked(initialChecked);
+    }, [initialChecked]);
+
     return (
-        <div onClick={toggleCheck} style={{ cursor: "pointer" }}>
+        <div
+            onClick={toggleCheck}
+            className={CheckboxStyles.checkbox}
+        >
             {checked ? <CheckboxChecked /> : <CheckboxUnchecked />}
         </div>
     );

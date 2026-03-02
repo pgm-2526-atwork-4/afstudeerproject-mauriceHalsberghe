@@ -37,6 +37,9 @@ export default function ShoppingList() {
     const [loading, setLoading] = useState(true);
     const [ingredients, setIngredients] = useState<ListIngredient[]>([]);
 
+    const uncheckedIngredients = ingredients.filter(i => !i.checked);
+    const checkedIngredients = ingredients.filter(i => i.checked);
+
     const auth = useContext(AuthContext);
     const loggedUserId = auth?.user?.id;
 
@@ -76,6 +79,14 @@ export default function ShoppingList() {
         loadData();
     }, [loggedUserId]);
 
+    const updateIngredientChecked = (id: number, checked: boolean) => {
+        setIngredients(prev =>
+            prev.map(i =>
+                i.id === id ? { ...i, checked } : i
+            )
+        );
+    };
+
     if (!loggedUserId) {
         return (
             <div>
@@ -99,22 +110,62 @@ export default function ShoppingList() {
 
             <div className={IngredientStyles.main}>
 
-                <ul className={IngredientStyles.list}>
-                    {ingredients.map((ingredient) => (
-                        <li className={IngredientStyles.ingredient} key={ingredient.id}>
+                {uncheckedIngredients.length > 0 && (
+                    <ul className={IngredientStyles.list}>
+                        {uncheckedIngredients.map((ingredient) => (
+                            <li className={IngredientStyles.ingredient} key={ingredient.id}>
                             <div className={IngredientStyles.ingredientSign}>
-                                <Checkbox initialChecked={ingredient.checked} listIngredientId={ingredient.id} userId={loggedUserId}/>
-                                {ingredient.ingredient.name}
+                                <Checkbox
+                                    initialChecked={ingredient.checked}
+                                    listIngredientId={ingredient.id}
+                                    userId={loggedUserId}
+                                    onChange={updateIngredientChecked}
+                                />
+                                <p>{ingredient.ingredient.name}</p>
                             </div>
+
                             {ingredient.quantity != null && ingredient.quantityUnit && (
                                 <p className={IngredientStyles.ingredientQuantity}>
-                                    {ingredient.quantity} {ingredient.quantityUnit?.shortName ?? ""}
+                                {ingredient.quantity} {ingredient.quantityUnit?.shortName ?? ""}
                                 </p>
                             )}
+                            </li>
+                        ))}
+                    </ul>
+                )}
 
+
+
+                {checkedIngredients.length > 0 && (
+                <>
+                    <h2 className={IngredientStyles.subtitle}>Checked off</h2>
+
+                    <ul className={IngredientStyles.list}>
+                    {checkedIngredients.map((ingredient) => (
+                        <li
+                            className={`${IngredientStyles.ingredient} ${IngredientStyles.checkedIngredient}`}
+                            key={ingredient.id}
+                        >
+                        <div className={IngredientStyles.ingredientSign}>
+                            <Checkbox
+                                initialChecked={ingredient.checked}
+                                listIngredientId={ingredient.id}
+                                userId={loggedUserId}
+                                onChange={updateIngredientChecked}
+                            />
+                            <p>{ingredient.ingredient.name}</p>
+                        </div>
+
+                        {ingredient.quantity != null && ingredient.quantityUnit && (
+                            <p className={IngredientStyles.ingredientQuantity}>
+                            {ingredient.quantity} {ingredient.quantityUnit?.shortName ?? ""}
+                            </p>
+                        )}
                         </li>
                     ))}
-                </ul>
+                    </ul>
+                </>
+                )}
             </div>
         </main>
     )

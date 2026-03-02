@@ -68,13 +68,18 @@ export default function IngredientSearch({ value, onIngredientChange }: Props) {
       options={ingredients}
       isClearable
       isSearchable
+      menuPortalTarget={document.body} 
       styles={{
+          menu: (base) => ({
+            ...base,
+            zIndex: 10,
+          }),
         control: () => ({
           display: "flex",
           borderWidth: '2px',
           borderColor: 'var(--gray-200)',
           borderRadius: '5rem',
-          padding: '0 6px',          
+          padding: '0 6px',
         }),
         placeholder:(baseStyles) => ({
           ...baseStyles,
