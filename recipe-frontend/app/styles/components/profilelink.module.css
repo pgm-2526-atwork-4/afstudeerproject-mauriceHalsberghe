@@ -1,0 +1,24 @@
+.link {
+    background-color: var(--white);
+    color: var(--gray-300);
+    display: flex;
+    justify-content: space-between;
+    width: 100%;
+    padding: 1rem;
+    border-radius: 1rem;
+
+    svg {
+        height: 24px;
+        width: 24px;
+    }
+}
+
+.text {
+    display: flex;
+    align-items: center;
+    gap: 1rem;
+
+    p {
+        color: var(--black);
+    }
+}
