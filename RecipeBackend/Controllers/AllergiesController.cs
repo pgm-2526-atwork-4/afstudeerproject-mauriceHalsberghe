@@ -21,4 +21,15 @@ public class AllergyController : ControllerBase
     {
         return await _context.Allergies.ToListAsync();
     }
+
+    [HttpGet("user/{id}")]
+    public async Task<ActionResult<IEnumerable<Allergy>>> GetRecipesByUserId(int id)
+    {
+
+        var allergies = await _context.Allergies
+            .Where(r => r.UserId == id)
+            .ToListAsync();
+
+        return Ok(allergies);
+    }
 }
