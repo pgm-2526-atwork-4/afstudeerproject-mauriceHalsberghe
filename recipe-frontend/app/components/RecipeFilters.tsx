@@ -23,10 +23,11 @@ export type RecipeFiltersState = {
 
 type Props = {
   filters: RecipeFiltersState;
+  onlyUsersFilter: boolean;
   onChange: (filters: RecipeFiltersState) => void;
 };
 
-export default function RecipeFilters({ filters, onChange }: Props) {
+export default function RecipeFilters({ filters, onChange, onlyUsersFilter }: Props) {
   const [diets, setDiets] = useState<Diet[]>([]);
   const [cuisines, setCuisines] = useState<Cuisine[]>([]);
 
@@ -104,15 +105,18 @@ export default function RecipeFilters({ filters, onChange }: Props) {
           />
           <output>{displayTime}</output>
         </div>
+        
+        {onlyUsersFilter && 
+          <label>
+            Only user recipes
+            <input
+              type="checkbox"
+              checked={filters.onlyUsers}
+              onChange={(e) => update({ onlyUsers: e.target.checked })}
+            />
+          </label>
+        }
 
-        <label>
-          Only user recipes
-          <input
-            type="checkbox"
-            checked={filters.onlyUsers}
-            onChange={(e) => update({ onlyUsers: e.target.checked })}
-          />
-        </label>
       </div>
     </>
   );

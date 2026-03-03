@@ -103,7 +103,7 @@ export default function Home() {
 
   return (
     <main className={HomeStyles.home}>
-      <RecipeFilters filters={filters} onChange={setFilters} />
+      <RecipeFilters filters={filters} onChange={setFilters} onlyUsersFilter={true} />
 
       {loading ? (
         <p>Loading recipes...</p>

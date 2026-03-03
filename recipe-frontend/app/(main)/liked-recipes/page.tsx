@@ -112,7 +112,7 @@ export default function LikedRecipes() {
 
   return (
     <main className={HomeStyles.home}>
-      <RecipeFilters filters={filters} onChange={setFilters} />
+      <RecipeFilters filters={filters} onChange={setFilters} onlyUsersFilter={true} />
 
       {filteredRecipes.length === 0 ? (
         <EmptyView title='Not Recipes found' icon="recipe"/>
