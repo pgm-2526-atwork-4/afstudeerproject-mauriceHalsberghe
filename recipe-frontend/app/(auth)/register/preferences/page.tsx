@@ -6,6 +6,7 @@ import { useContext, useEffect, useState } from 'react';
 
 import PrefStyles from '@/app/styles/pages/preferences.module.css';
 import ButtonStyles from '@/app/styles/components/button.module.css';
+import AvatarUpload from '@/app/components/AvatarUpload';
 
 type Diet = {
   id: number;
@@ -36,9 +37,15 @@ export default function RegisterPreferences() {
 
     const auth = useContext(AuthContext);
     const router = useRouter();
-
     
     useEffect(() => {
+        if (!auth || auth.loading) return;
+
+        if (!auth.user?.id) {
+        setLoading(false);
+            return;
+        }
+
         setAllergies([
             { id: 1, typeId: 37, name: 'Gluten', type: AllergyType.ingredient },
             { id: 2, typeId: 3, name: 'Dairy', type: AllergyType.ingredientType },
@@ -61,11 +68,17 @@ export default function RegisterPreferences() {
             }
         };
       fetchDiets();
-    }, []);
+    }, [auth]);
 
-    if (!diets) {
+    if (auth?.loading || loading) {
         return <p>Loading...</p>;
     }
+
+    if (!auth?.user?.id || !auth.token) {
+        return <p>User not authenticated</p>;
+    }
+
+    const loggedUserId: number = auth.user.id;
 
     const toggleAllergy = (id: number) => {
         setSelectedAllergies(prev =>
@@ -126,10 +139,13 @@ export default function RegisterPreferences() {
 
     return (
         <div className={PrefStyles.page}>
-            {auth.user && <h1 className={PrefStyles.title}>Welcome, {auth.user.username}!</h1>}
+            <div className={PrefStyles.welcome}>
+                {auth.user && <h1 className={PrefStyles.title}>Welcome, {auth.user.username}!</h1>}
+                <h2>Let&apos;s set up your Profile</h2>
+            </div>
 
             <div className={PrefStyles.progress}>
-                <h2 className={PrefStyles.progressSubtitle}>Step {step} of 3</h2>
+                <h3 className={PrefStyles.progressSubtitle}>Step {step} of 3</h3>
                 <div className={PrefStyles.progressBar}>
                     <span style={{ width: `${progress}%` }}></span>
                 </div>
@@ -142,7 +158,16 @@ export default function RegisterPreferences() {
                     <div className={PrefStyles.list}>
                         {diets.map((diet) => (
                             <div key={diet.id} className={PrefStyles.radio}>
-                                <input id={diet.name} value={diet.id} className={PrefStyles.radioInput} type="radio" checked={selectedDiet === diet.id}   onClick={() => setSelectedDiet(selectedDiet === diet.id ? null : diet.id)}/>
+                                <input
+                                id={diet.name}
+                                value={diet.id}
+                                className={PrefStyles.radioInput}
+                                type="radio"
+                                checked={selectedDiet === diet.id}
+                                onChange={() =>
+                                    setSelectedDiet(selectedDiet === diet.id ? null : diet.id)
+                                }
+                                />                                
                                 <label htmlFor={diet.name} className={PrefStyles.radioLabel}>{diet.name}</label>
                             </div>
                         ))}
@@ -158,7 +183,7 @@ export default function RegisterPreferences() {
 
             {step === 2 && (
                 <div className={PrefStyles.pageStep}>
-                    <h2 className={PrefStyles.subtitle}>Select your allergies</h2>
+                    <h3 className={PrefStyles.subtitle}>Select your allergies</h3>
 
                     <div className={PrefStyles.list} >
                         {allergies.map((allergy) => (
@@ -181,7 +206,9 @@ export default function RegisterPreferences() {
 
             {step === 3 && (
                 <div className={PrefStyles.pageStep}>
-                    <h2 className={PrefStyles.subtitle}>Add an avatar</h2>
+                    <h3 className={PrefStyles.subtitle}>Add an avatar</h3>
+
+                    <AvatarUpload userId={loggedUserId} username={auth.user.username}/>
 
                     <div className={PrefStyles.buttons}>
                         <button className={ButtonStyles.button} onClick={() => setStep(2)}>Back</button>
