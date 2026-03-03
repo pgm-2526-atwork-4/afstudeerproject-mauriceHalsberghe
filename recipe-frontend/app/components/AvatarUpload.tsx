@@ -11,9 +11,11 @@ import UploadIcon from "@/public/upload.svg"
 type Props = {
   userId: number;
   username: string;
+  size: number;
+  onUploadSuccess: () => void;
 };
 
-export default function AvatarUpload({ userId, username }: Props) {
+export default function AvatarUpload({ userId, username, size, onUploadSuccess }: Props) {
     const { user, setUser } = useContext(AuthContext)!;
     const [avatarUrl, setAvatarUrl] = useState<string>("/avatar.svg");
     const [uploaded, setUploaded] = useState(false);
@@ -51,7 +53,8 @@ export default function AvatarUpload({ userId, username }: Props) {
 
             if (user && setUser) {
                 setUser({ ...user, avatar: data.avatarUrl });
-                setUploaded(true)
+                setUploaded(true);
+                onUploadSuccess();
             }
         }
     };
@@ -62,16 +65,17 @@ export default function AvatarUpload({ userId, username }: Props) {
             type="file"
             accept="image/*"
             onChange={handleFileChange}
+            style={{width: size, height: size}}
         />
 
       <div className={`${AvatarUploadStyles.image} ${!uploaded && AvatarUploadStyles.showUpload}`}>
         <Image
           src={avatarUrl}
-          width={512}
-          height={512}
+          width={size}
+          height={size}
           alt="avatar"
         />
-        {!uploaded && <UploadIcon className={AvatarUploadStyles.uploadIcon}  /> }
+        {!uploaded && <UploadIcon className={AvatarUploadStyles.uploadIcon} style={{width: size/2, height: size/2}} /> }
         
       </div>
     </div>
