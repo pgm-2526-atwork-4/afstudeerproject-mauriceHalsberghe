@@ -48,8 +48,8 @@ function RecipeCard({ recipe, onUnlike }: Props) {
       <Link href={`/recipes/${recipe.id}/${recipe.title.replace(/\s+/g, '-').toLowerCase()}`}>
         <Image
           className={RecipeCardStyles.image}
-          width={200}
-          height={100}
+          width={400}
+          height={200}
           src={`http://localhost:5041/uploads/recipe-images/${recipe.imageUrl}`}
           alt={recipe.title}
         />
@@ -57,8 +57,8 @@ function RecipeCard({ recipe, onUnlike }: Props) {
           { recipe.user && 
             <Image 
               className={RecipeCardStyles.avatar} 
-              width={40} 
-              height={40} 
+              width={24} 
+              height={24} 
               alt={recipe.user.username}
               src={recipe.user.avatar ? `http://localhost:5041/uploads/avatars/${recipe.user.avatar}` : '/avatar.svg'} 
             />

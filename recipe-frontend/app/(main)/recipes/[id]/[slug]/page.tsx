@@ -94,8 +94,8 @@ export default function RecipeDetail() {
                     <Link href={`/users/${recipe.user.username}`} className={DetailStyles.user}>
                         <Image 
                             className={DetailStyles.avatar} 
-                            width={24} 
-                            height={24} 
+                            width={64} 
+                            height={64} 
                             alt={recipe.user.username}
                             src={recipe.user.avatar ? `http://localhost:5041/uploads/avatars/${recipe.user.avatar}` : '/avatar.svg'} 
                         />

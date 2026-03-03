@@ -123,8 +123,8 @@ export default function Preferences() {
                     className={HomeStyles.avatar}
                     src={profileUser.avatar ? `http://localhost:5041/uploads/avatars/${profileUser.avatar}` : '/avatar.svg'} 
                     alt={`${profileUser.username} avatar`}
-                    width={48}
-                    height={48}
+                    width={64}
+                    height={64}
                     />
                 <h1 className={HomeStyles.title}>{profileUser?.username}&apos;s Recipes</h1>
             </div>

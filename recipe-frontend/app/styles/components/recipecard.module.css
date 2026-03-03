@@ -51,8 +51,10 @@
 }
 
 .avatar {
+    width: 2rem;
+    height: 2rem;
     position: absolute;
-    top: -2.75rem;
+    top: -2.5rem;
     right: 0.5rem;
     border-radius: 3rem;
 }
