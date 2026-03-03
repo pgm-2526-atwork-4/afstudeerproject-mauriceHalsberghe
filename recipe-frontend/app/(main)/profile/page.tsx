@@ -12,6 +12,7 @@ import EmptyView from '@/app/components/EmptyView';
 
 import HeartIcon from "@/public/heart.svg";
 import ChefIcon from "@/public/chefhat.svg";
+import PreferencesIcon from "@/public/preferences.svg";
 
 export default function Profile() {
     const auth = useContext(AuthContext);
@@ -42,15 +43,16 @@ export default function Profile() {
                             <p className={ProfileStyles.username}>{auth.user.username}</p>
                             <p className={ProfileStyles.email}>{auth.user.email}</p>
                         </div>
-                        <LogoutButton />
                     </div>
                 </div>
 
                 <div className={ProfileStyles.links}>
                     <ProfileLink url='/liked-recipes' title='Liked recipes' icon={HeartIcon}/>
-                    <ProfileLink url='/recipes/' title='Your recipes' icon={ChefIcon}/>
+                    <ProfileLink url='/recipes' title='Your recipes' icon={ChefIcon}/>
+                    <ProfileLink url='/preferences' title='Preferences' icon={PreferencesIcon}/>
                 </div>
 
+                <LogoutButton />
 
         </main>
     )

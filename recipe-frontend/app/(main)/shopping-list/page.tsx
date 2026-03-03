@@ -110,6 +110,10 @@ export default function ShoppingList() {
 
             <div className={IngredientStyles.main}>
 
+                {uncheckedIngredients.length <= 0 && checkedIngredients.length <= 0 &&
+                    <p className={IngredientStyles.empty}>No ingredients</p>
+                }
+
                 {uncheckedIngredients.length > 0 && (
                     <ul className={IngredientStyles.list}>
                         {uncheckedIngredients.map((ingredient) => (
@@ -138,9 +142,8 @@ export default function ShoppingList() {
 
                 {checkedIngredients.length > 0 && (
                 <>
-                    <h2 className={IngredientStyles.subtitle}>Checked off</h2>
 
-                    <ul className={IngredientStyles.list}>
+                    <ul className={`${IngredientStyles.list} ${IngredientStyles.checkedList}`}>
                     {checkedIngredients.map((ingredient) => (
                         <li
                             className={`${IngredientStyles.ingredient} ${IngredientStyles.checkedIngredient}`}
