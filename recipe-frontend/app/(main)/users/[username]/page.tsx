@@ -112,20 +112,20 @@ export default function Preferences() {
         );
     });
 
-    console.log(recipes);
+    if (!profileUser) {
+        return <p>User not found</p>
+    }
 
     return (
         <main className={HomeStyles.home}>
             <div className={HomeStyles.userTitle}>
-                {profileUser?.avatar && (
-                    <Image
-                        className={HomeStyles.avatar}
-                        src={`http://localhost:5041/uploads/avatars/${profileUser.avatar}`}
-                        alt={`${profileUser.username} avatar`}
-                        width={48}
-                        height={48}
+                <Image
+                    className={HomeStyles.avatar}
+                    src={profileUser.avatar ? `http://localhost:5041/uploads/avatars/${profileUser.avatar}` : '/avatar.svg'} 
+                    alt={`${profileUser.username} avatar`}
+                    width={48}
+                    height={48}
                     />
-                )}
                 <h1 className={HomeStyles.title}>{profileUser?.username}&apos;s Recipes</h1>
             </div>
 
