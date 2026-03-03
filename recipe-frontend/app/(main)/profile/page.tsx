@@ -25,7 +25,7 @@ export default function Profile() {
         return (
             <EmptyView title='Not logged in' btnText='Log In' btnUrl='/login' icon='profile'/>
         );
-    }
+    }    
 
     return (
         <main className={ProfileStyles.profile}>
@@ -33,8 +33,8 @@ export default function Profile() {
                 <div>
                     <div className={ProfileStyles.profileInfo}>
                         <Image 
-                            width={96} 
-                            height={96} 
+                            width={256} 
+                            height={256} 
                             alt={auth.user.username}
                             className={ProfileStyles.avatar} 
                             src={auth.user.avatar ? `http://localhost:5041/uploads/avatars/${auth.user.avatar}` : '/avatar.svg'}

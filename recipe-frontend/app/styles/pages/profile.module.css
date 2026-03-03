@@ -13,7 +13,10 @@
 }
 
 .avatar {
-    border-radius: 5rem;
+    width: 7rem;
+    border-radius: 100%;
+    aspect-ratio: 1/1;
+    object-fit: cover;
 }
 
 .username {
