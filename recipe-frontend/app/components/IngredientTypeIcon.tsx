@@ -8,8 +8,8 @@ import Oils from '@/public/oils_symbol.svg';
 import Vegetables from '@/public/vegetables_symbol.svg';
 import Legume from '@/public/legume_symbol.svg';
 import Nuts from '@/public/nuts_symbol.svg';
-import Condiments from '@/public/condimet_symbol.svg';
-
+import Condiments from '@/public/condiment_symbol.svg';
+import Eggs from '@/public/eggs_symbol.svg';
 
 
 export default function IngredientTypeIcon({ id }: { id: number }) {
@@ -48,6 +48,9 @@ export default function IngredientTypeIcon({ id }: { id: number }) {
             break;
         case 11:
             icon = <Condiments />
+            break;
+        case 12:
+            icon = <Eggs />
             break;
         default:
             break;
