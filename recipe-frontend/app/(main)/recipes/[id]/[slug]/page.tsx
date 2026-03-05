@@ -8,6 +8,8 @@ import DetailStyles from "@/app/styles/pages/recipe-detail.module.css"
 import Link from "next/link";
 import BackButton from "@/app/components/BackButton";
 
+import RatingStars from "@/app/components/RatingStars";
+
 type Diet = {
     id: number;
     name: string;
@@ -98,7 +100,10 @@ export default function RecipeDetail() {
             <Image className={DetailStyles.image} width={360} height={200} alt={recipe.title} src={`http://localhost:5041/uploads/recipe-images/${recipe.imageUrl}`}/>
             
             <div className={DetailStyles.detailData}>
-                <p className={DetailStyles.rating}>{recipe.averageRating ? recipe.averageRating : 'No ratings yet'}</p>
+                { recipe.averageRating ? 
+                    <RatingStars amount={recipe.averageRating}/> : 
+                    <p className={DetailStyles.rating}>No ratings yet</p>
+                }
                 <p className={DetailStyles.duration}>{recipe.time} min</p>
             </div>
     
@@ -117,11 +122,12 @@ export default function RecipeDetail() {
                         <p className={DetailStyles.ingredientName}>
                             {ingredient.ingredientName}
                             </p>
+
                     </li>
                 ))}
             </ul>
             
-            <h2 className={DetailStyles.subtitle}>Preparation</h2>
+            <h2 className={DetailStyles.subtitle}>Instructions</h2>
             <ul className={DetailStyles.steps}>
                 {recipe.steps.map((step) => (
                     <li className={DetailStyles.step} key={step.id}>

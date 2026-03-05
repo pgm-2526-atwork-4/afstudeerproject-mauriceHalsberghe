@@ -42,21 +42,33 @@
 .detailData {
     display: flex;
     gap: 1rem;
+    margin-top: 0.5rem;
 }
 
 .rating, .duration {
     color: var(--green-200);
     font-size: 1rem;
+    display: flex;
+    align-items: center;
+}
+
+.rating::before,
+.duration::before {
+    content: "";
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    margin-right: 4px;
+    background-size: contain;
+    background-repeat: no-repeat;
 }
 
 .rating::before {
-    content: url('/star.svg');
-    padding-right: 4px;
+    background-image: url('/star.svg');
 }
 
 .duration::before {
-    content: url('/clock.svg');
-    padding-right: 4px;
+    background-image: url('/clock.svg');
 }
 
 

@@ -25,6 +25,7 @@
 
 .detailData {
     display: flex;
+    align-items: center;
     gap: 1rem
 }
 
@@ -32,17 +33,20 @@
     color: var(--green-200);
     font-size: 1rem;
     display: flex;
-    align-items: center;
 }
 
 .rating::before {
     content: url('/star.svg');
+    width: 16px;
+    height: 16px;
     padding-right: 4px;
 }
 
 .time::before {
     content: url('/clock.svg');
     padding-right: 4px;
+    width: 16px;
+    height: 16px;
 }
 
 .tags {

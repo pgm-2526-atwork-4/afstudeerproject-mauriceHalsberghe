@@ -1,0 +1,15 @@
+.stars {
+    display: flex;
+    align-items: center;
+    gap: 0.125rem;
+    color: var(--green-200);
+
+    p {
+        margin-left: 0.25rem;
+    }
+
+    svg {
+        width: 18px;
+        height: 18px;
+    }
+}
