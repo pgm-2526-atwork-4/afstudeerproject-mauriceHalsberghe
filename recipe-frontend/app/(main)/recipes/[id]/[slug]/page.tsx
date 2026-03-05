@@ -9,6 +9,7 @@ import Link from "next/link";
 import BackButton from "@/app/components/BackButton";
 
 import RatingStars from "@/app/components/RatingStars";
+import RatingModal from "@/app/components/RatingModal";
 
 type Diet = {
     id: number;
@@ -57,6 +58,7 @@ type Recipe = {
 export default function RecipeDetail() {
     const [loading, setLoading] = useState(true);
     const [recipe, setRecipe] = useState<Recipe | null>(null);
+    const [showModal, setShowModal] = useState(true);
 
     const params = useParams();
     const id = params.id;
@@ -136,6 +138,13 @@ export default function RecipeDetail() {
                     </li>
                 ))}
             </ul>
+
+            {showModal && 
+                <div className={DetailStyles.modalOverlay} onClick={() => setShowModal(false)}>
+                    <RatingModal />
+                </div>
+            }
+
         </div>
     );
 }
