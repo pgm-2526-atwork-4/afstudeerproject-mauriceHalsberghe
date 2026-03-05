@@ -57,7 +57,7 @@ public class RecipesController : ControllerBase
                     r.Likes.Any(l => l.UserId == currentUserId.Value),
                     
                 AverageRating = r.Reviews.Any()
-                    ? r.Reviews.Average(rv => rv.Rating) / 2.0
+                    ? Math.Round(r.Reviews.Average(rv => rv.Rating) / 2.0, 1)
                     : (double?)null,
             })
             .ToListAsync();
