@@ -66,10 +66,10 @@ function RecipeCard({ recipe, onUnlike }: Props) {
           }
           <h2 className={RecipeCardStyles.title}>{recipe.title}</h2>
           <div className={RecipeCardStyles.detailData}>
-            <p className={RecipeCardStyles.time}>{recipe.time} min</p>
             {recipe.averageRating && 
-              <p className={RecipeCardStyles.rating}>{recipe.averageRating} min</p>
+              <p className={RecipeCardStyles.rating}>{recipe.averageRating}</p>
             }
+            <p className={RecipeCardStyles.time}>{recipe.time} min</p>
           </div>
           <div className={RecipeCardStyles.tags}>
             { recipe.diet && <p className={RecipeCardStyles.tag}>{recipe.diet.name}</p>}
