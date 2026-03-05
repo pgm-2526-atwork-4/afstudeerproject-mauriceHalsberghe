@@ -27,6 +27,7 @@ public class RecipesController : ControllerBase
             .Include(r => r.Cuisine)
             .Include(r => r.Diet)
             .Include(r => r.User)
+            .Include(r => r.Reviews)
             .Select(r => new RecipeDto
             {
                 Id = r.Id,
@@ -54,6 +55,10 @@ public class RecipesController : ControllerBase
                 LikeCount = r.Likes.Count(),
                 IsLikedByCurrentUser = currentUserId.HasValue && 
                     r.Likes.Any(l => l.UserId == currentUserId.Value),
+                    
+                AverageRating = r.Reviews.Any()
+                    ? Math.Round(r.Reviews.Average(rv => rv.Rating) / 2.0, 1)
+                    : (double?)null,
             })
             .ToListAsync();
 
@@ -61,21 +66,66 @@ public class RecipesController : ControllerBase
     }
 
     [HttpGet("{id}")]
-    public async Task<ActionResult<Recipe>> GetRecipe(int id)
+    public async Task<ActionResult<RecipeDetailDto>> GetRecipe(int id, int? currentUserId)
     {
         var recipe = await _context.Recipes
-            .Include(r => r.Steps)
-            .Include(r => r.User)
-            .Include(r => r.RecipeIngredients)
-                .ThenInclude(ri => ri.Ingredient)
-            .Include(r => r.RecipeIngredients)
-                .ThenInclude(ri => ri.QuantityUnit)
-            .FirstOrDefaultAsync(r => r.Id == id);
-            
+            .Where(r => r.Id == id)
+            .Select(r => new RecipeDetailDto
+            {
+                Id = r.Id,
+                Title = r.Title,
+                ImageUrl = r.ImageUrl,
+                Time = r.Time,
 
-        if (recipe == null) return NotFound();
+                Diet = r.Diet == null ? null : new DietDto
+                {
+                    Id = r.Diet.Id,
+                    Name = r.Diet.Name
+                },
 
-        return recipe;
+                Cuisine = r.Cuisine == null ? null : new CuisineDto
+                {
+                    Id = r.Cuisine.Id,
+                    Name = r.Cuisine.Name
+                },
+
+                User = r.User == null ? null : new UserSummaryDto
+                {
+                    Id = r.User.Id,
+                    Username = r.User.Username,
+                    Avatar = r.User.Avatar
+                },
+
+                Steps = r.Steps
+                    .OrderBy(s => s.StepNumber)
+                    .Select(s => new StepDto
+                    {
+                        Id = s.Id,
+                        StepNumber = s.StepNumber,
+                        Description = s.Description
+                    }).ToList(),
+
+                Ingredients = r.RecipeIngredients
+                    .Select(ri => new RecipeIngredientDto
+                    {
+                        Id = ri.Id,
+                        Quantity = ri.Quantity,
+                        Unit = ri.QuantityUnit != null ? ri.QuantityUnit.ShortName : null,
+                        IngredientName = ri.Ingredient.Name
+                    }).ToList(),
+
+                LikeCount = r.Likes.Count(),
+
+                AverageRating = r.Reviews.Any()
+                    ? Math.Round(r.Reviews.Average(rv => rv.Rating) / 2.0, 1)
+                    : (double?)null
+            })
+            .FirstOrDefaultAsync();
+
+        if (recipe == null)
+            return NotFound();
+
+        return Ok(recipe);
     }
 
     [Authorize]

@@ -20,5 +20,5 @@ public class Recipe
     public User? User { get; set; }
 
     public ICollection<Like> Likes { get; set; } = new List<Like>();
-    
+    public ICollection<Review> Reviews { get; set; } = new List<Review>();
 }

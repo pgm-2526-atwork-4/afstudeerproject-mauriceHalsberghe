@@ -19,6 +19,7 @@ export type RecipeFiltersState = {
   selectedCuisine: number;
   time: number;
   onlyUsers: boolean;
+  selectedSort: number;
 };
 
 type Props = {
@@ -124,6 +125,14 @@ export default function RecipeFilters({ filters, onChange, onlyUsersFilter }: Pr
               </label>
             </div>
           }
+
+          <select
+            onChange={(e) => update({ selectedSort: Number(e.target.value) })}
+            className={filtersStyles.select}
+          >
+            <option value={1}>Sort by Rating</option>
+            <option value={2}>Sort from A-Z</option>
+          </select>
 
         </div>
       </div>

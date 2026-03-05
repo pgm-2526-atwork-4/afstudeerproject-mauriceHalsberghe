@@ -1,39 +1,34 @@
 namespace RecipeBackend.DTOs;
 
-public class RecipeDto
+public class RecipeDetailDto
 {
     public int Id { get; set; }
     public string? Title { get; set; }
     public string? ImageUrl { get; set; }
     public int? Time { get; set; }
-    public int? DietId { get; set; }
-    public int? CuisineId { get; set; }
 
     public DietDto? Diet { get; set; }
     public CuisineDto? Cuisine { get; set; }
     public UserSummaryDto? User { get; set; }
 
+    public List<StepDto> Steps { get; set; } = new();
+    public List<RecipeIngredientDto> Ingredients { get; set; } = new();
+
     public int LikeCount { get; set; }
-    public bool IsLikedByCurrentUser { get; set; }
     public double? AverageRating { get; set; }
-
 }
 
-public class UserSummaryDto
+public class StepDto
 {
     public int Id { get; set; }
-    public string? Username { get; set; }
-    public string? Avatar { get; set; }
+    public int StepNumber { get; set; }
+    public string? Description { get; set; }
 }
 
-public class DietDto
+public class RecipeIngredientDto
 {
     public int Id { get; set; }
-    public string? Name { get; set; }
-}
-
-public class CuisineDto
-{
-    public int Id { get; set; }
-    public string? Name { get; set; }
+    public double? Quantity { get; set; }
+    public string? Unit { get; set; }
+    public string? IngredientName { get; set; }
 }

@@ -39,13 +39,40 @@
     border-radius: 0.5rem;
 }
 
-.duration {
-    color: var(--green-200);
+.detailData {
+    display: flex;
+    gap: 1rem;
+    margin-top: 0.5rem;
+}
 
-    &::before {
-        content: url('/clock.svg');
-        padding-right: 4px;
-    }
+.rating, .duration, .ratingAmount {
+    color: var(--green-200);
+    font-size: 1rem;
+    display: flex;
+    align-items: center;
+    gap:  4px;   
+}
+
+.ratingAmount, .rating {
+    cursor: pointer;
+}
+
+.rating::before,
+.duration::before {
+    content: "";
+    display: inline-block;
+    width: 18px;
+    height: 18px;
+    background-size: contain;
+    background-repeat: no-repeat;
+}
+
+.rating::before {
+    background-image: url('/star.svg');
+}
+
+.duration::before {
+    background-image: url('/clock.svg');
 }
 
 .subtitle {
@@ -85,4 +112,14 @@
     font-size: 1.1rem;
     text-align: center;
     border-radius: 2rem;
+}
+
+.modalOverlay {
+    position: fixed;
+    inset: 0;
+    background: rgba(0, 0, 0, 0.4);
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    z-index: 1000;
 }

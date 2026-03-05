@@ -37,6 +37,9 @@ public class ApiDbContext : DbContext
             .HasForeignKey(r => r.UserId)
             .OnDelete(DeleteBehavior.Cascade)
             .IsRequired(false);
+        modelBuilder.Entity<Review>()
+            .HasIndex(r => new { r.UserId, r.RecipeId })
+            .IsUnique();
 
     }
 }

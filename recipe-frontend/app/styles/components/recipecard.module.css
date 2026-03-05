@@ -23,15 +23,30 @@
     font-weight: 600;
 }
 
-.time {
-    color: var(--green-200);
-    font-size: 14px;
+.detailData {
+    display: flex;
+    align-items: center;
+    gap: 1rem
+}
 
-    &::before {
-        content: url('/clock.svg');
-        padding-right: 4px;
-        vertical-align: middle;
-    }
+.time, .rating {
+    color: var(--green-200);
+    font-size: 1rem;
+    display: flex;
+}
+
+.rating::before {
+    content: url('/star.svg');
+    width: 16px;
+    height: 16px;
+    padding-right: 4px;
+}
+
+.time::before {
+    content: url('/clock.svg');
+    padding-right: 4px;
+    width: 16px;
+    height: 16px;
 }
 
 .tags {
