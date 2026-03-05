@@ -1,0 +1,21 @@
+.backButton {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    font-weight: 500;
+    gap: 0.5rem;
+    font-size: 1.2rem;
+    position: absolute;
+    left: 1rem;
+    top: 1.5rem;
+
+    svg {
+        width: 20px;
+        height: 20px;
+    }
+    path {
+        transform: rotate(180deg);
+        transform-box: fill-box;
+        transform-origin: center;
+    }
+}

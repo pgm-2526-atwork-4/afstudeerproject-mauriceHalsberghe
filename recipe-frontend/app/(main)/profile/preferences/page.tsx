@@ -5,6 +5,7 @@ import { AuthContext } from "@/context/AuthContext";
 
 import DietSelector from "@/app/components/DietSelector";
 import AllergySelector from "@/app/components/AllergySelector";
+import BackButton from "@/app/components/BackButton";
 
 import PrefStyles from "@/app/styles/pages/preferences.module.css";
 import ButtonStyles from "@/app/styles/components/button.module.css";
@@ -132,6 +133,7 @@ export default function Preferences() {
 
     return (
         <div className={PrefStyles.pageProfile}>
+            <BackButton url="/profile"/>
             <h1 className={PrefStyles.titleProfile}>Preferences</h1>
 
             <div className={PrefStyles.pageStepProfile}>
