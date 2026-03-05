@@ -47,6 +47,7 @@ export default function Home() {
     selectedCuisine: 0,
     time: 15,
     onlyUsers: false,
+    selectedSort: 1,
   });
 
   const auth = useContext(AuthContext);
@@ -78,29 +79,41 @@ export default function Home() {
 
   if (!mounted) return <p>Loading...</p>;
 
-  const filteredRecipes = recipes.filter((recipe) => {
-    const matchesDiet =
-      filters.selectedDiet === 0 ||
-      recipe.diet?.id === filters.selectedDiet;
+  const filteredRecipes = recipes
+    .filter((recipe) => {
+      const matchesDiet =
+        filters.selectedDiet === 0 ||
+        recipe.diet?.id === filters.selectedDiet;
 
-    const matchesCuisine =
-      filters.selectedCuisine === 0 ||
-      recipe.cuisine?.id === filters.selectedCuisine;
+      const matchesCuisine =
+        filters.selectedCuisine === 0 ||
+        recipe.cuisine?.id === filters.selectedCuisine;
 
-    const matchesTitle =
-      filters.search === "" ||
-      recipe.title.toLowerCase().includes(filters.search.toLowerCase());
+      const matchesTitle =
+        filters.search === "" ||
+        recipe.title.toLowerCase().includes(filters.search.toLowerCase());
 
-    const matchesOnlyUsers =
-      !filters.onlyUsers || recipe.user !== null;
+      const matchesOnlyUsers =
+        !filters.onlyUsers || recipe.user !== null;
 
-    return (
-      matchesDiet &&
-      matchesCuisine &&
-      matchesTitle &&
-      matchesOnlyUsers
-    );
-  });
+      return (
+        matchesDiet &&
+        matchesCuisine &&
+        matchesTitle &&
+        matchesOnlyUsers
+      );
+    })
+    .sort((a, b) => {
+      if (filters.selectedSort === 1) {
+        return (b.averageRating ?? 0) - (a.averageRating ?? 0);
+      }
+
+      if (filters.selectedSort === 2) {
+        return a.title.localeCompare(b.title);
+      }
+
+      return 0;
+    });
 
   return (
     <main className={HomeStyles.home}>
