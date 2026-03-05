@@ -4,10 +4,32 @@ import RatingStars from "./RatingStars"
 import RatingModalStyles from '@/app/styles/components/ratingmodal.module.css'
 import ButtonStyles from '@/app/styles/components/button.module.css'
 
+type Props = {
+  userId: number;
+  recipeId: number
+}
 
-export default function RatingModal() {
+
+export default function RatingModal({ userId, recipeId }: Props) {
   const [amount, setAmount] = useState(0);
   const dbValue = amount * 2;
+
+  const submitReview = async () => {
+    try {
+      const response = await fetch(`http://localhost:5041/api/Review?userId=${userId}&recipeId=${recipeId}&rating=${dbValue}`, {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json"
+        }
+      })
+
+      if (!response.ok) {
+        throw new Error("Failed to submit review")
+      }
+    } catch (error) {
+      console.error("Error submitting review:", error)
+    }
+  }
 
   return (
     <div className={RatingModalStyles.modal}>
@@ -21,7 +43,9 @@ export default function RatingModal() {
 
       <div className={RatingModalStyles.buttons}>
         <button className={ButtonStyles.secondaryButton}>Cancel</button>
-        <button className={ButtonStyles.button}>Submit</button>
+        <button className={ButtonStyles.button} onClick={submitReview}>
+          Submit
+        </button>
       </div>
 
     </div>
