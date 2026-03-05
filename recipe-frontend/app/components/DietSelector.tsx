@@ -1,0 +1,48 @@
+"use client";
+
+import PrefStyles from '@/app/styles/pages/preferences.module.css';
+
+export type Diet = {
+  id: number;
+  name: string;
+};
+
+type DietSelectorProps = {
+  diets: Diet[];
+  selectedDiet: number | null;
+  onChange: (dietId: number | null) => void;
+  disabled: boolean;
+};
+
+export default function DietSelector({
+  diets,
+  selectedDiet,
+  onChange,
+  disabled
+}: DietSelectorProps) {
+  return (
+    <div className={PrefStyles.list}>
+      {diets.map((diet) => (
+        <div key={diet.id} className={PrefStyles.radio}>
+          <input
+            id={`diet-${diet.id}`}
+            value={diet.id}
+            className={PrefStyles.radioInput}
+            type="radio"
+            disabled={disabled}
+            checked={selectedDiet === diet.id}
+            onChange={() =>
+              onChange(selectedDiet === diet.id ? null : diet.id)
+            }
+          />
+          <label
+            htmlFor={`diet-${diet.id}`}
+            className={PrefStyles.radioLabel}
+          >
+            {diet.name}
+          </label>
+        </div>
+      ))}
+    </div>
+  );
+}

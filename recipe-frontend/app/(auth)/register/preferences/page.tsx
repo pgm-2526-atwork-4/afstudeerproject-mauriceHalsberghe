@@ -4,6 +4,9 @@ import { AuthContext } from '@/context/AuthContext';
 import { useRouter } from "next/navigation";
 import { useContext, useEffect, useState } from 'react';
 
+import DietSelector from '@/app/components/DietSelector';
+import AllergySelector from '@/app/components/AllergySelector';
+
 import PrefStyles from '@/app/styles/pages/preferences.module.css';
 import ButtonStyles from '@/app/styles/components/button.module.css';
 import AvatarUpload from '@/app/components/AvatarUpload';
@@ -31,6 +34,7 @@ export default function RegisterPreferences() {
     const [diets, setDiets] = useState<Diet[]>([]);
     const [allergies, setAllergies] = useState<Allergy[]>([]);
     const [loading, setLoading] = useState(true);
+    const [error, setError] = useState<string | null>(null);
 
     const [selectedDiet, setSelectedDiet] = useState<number | null>(null);
     const [selectedAllergies, setSelectedAllergies] = useState<number[]>([]);
@@ -42,7 +46,7 @@ export default function RegisterPreferences() {
         if (!auth || auth.loading) return;
 
         if (!auth.user?.id) {
-        setLoading(false);
+            setLoading(false);
             return;
         }
 
@@ -67,56 +71,35 @@ export default function RegisterPreferences() {
             setLoading(false);
             }
         };
-      fetchDiets();
+
+        fetchDiets();
     }, [auth]);
 
-    if (auth?.loading || loading) {
-        return <p>Loading...</p>;
-    }
-
-    if (!auth?.user?.id || !auth.token) {
-        return <p>User not authenticated</p>;
-    }
+    if (auth?.loading || loading) return <p>Loading...</p>;
+    if (!auth?.user?.id || !auth.token) return <p>User not authenticated</p>;
 
     const loggedUserId: number = auth.user.id;
 
     const toggleAllergy = (id: number) => {
         setSelectedAllergies(prev =>
-        prev.includes(id)
-            ? prev.filter(a => a !== id)
-            : [...prev, id]
+            prev.includes(id) ? prev.filter(a => a !== id) : [...prev, id]
         );
     };
 
-    if (!auth?.token) {
-        console.error("User not authenticated");
-        return;
-    }
-
     const handleComplete = async () => {
-        if (!auth?.token) {
-            console.error("User not authenticated");
-            return;
-        }
+        if (!auth?.token) return;
+        setError(null);
 
         const ingredientAllergyIds = allergies
-            .filter(
-                a =>
-                    selectedAllergies.includes(a.id) &&
-                    a.type === AllergyType.ingredient
-            )
-            .map(a => a.id);
+            .filter(a => selectedAllergies.includes(a.id) && a.type === AllergyType.ingredient)
+            .map(a => a.typeId);
 
         const ingredientTypeAllergyIds = allergies
-            .filter(
-                a =>
-                    selectedAllergies.includes(a.id) &&
-                    a.type === AllergyType.ingredientType
-            )
-            .map(a => a.id);
+            .filter(a => selectedAllergies.includes(a.id) && a.type === AllergyType.ingredientType)
+            .map(a => a.typeId);
 
         try {
-            await fetch("http://localhost:5041/api/users/preferences", {
+            const res = await fetch("http://localhost:5041/api/users/preferences", {
                 method: "POST",
                 headers: {
                     "Content-Type": "application/json",
@@ -129,9 +112,12 @@ export default function RegisterPreferences() {
                 })
             });
 
+            if (!res.ok) throw new Error(`Server error: ${res.status}`);
+
             router.push("/");
         } catch (err) {
             console.error(err);
+            setError("Something went wrong saving your preferences. Please try again.");
         }
     };
 
@@ -140,7 +126,7 @@ export default function RegisterPreferences() {
     return (
         <div className={PrefStyles.page}>
             <div className={PrefStyles.welcome}>
-                {auth.user && <h1 className={PrefStyles.title}>Welcome, {auth.user.username}!</h1>}
+                <h1 className={PrefStyles.title}>Welcome, {auth.user.username}!</h1>
                 <h2>Let&apos;s set up your Profile</h2>
             </div>
 
@@ -151,28 +137,12 @@ export default function RegisterPreferences() {
                 </div>
             </div>
 
+            {error && <p style={{ color: 'red' }}>{error}</p>}
+
             {step === 1 && (
                 <div className={PrefStyles.pageStep}>
                     <h3 className={PrefStyles.subtitle}>Select your diet</h3>
-
-                    <div className={PrefStyles.list}>
-                        {diets.map((diet) => (
-                            <div key={diet.id} className={PrefStyles.radio}>
-                                <input
-                                id={diet.name}
-                                value={diet.id}
-                                className={PrefStyles.radioInput}
-                                type="radio"
-                                checked={selectedDiet === diet.id}
-                                onChange={() =>
-                                    setSelectedDiet(selectedDiet === diet.id ? null : diet.id)
-                                }
-                                />                                
-                                <label htmlFor={diet.name} className={PrefStyles.radioLabel}>{diet.name}</label>
-                            </div>
-                        ))}
-                    </div>
-
+                    <DietSelector diets={diets} selectedDiet={selectedDiet} onChange={setSelectedDiet} disabled={false}/>
                     <div className={PrefStyles.buttons}>
                         <button className={ButtonStyles.button} onClick={() => setStep(2)}>
                             {selectedDiet === null ? 'Skip' : 'Next'}
@@ -184,19 +154,9 @@ export default function RegisterPreferences() {
             {step === 2 && (
                 <div className={PrefStyles.pageStep}>
                     <h3 className={PrefStyles.subtitle}>Select your allergies</h3>
-
-                    <div className={PrefStyles.list} >
-                        {allergies.map((allergy) => (
-                            <div key={allergy.id} className={PrefStyles.checkbox}>
-                                <input id={allergy.name} className={PrefStyles.checkboxInput} type="checkbox" checked={selectedAllergies.includes(allergy.id)} onChange={() => toggleAllergy(allergy.id)}/>
-                                <label htmlFor={allergy.name} className={PrefStyles.checkboxLabel}>{allergy.name}</label>
-                            </div>
-                        ))}
-                    </div>
-                    
+                    <AllergySelector allergies={allergies} selectedAllergies={selectedAllergies} onToggle={toggleAllergy} disabled={false} />
                     <div className={PrefStyles.buttons}>
                         <button className={ButtonStyles.button} onClick={() => setStep(1)}>Back</button>
-
                         <button className={ButtonStyles.button} onClick={() => setStep(3)}>
                             {selectedAllergies.length < 1 ? 'Skip' : 'Next'}
                         </button>
@@ -207,18 +167,13 @@ export default function RegisterPreferences() {
             {step === 3 && (
                 <div className={PrefStyles.pageStep}>
                     <h3 className={PrefStyles.subtitle}>Add an avatar</h3>
-
-                    <AvatarUpload onUploadSuccess={()=>{}} size={192} userId={loggedUserId} username={auth.user.username}/>
-
+                    <AvatarUpload onUploadSuccess={() => {}} size={192} userId={loggedUserId} username={auth.user.username} />
                     <div className={PrefStyles.buttons}>
                         <button className={ButtonStyles.button} onClick={() => setStep(2)}>Back</button>
-
-                        <button className={ButtonStyles.button} onClick={handleComplete}>
-                            Complete
-                        </button>
+                        <button className={ButtonStyles.button} onClick={handleComplete}>Complete</button>
                     </div>
                 </div>
             )}
-    </div>
-  );
+        </div>
+    );
 }
