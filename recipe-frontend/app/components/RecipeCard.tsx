@@ -30,6 +30,7 @@ type Recipe = {
   time: number;
   likeCount: number;
   isLikedByCurrentUser: boolean;
+  averageRating: number;
   diet?: Diet;
   cuisine?: Cuisine;
   user?: User;
@@ -64,7 +65,12 @@ function RecipeCard({ recipe, onUnlike }: Props) {
             />
           }
           <h2 className={RecipeCardStyles.title}>{recipe.title}</h2>
-          <p className={RecipeCardStyles.time}>{recipe.time} min</p>
+          <div className={RecipeCardStyles.detailData}>
+            <p className={RecipeCardStyles.time}>{recipe.time} min</p>
+            {recipe.averageRating && 
+              <p className={RecipeCardStyles.rating}>{recipe.averageRating} min</p>
+            }
+          </div>
           <div className={RecipeCardStyles.tags}>
             { recipe.diet && <p className={RecipeCardStyles.tag}>{recipe.diet.name}</p>}
             { recipe.cuisine && <p className={RecipeCardStyles.tag}>{recipe.cuisine.name}</p> }
