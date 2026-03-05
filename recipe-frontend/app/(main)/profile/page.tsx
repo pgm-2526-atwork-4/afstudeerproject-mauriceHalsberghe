@@ -24,10 +24,6 @@ export default function Profile() {
     const [editing, setEditing] = useState(false)
     const auth = useContext(AuthContext);
 
-    if (auth?.loading) {
-        return <main>Loading...</main>;
-    }
-
     if (!auth?.user) {
         return (
             <EmptyView title='Not logged in' btnText='Log In' btnUrl='/login' icon='profile'/>
@@ -69,7 +65,7 @@ export default function Profile() {
                 <div className={ProfileStyles.links}>
                     <ProfileLink url='/liked-recipes' title='Liked recipes' icon={HeartIcon}/>
                     <ProfileLink url={`/users/${auth.user.username}`} title='Your recipes' icon={ChefIcon}/>
-                    <ProfileLink url='/preferences' title='Preferences' icon={PreferencesIcon}/>
+                    <ProfileLink url='profile/preferences' title='Preferences' icon={PreferencesIcon}/>
                 </div>
 
                 <LogoutButton />
