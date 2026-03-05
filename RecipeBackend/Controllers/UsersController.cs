@@ -25,41 +25,46 @@ public class UsersController : ControllerBase
     [HttpPost("preferences")]
     public async Task<IActionResult> UpdatePreferences(UpdateUserPreferencesDto dto)
     {
-        var userId = GetUserIdFromToken();
-
-        var user = await _context.Users.FindAsync(userId);
-
-        if (user == null)
-            return NotFound();
+        var user = await _context.Users.FindAsync(GetUserIdFromToken());
+        if (user == null) return NotFound();
 
         user.DietId = dto.DietId;
 
-        var existingAllergies = _context.Allergies
-            .Where(a => a.UserId == userId);
-
+        var existingAllergies = _context.Allergies.Where(a => a.UserId == user.Id);
         _context.Allergies.RemoveRange(existingAllergies);
 
-        foreach (var ingredientId in dto.IngredientAllergyIds)
-        {
-            _context.Allergies.Add(new Allergy
-            {
-                UserId = userId,
-                IngredientId = ingredientId
-            });
-        }
+        var newAllergies =
+            dto.IngredientAllergyIds.Select(id => new Allergy { UserId = user.Id, IngredientId = id })
+            .Concat(
+            dto.IngredientTypeAllergyIds.Select(id => new Allergy { UserId = user.Id, IngredientTypeId = id }));
 
-        foreach (var typeId in dto.IngredientTypeAllergyIds)
-        {
-            _context.Allergies.Add(new Allergy
-            {
-                UserId = userId,
-                IngredientTypeId = typeId
-            });
-        }
+        _context.Allergies.AddRange(newAllergies);
 
         await _context.SaveChangesAsync();
-
         return Ok();
+    }
+
+    [Authorize]
+    [HttpGet("{userId}/preferences")]
+    public async Task<IActionResult> GetPreferences(int userId)
+    {
+        var user = await _context.Users.FindAsync(userId);
+        if (user == null) return NotFound();
+
+        var allergies = await _context.Allergies
+            .Where(a => a.UserId == userId)
+            .ToListAsync();
+
+        return Ok(new
+        {
+            DietId = user.DietId,
+            IngredientAllergyIds = allergies
+                .Where(a => a.IngredientId != null)
+                .Select(a => a.IngredientId),
+            IngredientTypeAllergyIds = allergies
+                .Where(a => a.IngredientTypeId != null)
+                .Select(a => a.IngredientTypeId)
+        });
     }
 
     private int GetUserIdFromToken()
