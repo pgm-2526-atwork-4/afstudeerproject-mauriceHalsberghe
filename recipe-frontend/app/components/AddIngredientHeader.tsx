@@ -7,10 +7,18 @@ import IngredientSearch from "@/app/components/IngredientSearch";
 import IngredientStyles from "@/app/styles/pages/ingredients.module.css";
 import ButtonStyles from "@/app/styles/components/button.module.css";
 
+import { IngredientOption } from "@/app/components/IngredientSearch";
+
 type QuantityUnit = {
   id: number;
   name: string;
   shortName: string;
+};
+
+type Ingredient = {
+  id: number;
+  name: string;
+  alwaysInStock: boolean;
 };
 
 type Props = {
@@ -22,7 +30,7 @@ export default function AddIngredientHeader({ postUrl, onSuccess }: Props) {
   const auth = useContext(AuthContext);
   const loggedUserId = auth?.user?.id;
 
-  const [selectedIngredient, setSelectedIngredient] = useState<number | null>(null);
+  const [selectedIngredient, setSelectedIngredient] = useState<IngredientOption | null>(null);
   const [quantity, setQuantity] = useState<number | undefined>();
   const [selectedUnitId, setSelectedUnitId] = useState<number | undefined>();
 
@@ -71,7 +79,7 @@ export default function AddIngredientHeader({ postUrl, onSuccess }: Props) {
 
     const formData = {
       userId: loggedUserId,
-      ingredientId: selectedIngredient,
+      ingredientId: selectedIngredient?.value,
       quantity: isQuantityFilled ? quantity : null,
       quantityUnitId: isUnitFilled ? selectedUnitId : null,
     };
@@ -98,8 +106,8 @@ export default function AddIngredientHeader({ postUrl, onSuccess }: Props) {
     <div className={IngredientStyles.input}>
         <div className={IngredientStyles.searchWrapper}>
         <IngredientSearch
-            value={selectedIngredient}
-            onIngredientChange={(id) => setSelectedIngredient(id)}
+          value={selectedIngredient?.value ?? null}
+          onIngredientChange={setSelectedIngredient}
         />
         </div>
 
@@ -115,7 +123,7 @@ export default function AddIngredientHeader({ postUrl, onSuccess }: Props) {
         </button>
     </div>
 
-    {selectedIngredient !== null && (
+    {selectedIngredient && !selectedIngredient.alwaysInStock && (
         <div className={IngredientStyles.quantityInput}>
         <div className={IngredientStyles.quantity}>
             <input

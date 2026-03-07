@@ -14,11 +14,12 @@ type Ingredient = {
 export type IngredientOption = {
   value: number;
   label: string;
+  alwaysInStock: boolean;
 };
 
 type Props = {
   value: number | null;
-  onIngredientChange?: (ingredientId: number | null) => void;
+  onIngredientChange?: (ingredient: IngredientOption | null) => void;
 };
 
 export default function IngredientSearch({ value, onIngredientChange }: Props) {
@@ -41,9 +42,11 @@ export default function IngredientSearch({ value, onIngredientChange }: Props) {
         const options = sortedData.map((ingredient: Ingredient) => ({
           value: ingredient.id,
           label: ingredient.name,
+          alwaysInStock: ingredient.alwaysInStock,
         }));
 
-        setIngredients(options);
+        setIngredients(options);        
+
       } catch (error) {
         console.error("Error fetching ingredients:", error);
       }
@@ -54,9 +57,9 @@ export default function IngredientSearch({ value, onIngredientChange }: Props) {
 
   const selectedOption = ingredients.find((i) => i.value === value) ?? null;
 
-  const handleChange = (option: IngredientOption | null) => {
-    onIngredientChange?.(option?.value ?? null);
-  };
+const handleChange = (option: IngredientOption | null) => {
+  onIngredientChange?.(option);
+};
 
   return (
     <Select
