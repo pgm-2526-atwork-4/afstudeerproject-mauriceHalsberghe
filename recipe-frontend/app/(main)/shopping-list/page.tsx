@@ -5,8 +5,10 @@ import { useContext, useEffect, useState } from "react";
 
 import Checkbox from "@/app/components/Checkbox";
 import AddIngredientHeader from "@/app/components/AddIngredientHeader";
-import IngredientStyles from '@/app/styles/pages/ingredients.module.css';
 import EmptyView from "@/app/components/EmptyView";
+
+import IngredientStyles from '@/app/styles/pages/ingredients.module.css';
+import ButtonStyles from '@/app/styles/components/button.module.css';
 
 type ListIngredient = {
     id: number;
@@ -167,6 +169,14 @@ export default function ShoppingList() {
                 </>
                 )}
             </div>
+
+            {checkedIngredients.length > 0 &&
+                <div className={IngredientStyles.ingredientAdd}>
+                    <p>Done shopping? Add {checkedIngredients.length} items to your inventory.</p>
+                    <button className={ButtonStyles.button}>+ Add to Inventory</button>
+                </div>        
+            }
+            
         </main>
     )
 }

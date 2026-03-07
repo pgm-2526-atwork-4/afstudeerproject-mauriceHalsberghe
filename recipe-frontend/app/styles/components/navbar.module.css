@@ -8,6 +8,7 @@
     display: flex;
     justify-content: center;
     align-items: center;
+    z-index: 1000;
 }
 
 .navlist {
@@ -32,7 +33,4 @@
 
 .navitem-current a {
     color: var(--green-200);
-}
-.navlink {
-
 }
