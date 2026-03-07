@@ -4,7 +4,10 @@
     justify-content: center;
     align-items: center;
     gap: 2rem;
-    height: calc(100vh - 5rem);
+    position: fixed;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
 }
 
 .textDiv {
@@ -26,5 +29,5 @@
 
 .icon {
   color: var(--gray-200);
-  width: 4rem;
+  width: 5rem;
 }

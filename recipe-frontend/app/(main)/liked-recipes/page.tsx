@@ -35,6 +35,7 @@ type Recipe = {
   diet?: Diet;
   cuisine?: Cuisine;
   user?: User;
+  averageRating: number;
 };
 
 export default function LikedRecipes() {
@@ -47,6 +48,7 @@ export default function LikedRecipes() {
     selectedCuisine: 0,
     time: 15,
     onlyUsers: false,
+    selectedSort: 1,
   });
 
   const auth = useContext(AuthContext);
@@ -115,7 +117,7 @@ export default function LikedRecipes() {
       <RecipeFilters filters={filters} onChange={setFilters} onlyUsersFilter={true} />
 
       {filteredRecipes.length === 0 ? (
-        <EmptyView title='Not Recipes found' icon="recipe"/>
+        <EmptyView title='No Recipes found' text="Start exploring recipes and save the ones you love" btnText="Browse recipes" btnUrl="/" icon="recipe"/>
       ) : (
         <ul className={HomeStyles.recipes}>
             {filteredRecipes.map((recipe) => (

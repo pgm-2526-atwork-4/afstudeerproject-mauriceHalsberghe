@@ -108,7 +108,7 @@ export default function ShoppingList() {
             <div className={IngredientStyles.main}>
 
                 {uncheckedIngredients.length <= 0 && checkedIngredients.length <= 0 &&
-                    <p className={IngredientStyles.empty}>No ingredients</p>
+                    <EmptyView title='Empty shopping list' text='Add items so you don’t forget them at the store.' icon="cart" />
                 }
 
                 {uncheckedIngredients.length > 0 && (

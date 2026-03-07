@@ -151,7 +151,7 @@ export default function Ingredients() {
         {loading ? (
           <p className={IngredientStyles.loader}>Loading Ingredients</p>
         ) : filteredIngredients.length === 0 ? (
-          <p className={IngredientStyles.empty}>No ingredients</p>
+          <EmptyView title='No ingredients yet' text='Add ingredients so you always know what’s in your kitchen.' icon="ingredient" />
         ) : (
           <ul className={IngredientStyles.list}>
             {filteredIngredients.map((ingredient) => (
