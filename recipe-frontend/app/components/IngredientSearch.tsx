@@ -1,9 +1,8 @@
 "use client";
 
-import { useState, useEffect } from "react";
-
-//https://react-select.com/home
-import Select from "react-select";
+import { useState } from "react";
+import { AsyncPaginate, LoadOptions } from "react-select-async-paginate";
+import { GroupBase } from "react-select";
 
 type Ingredient = {
   id: number;
@@ -23,61 +22,57 @@ type Props = {
 };
 
 export default function IngredientSearch({ value, onIngredientChange }: Props) {
-  const [ingredients, setIngredients] = useState<IngredientOption[]>([]);
-  const [selectedIngredient, setSelectedIngredient] =
-    useState<IngredientOption | null>(null);
+  const [selectedOption, setSelectedOption] = useState<IngredientOption | null>(null);
 
-  useEffect(() => {
-    const fetchIngredients = async () => {
-      try {
-        const response = await fetch("http://localhost:5041/api/ingredients");
-        const data = await response.json();
+  const loadOptions: LoadOptions<
+    IngredientOption,
+    GroupBase<IngredientOption>,
+    { page: number }
+  > = async (search, loadedOptions, additional = { page: 1 }) => {
 
-        const sortedData = data.sort((a: Ingredient, b: Ingredient) =>
-          a.name.localeCompare(b.name, undefined, {
-            sensitivity: "base",
-          }),
-        );
+    const page = additional.page;
+    try {
+      const res = await fetch(
+        `http://localhost:5041/api/ingredients?search=${encodeURIComponent(search)}&page=${page}&pageSize=10`
+      );
+      const data: Ingredient[] = await res.json();
 
-        const options = sortedData.map((ingredient: Ingredient) => ({
-          value: ingredient.id,
-          label: ingredient.name,
-          alwaysInStock: ingredient.alwaysInStock,
-        }));
+      const options: IngredientOption[] = data.map((i) => ({
+        value: i.id,
+        label: i.name,
+        alwaysInStock: i.alwaysInStock,
+      }));
 
-        setIngredients(options);        
-
-      } catch (error) {
-        console.error("Error fetching ingredients:", error);
-      }
-    };
-
-    fetchIngredients();
-  }, []);
-
-  const selectedOption = ingredients.find((i) => i.value === value) ?? null;
-
-const handleChange = (option: IngredientOption | null) => {
-  onIngredientChange?.(option);
-};
+      return {
+        options,
+        hasMore: options.length === 10,
+        additional: { page: page + 1 },
+      };
+    } catch (error) {
+      console.error("Error fetching ingredients:", error);
+      return {
+        options: [],
+        hasMore: false,
+        additional: { page },
+      };
+    }
+  };
 
   return (
-    <Select
-      instanceId="ingredient-select"
+    <AsyncPaginate
       value={selectedOption}
       placeholder="Add Ingredient..."
-      onChange={handleChange}
-      options={ingredients}
+      onChange={(option) => {
+        setSelectedOption(option);
+        onIngredientChange?.(option);
+      }}
+      loadOptions={loadOptions}
+      additional={{ page: 1 }}
       isClearable
       isSearchable
-      menuPortalTarget={
-        typeof document !== "undefined" ? document.body : undefined
-      }
+      menuPortalTarget={typeof document !== "undefined" ? document.body : undefined}
       styles={{
-        menu: (base) => ({
-          ...base,
-          zIndex: 10,
-        }),
+        menu: (base) => ({ ...base, zIndex: 10 }),
         control: () => ({
           display: "flex",
           borderWidth: "2px",
@@ -85,18 +80,15 @@ const handleChange = (option: IngredientOption | null) => {
           borderRadius: "5rem",
           padding: "0 6px",
         }),
-        placeholder: (baseStyles) => ({
-          ...baseStyles,
-          color: "var(--gray-300)",
-        }),
-        option: (baseStyles, state) => ({
-          ...baseStyles,
+        placeholder: (base) => ({ ...base, color: "var(--gray-300)" }),
+        option: (base, state) => ({
+          ...base,
           color: state.isSelected ? "var(--green-300)" : "black",
           backgroundColor: state.isSelected
             ? "var(--green-100)"
             : state.isFocused
-              ? "var(--gray-100)"
-              : baseStyles.backgroundColor,
+            ? "var(--gray-100)"
+            : base.backgroundColor,
         }),
       }}
     />
