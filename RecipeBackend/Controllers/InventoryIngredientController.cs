@@ -55,4 +55,32 @@ public class InventoryIngredientController : ControllerBase
 
         return Ok(inventoryIngredient);
     }
+
+    [HttpPost("move")]
+    public async Task<IActionResult> AddMoveInventoryIngredients(List<CreateInventoryIngredientDto> dtos)
+    {
+        var ingredientIds = dtos.Select(d => d.IngredientId).ToList();
+
+        var validIds = await _context.Ingredients
+            .Where(i => ingredientIds.Contains(i.Id))
+            .Select(i => i.Id)
+            .ToListAsync();
+
+        var invalidIds = ingredientIds.Except(validIds).ToList();
+        if (invalidIds.Any())
+            return BadRequest("error");
+
+        var newItems = dtos.Select(dto => new InventoryIngredient
+        {
+            UserId = dto.UserId,
+            IngredientId = dto.IngredientId,
+            Quantity = dto.Quantity,
+            QuantityUnitId = dto.QuantityUnitId
+        }).ToList();
+
+        _context.InventoryIngredients.AddRange(newItems);
+        await _context.SaveChangesAsync();
+
+        return Ok(newItems);
+    }
 }

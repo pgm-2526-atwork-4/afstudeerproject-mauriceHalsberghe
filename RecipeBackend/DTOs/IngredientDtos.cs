@@ -13,3 +13,9 @@ public class CreateListIngredientDto
     public int? Quantity { get; set; }
     public int? QuantityUnitId { get; set; }
 }
+
+public class DeleteListIngredientsDto
+{
+    public int UserId { get; set; }
+    public List<int> Ids { get; set; }
+}

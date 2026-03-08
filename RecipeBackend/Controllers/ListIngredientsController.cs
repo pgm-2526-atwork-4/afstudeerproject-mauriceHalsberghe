@@ -76,5 +76,21 @@ public class ListIngredientsController : ControllerBase
 
         return Ok(listIngredient);
     }
+
+    [HttpDelete("move")]
+    public async Task<IActionResult> DeleteMoveListIngredients([FromBody] DeleteListIngredientsDto dto)
+    {
+        var items = await _context.ListIngredients
+            .Where(i => dto.Ids.Contains(i.Id) && i.UserId == dto.UserId)
+            .ToListAsync();
+
+        if (!items.Any())
+            return NotFound("No matching list ingredients found.");
+
+        _context.ListIngredients.RemoveRange(items);
+        await _context.SaveChangesAsync();
+
+        return Ok();
+    }
     
 }
