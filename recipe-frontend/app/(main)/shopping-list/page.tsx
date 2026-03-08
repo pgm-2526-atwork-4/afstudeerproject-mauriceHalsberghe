@@ -37,203 +37,199 @@ type IngredientType = {
 };
 
 export default function ShoppingList() {
-  const [loading, setLoading] = useState(true);
-  const [ingredients, setIngredients] = useState<ListIngredient[]>([]);
+    const [loading, setLoading] = useState(true);
+    const [ingredients, setIngredients] = useState<ListIngredient[]>([]);
 
-  const uncheckedIngredients = ingredients.filter((i) => !i.checked);
-  const checkedIngredients = ingredients.filter((i) => i.checked);
+    const uncheckedIngredients = ingredients.filter((i) => !i.checked);
+    const checkedIngredients = ingredients.filter((i) => i.checked);
 
-  const auth = useContext(AuthContext);
-  const loggedUserId = auth?.user?.id;
+    const auth = useContext(AuthContext);
+    const loggedUserId = auth?.user?.id;
 
-  const fetchShoppingList = async () => {
-    if (!loggedUserId) return;
+    const fetchShoppingList = async () => {
+        if (!loggedUserId) return;
 
-    setLoading(true);
+        setLoading(true);
 
-    try {
-      const res = await fetch(
-        `http://localhost:5041/api/ListIngredients/user/${loggedUserId}`,
-      );
-      if (!res.ok) return;
+        try {
+        const res = await fetch(
+            `http://localhost:5041/api/ListIngredients/user/${loggedUserId}`,
+        );
+        if (!res.ok) return;
 
-      const data: ListIngredient[] = await res.json();
+        const data: ListIngredient[] = await res.json();
 
-      const sortedData = data.sort((a, b) =>
-        a.ingredient.name.localeCompare(b.ingredient.name),
-      );
+        const sortedData = data.sort((a, b) =>
+            a.ingredient.name.localeCompare(b.ingredient.name),
+        );
 
-      setIngredients(sortedData);
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setLoading(false);
-    }
-  };
-
-  useEffect(() => {
-    if (!loggedUserId) return;
-
-    const loadData = async () => {
-      await fetchShoppingList();
+        setIngredients(sortedData);
+        } catch (err) {
+        console.error(err);
+        } finally {
+        setLoading(false);
+        }
     };
 
-    loadData();
-  }, [loggedUserId]);
+    useEffect(() => {
+        if (!loggedUserId) return;
 
-  const updateIngredientChecked = (id: number, checked: boolean) => {
-    setIngredients((prev) =>
-      prev.map((i) => (i.id === id ? { ...i, checked } : i)),
-    );
-  };
+        const loadData = async () => {
+        await fetchShoppingList();
+        };
 
-  const sendIngredientsToInventory = async () => {
-    const checked = ingredients.filter((i) => i.checked);
-    if (checked.length === 0) return;
+        loadData();
+    }, [loggedUserId]);
 
-    const inventoryPayload = checked.map((i) => ({
-      userId: loggedUserId,
-      ingredientId: i.ingredient.id,
-      quantity: i.quantity ?? null,
-      quantityUnitId: i.quantityUnit?.id ?? null,
-    }));
+    const updateIngredientChecked = (id: number, checked: boolean) => {
+        setIngredients((prev) =>
+        prev.map((i) => (i.id === id ? { ...i, checked } : i)),
+        );
+    };
 
-    const inventoryRes = await fetch(
-      "http://localhost:5041/api/InventoryIngredient/move",
-      {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify(inventoryPayload),
-      },
-    );
+    const sendIngredientsToInventory = async () => {
+        const checkedIngredients = ingredients.filter((ingredient) => ingredient.checked);
+        if (checkedIngredients.length === 0) return;
 
-    if (!inventoryRes.ok) {
-      console.error("Failed to add to inventory");
-      return;
+        const inventoryPayload = checkedIngredients.map((ingredient) => ({
+            userId: loggedUserId,
+            ingredientId: ingredient.ingredient.id,
+            quantity: ingredient.quantity ?? null,
+            quantityUnitId: ingredient.quantityUnit?.id ?? null,
+        }));
+
+        const inventoryRes = await fetch("http://localhost:5041/api/InventoryIngredient/move",
+            {
+                method: "POST",
+                headers: { "Content-Type": "application/json" },
+                body: JSON.stringify(inventoryPayload),
+            },
+        );
+
+        if (!inventoryRes.ok) {
+            console.error("Failed to add to inventory");
+            return;
+        }
+
+        const deleteRes = await fetch("http://localhost:5041/api/ListIngredients/move",
+            {
+                method: "DELETE",
+                headers: { "Content-Type": "application/json" },
+                    body: JSON.stringify({
+                    userId: loggedUserId,
+                    ids: checkedIngredients.map((ingredient) => ingredient.id),
+                }),
+            },
+        );
+
+        if (!deleteRes.ok) {
+            console.error("Failed to remove from shopping list");
+            return;
+        }
+        await fetchShoppingList();
+    };
+
+    if (!loggedUserId) {
+        return (
+            <EmptyView
+                title="Not logged in"
+                text="Log in to see your shopping list"
+                btnText="Log In"
+                btnUrl="/login"
+                icon="profile"
+            />
+        );
     }
 
-    const deleteRes = await fetch(
-      "http://localhost:5041/api/ListIngredients/move",
-      {
-        method: "DELETE",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          userId: loggedUserId,
-          ids: checked.map((i) => i.id),
-        }),
-      },
-    );
-
-    if (!deleteRes.ok) {
-      console.error("Failed to remove from shopping list");
-      return;
-    }
-    await fetchShoppingList();
-  };
-
-  if (!loggedUserId) {
     return (
-      <EmptyView
-        title="Not logged in"
-        text="Log in to see your shopping list"
-        btnText="Log In"
-        btnUrl="/login"
-        icon="profile"
-      />
-    );
-  }
+        <main className={IngredientStyles.page}>
+            <div className={IngredientStyles.header}>
+                <h1 className={IngredientStyles.title}>Shopping List</h1>
+                <AddIngredientHeader
+                    postUrl="http://localhost:5041/api/ListIngredients"
+                    onSuccess={fetchShoppingList}
+                />
+            </div>
 
-  return (
-    <main className={IngredientStyles.page}>
-      <div className={IngredientStyles.header}>
-        <h1 className={IngredientStyles.title}>Shopping List</h1>
-        <AddIngredientHeader
-          postUrl="http://localhost:5041/api/ListIngredients"
-          onSuccess={fetchShoppingList}
-        />
-      </div>
-
-      <div className={IngredientStyles.main}>
-        {uncheckedIngredients.length <= 0 && checkedIngredients.length <= 0 && (
-          <EmptyView
-            title="Empty shopping list"
-            text="Add items so you don’t forget them at the store."
-            icon="cart"
-          />
-        )}
-
-        {uncheckedIngredients.length > 0 && (
-          <ul className={IngredientStyles.list}>
-            {uncheckedIngredients.map((ingredient) => (
-              <li className={IngredientStyles.ingredient} key={ingredient.id}>
-                <div className={IngredientStyles.ingredientSign}>
-                  <Checkbox
-                    initialChecked={ingredient.checked}
-                    listIngredientId={ingredient.id}
-                    userId={loggedUserId}
-                    onChange={updateIngredientChecked}
-                  />
-                  <p>{ingredient.ingredient.name}</p>
-                </div>
-
-                {ingredient.quantity != null && ingredient.quantityUnit && (
-                  <p className={IngredientStyles.ingredientQuantity}>
-                    {ingredient.quantity}{" "}
-                    {ingredient.quantityUnit?.shortName ?? ""}
-                  </p>
-                )}
-              </li>
-            ))}
-          </ul>
-        )}
-
-        {checkedIngredients.length > 0 && (
-          <>
-            <ul
-              className={`${IngredientStyles.list} ${IngredientStyles.checkedList}`}
-            >
-              {checkedIngredients.map((ingredient) => (
-                <li
-                  className={`${IngredientStyles.ingredient} ${IngredientStyles.checkedIngredient}`}
-                  key={ingredient.id}
-                >
-                  <div className={IngredientStyles.ingredientSign}>
-                    <Checkbox
-                      initialChecked={ingredient.checked}
-                      listIngredientId={ingredient.id}
-                      userId={loggedUserId}
-                      onChange={updateIngredientChecked}
+            <div className={IngredientStyles.main}>
+                {uncheckedIngredients.length <= 0 && checkedIngredients.length <= 0 && (
+                    <EmptyView
+                        title="Empty shopping list"
+                        text="Add items so you don’t forget them at the store."
+                        icon="cart"
                     />
-                    <p>{ingredient.ingredient.name}</p>
-                  </div>
+                )}
 
-                  {ingredient.quantity != null && ingredient.quantityUnit && (
-                    <p className={IngredientStyles.ingredientQuantity}>
-                      {ingredient.quantity}{" "}
-                      {ingredient.quantityUnit?.shortName ?? ""}
+                {uncheckedIngredients.length > 0 && (
+                    <ul className={IngredientStyles.list}>
+                        {uncheckedIngredients.map((ingredient) => (
+                            <li className={IngredientStyles.ingredient} key={ingredient.id}>
+                                <div className={IngredientStyles.ingredientSign}>
+                                    <Checkbox
+                                        initialChecked={ingredient.checked}
+                                        listIngredientId={ingredient.id}
+                                        userId={loggedUserId}
+                                        onChange={updateIngredientChecked}
+                                    />
+                                    <p>{ingredient.ingredient.name}</p>
+                                </div>
+
+                                {ingredient.quantity != null && ingredient.quantityUnit && (
+                                    <p className={IngredientStyles.ingredientQuantity}>
+                                        {ingredient.quantity}{" "}
+                                        {ingredient.quantityUnit?.shortName ?? ""}
+                                    </p>
+                                )}
+                            </li>
+                        ))}
+                    </ul>
+                )}
+
+                {checkedIngredients.length > 0 && (
+                    <>
+                        <ul className={`${IngredientStyles.list} ${IngredientStyles.checkedList}`} >
+                            {checkedIngredients.map((ingredient) => (
+                                <li
+                                    className={`${IngredientStyles.ingredient} ${IngredientStyles.checkedIngredient}`}
+                                    key={ingredient.id}
+                                >
+                                <div className={IngredientStyles.ingredientSign}>
+                                    <Checkbox
+                                        initialChecked={ingredient.checked}
+                                        listIngredientId={ingredient.id}
+                                        userId={loggedUserId}
+                                        onChange={updateIngredientChecked}
+                                    />
+                                    <p>{ingredient.ingredient.name}</p>
+                                </div>
+
+                            {ingredient.quantity != null && ingredient.quantityUnit && (
+                                <p className={IngredientStyles.ingredientQuantity}>
+                                    {ingredient.quantity}{" "}
+                                    {ingredient.quantityUnit?.shortName ?? ""}
+                                </p>
+                            )}
+                            </li>
+                        ))}
+                        </ul>
+                    </>
+                )}
+            </div>
+
+            {checkedIngredients.length > 0 && (
+                <div className={IngredientStyles.ingredientAdd}>
+                    <p>
+                        Done shopping? Add {checkedIngredients.length} items to your
+                        inventory.
                     </p>
-                  )}
-                </li>
-              ))}
-            </ul>
-          </>
-        )}
-      </div>
-
-      {checkedIngredients.length > 0 && (
-        <div className={IngredientStyles.ingredientAdd}>
-          <p>
-            Done shopping? Add {checkedIngredients.length} items to your
-            inventory.
-          </p>
-          <button
-            onClick={sendIngredientsToInventory}
-            className={ButtonStyles.button}
-          >
-            + Add to Inventory
-          </button>
-        </div>
-      )}
-    </main>
-  );
+                    <button
+                        onClick={sendIngredientsToInventory}
+                        className={ButtonStyles.button}
+                    >
+                        + Add to Inventory
+                    </button>
+                </div>
+            )}
+        </main>
+    );
 }
