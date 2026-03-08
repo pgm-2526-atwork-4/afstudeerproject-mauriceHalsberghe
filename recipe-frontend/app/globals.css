@@ -1,12 +1,12 @@
 @import "tailwindcss";
 
 :root {
-  --gray-100: #ededed;
+  --gray-100: #ececec;
   --gray-200: #c6c6c6;
   --gray-300: #575757;
 
   --black: #191919;
-  --white: #f4f4f4;
+  --white: hsl(0, 0%, 98%);
 
   --green-100: #60ca86;
   --green-200: #3a8756;
