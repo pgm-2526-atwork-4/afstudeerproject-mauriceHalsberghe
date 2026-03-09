@@ -19,3 +19,9 @@ public class DeleteListIngredientsDto
     public int UserId { get; set; }
     public List<int> Ids { get; set; }
 }
+
+public record UpdateInventoryIngredientDto(
+    string IngredientName,
+    int? Quantity,
+    int? QuantityUnitId
+);
