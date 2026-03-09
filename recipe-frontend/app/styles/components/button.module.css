@@ -1,4 +1,4 @@
-.button , .secondaryButton, .smallButton {
+.button , .secondaryButton, .smallButton, .buttonRed {
     padding: 0 1.2rem;
     font-size: 1.2rem;
     min-width: 5rem;
@@ -38,7 +38,15 @@
     &:active {
         background-color: var(--gray-200);
     }
+}
 
+.buttonRed {
+    background-color: var(--red-100);
+
+
+    &:active {
+        background-color: var(--red-200);
+    }
 }
 
 .smallButton {

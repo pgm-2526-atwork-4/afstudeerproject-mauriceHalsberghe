@@ -190,3 +190,23 @@
     text-align: center;
   }
 }
+
+.buttons {
+  display: flex;
+  gap: 0.25rem;
+}
+
+.deleteBtn, .editBtn {
+  width: 2rem;
+  height: 2rem;
+  color: var(--gray-300);
+  cursor: pointer;
+}
+
+.deleteBtn:active {
+  color: var(--red-100);
+}
+
+.editBtn:active {
+  color: var(--green-200);
+}
