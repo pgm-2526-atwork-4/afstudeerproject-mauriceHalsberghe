@@ -86,12 +86,17 @@
     padding-left: 1rem;
     display: flex;
     flex-direction: column;
-    gap: .25rem
+    gap: .5rem
 }
 
 .ingredient {
     display: flex;
     gap: 0.25rem;
+    align-items: center;
+}
+
+.ingredientIcon {
+    margin-right: 0.25rem;
 }
 
 .steps {
