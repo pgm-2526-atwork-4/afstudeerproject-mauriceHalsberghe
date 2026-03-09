@@ -116,7 +116,12 @@ public class RecipesController : ControllerBase
                         Id = ri.Id,
                         Quantity = ri.Quantity,
                         Unit = ri.QuantityUnit != null ? ri.QuantityUnit.ShortName : null,
-                        IngredientName = ri.Ingredient.Name
+                        IngredientName = ri.Ingredient.Name,
+                        IsInInventory = currentUserId.HasValue
+                            ? _context.InventoryIngredients.Any(ii =>
+                                ii.UserId == currentUserId.Value &&
+                                ii.IngredientId == ri.IngredientId)
+                            : null
                     }).ToList(),
 
                 LikeCount = r.Likes.Count(),
@@ -124,13 +129,6 @@ public class RecipesController : ControllerBase
                 AverageRating = r.Reviews.Any()
                     ? Math.Round(r.Reviews.Average(rv => rv.Rating) / 2.0, 1)
                     : (double?)null,
-
-                MissingIngredientCount = currentUserId.HasValue
-                    ? r.RecipeIngredients.Count(recipeIngredient =>
-                        !_context.InventoryIngredients.Any(inventoryIngredient =>
-                            inventoryIngredient.UserId == currentUserId.Value &&
-                            inventoryIngredient.IngredientId == recipeIngredient.IngredientId))
-                    : null
             })
             .FirstOrDefaultAsync();
 

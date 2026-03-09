@@ -16,8 +16,6 @@ public class RecipeDetailDto
 
     public int LikeCount { get; set; }
     public double? AverageRating { get; set; }
-
-    public int? MissingIngredientCount { get; set; }
 }
 
 public class StepDto
@@ -30,7 +28,8 @@ public class StepDto
 public class RecipeIngredientDto
 {
     public int Id { get; set; }
-    public double? Quantity { get; set; }
+    public int? Quantity { get; set; }
     public string? Unit { get; set; }
-    public string? IngredientName { get; set; }
+    public string IngredientName { get; set; } = "";
+    public bool? IsInInventory { get; set; }
 }
