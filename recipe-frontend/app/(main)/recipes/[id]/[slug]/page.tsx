@@ -8,6 +8,7 @@ import { useContext, useEffect, useState } from "react";
 
 import DetailStyles from "@/app/styles/pages/recipe-detail.module.css"
 import RatingModalStyles from "@/app/styles/components/ratingmodal.module.css"
+import ButtonStyles from "@/app/styles/components/button.module.css"
 
 import Link from "next/link";
 import BackButton from "@/app/components/BackButton";
@@ -64,6 +65,13 @@ type Recipe = {
     averageRating?: number;
 };
 
+function slugify(title: string) {
+  return title
+    .toLowerCase()
+    .replace(/\s+/g, "-")
+    .replace(/[^\w-]+/g, "");
+}
+
 export default function RecipeDetail() {
     const [loading, setLoading] = useState(true);
     const [recipe, setRecipe] = useState<Recipe | null>(null);
@@ -104,16 +112,32 @@ export default function RecipeDetail() {
             <div className={DetailStyles.header}>
                 <BackButton url="/" absolute={false}/>
                 <h1 className={DetailStyles.title}>{recipe.title}</h1>
-                { recipe.user ? <Link href={`/users/${recipe.user.username}`} className={DetailStyles.user}>
-                        <Image 
-                            className={DetailStyles.avatar} 
-                            width={64} 
-                            height={64} 
-                            alt={recipe.user.username}
-                            src={recipe.user.avatar ? `${API_URL}/uploads/avatars/${recipe.user.avatar}` : '/avatar.svg'} 
-                        />
-                        <p className={DetailStyles.username}>{recipe.user.username}</p>
-                    </Link> : <div></div> }
+                <div className={DetailStyles.userDetails}>
+                    { recipe.user && (
+
+                    
+                        recipe.user.id === loggedUserId ?  
+                            <Link
+                                className={ButtonStyles.smallButton}
+                                href={`/recipes/${recipeId}/${slugify(recipe.title)}/edit`}
+                                >
+                                Edit Recipe
+                            </Link> 
+                            : 
+
+                            <Link href={`/users/${recipe.user.username}`} className={DetailStyles.user}>
+                                <Image 
+                                    className={DetailStyles.avatar} 
+                                    width={64} 
+                                    height={64} 
+                                    alt={recipe.user.username}
+                                    src={recipe.user.avatar ? `${API_URL}/uploads/avatars/${recipe.user.avatar}` : '/avatar.svg'} 
+                                />
+                                <p className={DetailStyles.username}>{recipe.user.username}</p>
+                            </Link>
+                        )
+                    }
+                </div>
             </div>
             
             <Image className={DetailStyles.image} width={360} height={200} alt={recipe.title} src={`${API_URL}/uploads/recipe-images/${recipe.imageUrl}`}/>
