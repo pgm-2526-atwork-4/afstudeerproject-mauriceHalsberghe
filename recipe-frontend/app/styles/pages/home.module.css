@@ -3,12 +3,20 @@
     padding-bottom: 7rem;
 }
 
-.userTitle {
+.header {
     display: flex;
     align-items: center;
-    gap: 1rem;
-    margin-bottom: 1rem;
+    justify-content: space-between;
+    max-width: 500px;
+
+    .userTitle {
+        display: flex;
+        align-items: center;
+        gap: 1rem;
+        margin-bottom: 1rem;
+    }
 }
+
 
 .title {
     font-size: 1.2rem;

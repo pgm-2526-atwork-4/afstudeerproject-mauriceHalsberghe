@@ -242,7 +242,7 @@ export default function AddRecipe() {
                         <Image
                         src={imageUrl}
                         width={500}
-                        height={100}
+                        height={300}
                         alt="Recipe image"
                         />
                         {!uploaded && <UploadIcon className={AddRecipeStyles.uploadIcon} style={{width: 100, height: 100}} /> }
