@@ -8,6 +8,9 @@ import IngredientSearch, { IngredientOption } from "@/app/components/IngredientS
 
 import ButtonStyles from "@/app/styles/components/button.module.css";
 import AddRecipeStyles from "@/app/styles/pages/addrecipe.module.css";
+import Image from "next/image";
+import UploadIcon from "@/public/upload.svg"
+import { useRouter } from "next/navigation";
 
 type QuantityUnit = {
     id: number;
@@ -55,6 +58,13 @@ export default function AddRecipe() {
     const [diets, setDiets] = useState<Diet[]>([]);
     const [cuisines, setCuisines] = useState<Cuisine[]>([]);
     const [error, setError] = useState("");
+
+    const { user, setUser } = useContext(AuthContext)!;
+    const [imageUrl, setImageUrl] = useState<string>("/recipe.jpg");
+    const [uploaded, setUploaded] = useState(false);
+    const [pendingImageFile, setPendingImageFile] = useState<File | null>(null);
+
+    const router = useRouter();
 
     useEffect(() => {
         const fetchData = async () => {
@@ -130,6 +140,7 @@ export default function AddRecipe() {
                     quantity: i.ingredient!.alwaysInStock ? null : (i.quantity ?? null),
                     quantityUnitId: i.ingredient!.alwaysInStock ? null : (i.unitId ?? null),
                 })),
+            imageUrl: imageUrl ?? null,
         };
 
         try {
@@ -147,13 +158,44 @@ export default function AddRecipe() {
                 return;
             }
 
-            console.log('succes', payload);
-            
+            const createdRecipe = await res.json();
+            const recipeId = createdRecipe.id;
+            const recipeSlug = createdRecipe.title.toLowerCase().trim().replace(/[^a-z0-9\s-]/g, "").replace(/\s+/g, "-");
+
+            if (pendingImageFile && recipeId) {
+                const formData = new FormData();
+                formData.append("file", pendingImageFile);
+
+                const imageRes = await fetch(`${API_URL}/api/Recipes/${recipeId}/image`, {
+                    method: "POST",
+                    body: formData,
+                });
+
+                const text = await imageRes.text();
+                const data = text ? JSON.parse(text) : {};
+
+                if (data.imageUrl) {
+                    const newImageUrl = `${API_URL}/uploads/recipe-images/${data.imageUrl}`;
+                    setImageUrl(newImageUrl);
+                }
+            }
+
+            router.push(`/recipes/${recipeId}/${recipeSlug}`);
+
 
         } catch (err) {
             console.error(err);
             setError("Something went wrong.");
         }
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        const file = e.target.files?.[0];
+        if (!file) return;
+
+        setPendingImageFile(file);
+        setImageUrl(URL.createObjectURL(file));
+        setUploaded(true);
     };
 
     return (
@@ -188,6 +230,25 @@ export default function AddRecipe() {
                     </label>
 
                 </div>
+
+                <label className={AddRecipeStyles.imageUpload}>
+                    Add image
+                    <input
+                        type="file"
+                        accept="image/*"
+                        onChange={handleFileChange}
+                    />
+                    <div className={`${AddRecipeStyles.image} ${!uploaded && AddRecipeStyles.showUpload}`}>
+                        <Image
+                        src={imageUrl}
+                        width={500}
+                        height={100}
+                        alt="Recipe image"
+                        />
+                        {!uploaded && <UploadIcon className={AddRecipeStyles.uploadIcon} style={{width: 100, height: 100}} /> }
+                        
+                    </div>
+                </label>
 
 
                 <div className={AddRecipeStyles.divs}>

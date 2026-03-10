@@ -123,21 +123,25 @@ export default function Preferences() {
     return (
         <main className={HomeStyles.home}>
 
-            <div className={HomeStyles.userTitle}>
-                <Image
-                    className={HomeStyles.avatar}
-                    src={profileUser.avatar ? `${API_URL}/uploads/avatars/${profileUser.avatar}` : '/avatar.svg'} 
-                    alt={`${profileUser.username} avatar`}
-                    width={64}
-                    height={64}
-                    />
-                <h1 className={HomeStyles.title}>{profileUser?.username}&apos;s Recipes</h1>
+            <div className={HomeStyles.header}>
+                <div className={HomeStyles.userTitle}>
+                    <Image
+                        className={HomeStyles.avatar}
+                        src={profileUser.avatar ? `${API_URL}/uploads/avatars/${profileUser.avatar}` : '/avatar.svg'} 
+                        alt={`${profileUser.username} avatar`}
+                        width={64}
+                        height={64}
+                        />
+                    <h1 className={HomeStyles.title}>{profileUser?.username}&apos;s Recipes</h1>
+
+
+                </div>
 
                 {loggedUserId === profileUser.id &&
-                    <Link href={'/recipes/add'} className={ButtonsStyles.button}>Add new recipe</Link>
+                    <Link href={'/recipes/add'} className={ButtonsStyles.button}>Create recipe</Link>
                 }
-
             </div>
+
 
             <RecipeFilters filters={filters} onChange={setFilters} onlyUsersFilter={false} />
 
