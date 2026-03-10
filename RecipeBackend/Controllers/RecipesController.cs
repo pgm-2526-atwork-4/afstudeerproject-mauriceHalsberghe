@@ -208,4 +208,47 @@ public class RecipesController : ControllerBase
 
         return Ok(new { imageUrl = recipe.ImageUrl });
     }
+
+    [Authorize]
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateRecipe(int id, CreateRecipeDto dto)
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        var recipe = await _context.Recipes
+            .Include(r => r.Steps)
+            .Include(r => r.RecipeIngredients)
+            .FirstOrDefaultAsync(r => r.Id == id);
+
+        if (recipe == null)
+            return NotFound();
+
+        if (recipe.UserId != userId)
+            return Forbid();
+
+        recipe.Title = dto.Title;
+        recipe.ImageUrl = dto.ImageUrl;
+        recipe.Time = dto.Time;
+        recipe.DietId = dto.DietId;
+        recipe.CuisineId = dto.CuisineId;
+
+        _context.Steps.RemoveRange(recipe.Steps);
+        _context.RecipeIngredients.RemoveRange(recipe.RecipeIngredients);
+
+        recipe.Steps = dto.Steps.Select(s => new Step
+        {
+            StepNumber = s.StepNumber,
+            Description = s.Description,
+        }).ToList();
+
+        recipe.RecipeIngredients = dto.RecipeIngredients.Select(i => new RecipeIngredient
+        {
+            IngredientId = i.IngredientId,
+            Quantity = i.Quantity,
+            QuantityUnitId = i.QuantityUnitId,
+        }).ToList();
+
+        await _context.SaveChangesAsync();
+        return Ok(recipe);
+    }
 }
