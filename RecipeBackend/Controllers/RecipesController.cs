@@ -140,10 +140,31 @@ public class RecipesController : ControllerBase
 
     [Authorize]
     [HttpPost]
-    public async Task<ActionResult<Recipe>> CreateRecipe(Recipe recipe)
+    public async Task<ActionResult<Recipe>> CreateRecipe(CreateRecipeDto dto)
     {
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        
+
+        var recipe = new Recipe
+        {
+            Title = dto.Title,
+            ImageUrl = dto.ImageUrl,
+            Time = dto.Time,
+            DietId = dto.DietId,
+            CuisineId = dto.CuisineId,
+            UserId = userId,
+            Steps = dto.Steps.Select(s => new Step
+            {
+                StepNumber = s.StepNumber,
+                Description = s.Description,
+            }).ToList(),
+            RecipeIngredients = dto.RecipeIngredients.Select(i => new RecipeIngredient
+            {
+                IngredientId = i.IngredientId,
+                Quantity = i.Quantity,
+                QuantityUnitId = i.QuantityUnitId,
+            }).ToList(),
+        };
+
         _context.Recipes.Add(recipe);
         await _context.SaveChangesAsync();
         return Ok(recipe);
