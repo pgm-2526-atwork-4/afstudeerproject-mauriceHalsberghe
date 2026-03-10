@@ -1,6 +1,6 @@
 "use client";
 
-import { useState, useEffect } from "react";
+import { useState, useEffect, useRef } from "react";
 import { API_URL } from "@/lib/api";
 import IngredientStyles from "@/app/styles/pages/ingredients.module.css";
 import RatingModalStyles from '@/app/styles/components/ratingmodal.module.css';
@@ -45,6 +45,8 @@ export default function EditIngredientModal({ ingredient, onClose, onSuccess }: 
         (isQuantityFilled && !isUnitFilled) ||
         (!isQuantityFilled && isUnitFilled);
 
+    const intervalRef = useRef<NodeJS.Timeout | null>(null);
+
     useEffect(() => {
         const fetchUnits = async () => {
         try {
@@ -58,6 +60,10 @@ export default function EditIngredientModal({ ingredient, onClose, onSuccess }: 
         };
 
         fetchUnits();
+    }, []);
+
+    useEffect(() => {
+        return () => stopHold();
     }, []);
 
     const handleSave = async () => {
@@ -101,6 +107,40 @@ export default function EditIngredientModal({ ingredient, onClose, onSuccess }: 
         if (e.target === e.currentTarget) onClose();
     };
 
+    if (quantity == null) {
+        return null;
+    }
+
+    let stepSize = 1
+    if (unitId === 1 || unitId == 2) {
+        stepSize = 50
+    }
+
+    const changeQuantity = (quantityChange: number) => {
+        setQuantity((prev) => {
+            if (prev === undefined) return prev;
+
+            const next = prev + quantityChange;
+
+            if (next < stepSize) return stepSize;
+            return next;
+        });
+    };
+
+    const startHold = (quantityChange: number) => {
+        changeQuantity(quantityChange);
+        intervalRef.current = setInterval(() => {
+            changeQuantity(quantityChange);
+        }, 120);
+    };
+
+    const stopHold = () => {
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+        }
+    };
+
     return (
         <div className={RatingModalStyles.modalOverlay} onClick={handleBackdropClick}>
         <div className={RatingModalStyles.modal}>
@@ -108,18 +148,46 @@ export default function EditIngredientModal({ ingredient, onClose, onSuccess }: 
             <h2 className={RatingModalStyles.title}>Edit Ingredient</h2>
 
             <div className={RatingModalStyles.inputs}>
+                
+                <div className={RatingModalStyles.quantityInputs}>
 
-                <input
-                    className={RatingModalStyles.input}
-                    type="number"
-                    value={quantity ?? ""}
-                    onChange={(e) => {
-                        setQuantity(e.target.value === "" ? undefined : Number(e.target.value));
-                        setError(null);
-                    }}
-                    placeholder="Quantity"
-                    min={0}
-                />
+                    <button
+                        className={ButtonStyles.smallButton}
+                        disabled={quantity <= stepSize}
+                        onMouseDown={() => startHold(-stepSize)}
+                        onMouseUp={stopHold}
+                        onMouseLeave={stopHold}
+                        onTouchStart={() => startHold(-stepSize)}
+                        onTouchEnd={stopHold}
+                    >
+                        -
+                    </button>
+
+                    <input
+                        className={RatingModalStyles.input}
+                        type="number"
+                        value={quantity ?? ""}
+                        onChange={(e) => {
+                            setQuantity(e.target.value === "" ? undefined : Number(e.target.value));
+                            setError(null);
+                        }}
+                        placeholder="Quantity"
+                        min={0}
+                    />
+
+                    
+                    <button
+                        className={ButtonStyles.smallButton}
+                        onMouseDown={() => startHold(stepSize)}
+                        onMouseUp={stopHold}
+                        onMouseLeave={stopHold}
+                        onTouchStart={() => startHold(stepSize)}
+                        onTouchEnd={stopHold}
+                    >
+                        +
+                    </button>
+                </div>
+
 
                 <select
                     className={IngredientStyles.select}
@@ -137,7 +205,7 @@ export default function EditIngredientModal({ ingredient, onClose, onSuccess }: 
                 </select>
 
 
-                {error && <p className={IngredientStyles.error}>{error}</p>}
+                {error && <p className={RatingModalStyles.error}>{error}</p>}
 
             </div>
 
