@@ -153,6 +153,9 @@ export default function RecipeForm({ initialValues, onSubmit, submitLabel = "Sav
 
     const progress = (step / 3) * 100;
 
+    console.log(imageUrl);
+    
+
     return (
         <form className={AddRecipeStyles.form} onSubmit={handleSubmit}>
 
@@ -196,7 +199,12 @@ export default function RecipeForm({ initialValues, onSubmit, submitLabel = "Sav
                     Add image
                     <input type="file" accept="image/*" onChange={handleFileChange} />
                     <div className={`${AddRecipeStyles.image} ${!uploaded && AddRecipeStyles.showUpload}`}>
-                        <Image src={`${API_URL}/uploads/recipe-images/${imageUrl}`} width={500} height={300} alt="Recipe image" />
+                        <Image 
+                            src={ imageUrl === "/recipe.jpg" ? "/recipe.jpg" : `${API_URL}/uploads/recipe-images/${imageUrl}`} 
+                            width={500} 
+                            height={300} 
+                            alt="Recipe image" 
+                        />
                         {!uploaded && <UploadIcon className={AddRecipeStyles.uploadIcon} style={{ width: 100, height: 100 }} />}
                     </div>
                 </label>
