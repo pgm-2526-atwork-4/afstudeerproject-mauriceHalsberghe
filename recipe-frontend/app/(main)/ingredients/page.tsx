@@ -17,6 +17,7 @@ import { formatQuantity } from "@/lib/formatQuantity";
 
 import EditIcon from "@/public/pencil.svg";
 import TrashIcon from "@/public/trash.svg";
+import AppleIcon from '@/public/apple.svg'
 
 type InventoryIngredient = {
   id: number;
@@ -165,7 +166,8 @@ export default function Ingredients() {
 
       <div className={IngredientStyles.header}>
 
-        <h1 className={IngredientStyles.title}>Ingredient Inventory</h1>
+        <h1 className={IngredientStyles.title}><AppleIcon /> Ingredient Inventory</h1>
+
         <AddIngredientHeader
           postUrl={`${API_URL}/api/InventoryIngredient`}
           onSuccess={fetchIngredients}

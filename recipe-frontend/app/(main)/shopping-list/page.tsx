@@ -12,6 +12,8 @@ import EmptyView from "@/app/components/EmptyView";
 import IngredientStyles from "@/app/styles/pages/ingredients.module.css";
 import ButtonStyles from "@/app/styles/components/button.module.css";
 
+import CartIcon from '@/public/cart.svg'
+
 import { formatQuantity } from "@/lib/formatQuantity";
 
 type ListIngredient = {
@@ -148,7 +150,7 @@ export default function ShoppingList() {
     return (
         <main className={IngredientStyles.page}>
             <div className={IngredientStyles.header}>
-                <h1 className={IngredientStyles.title}>Shopping List</h1>
+                <h1 className={IngredientStyles.title}><CartIcon />Shopping List</h1>
                 <AddIngredientHeader
                     postUrl={`${API_URL}/api/ListIngredients`}
                     onSuccess={fetchShoppingList}
