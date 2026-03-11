@@ -6,6 +6,7 @@ import { AuthContext } from "@/context/AuthContext";
 import { useParams, useRouter } from "next/navigation";
 import RecipeForm, { RecipeFormValues } from "@/app/components/RecipeForm";
 import AddRecipeStyles from "@/app/styles/pages/addrecipe.module.css";
+import EmptyView from "@/app/components/EmptyView";
 
 type Diet = {
     id: number;
@@ -95,7 +96,9 @@ export default function EditRecipe() {
         return 
     }
 
-    if (recipe?.user?.id !== loggedUserId) return <div>Can&apos;t edit this recipe</div>;
+    if (recipe?.user?.id !== loggedUserId) return (
+        <EmptyView title="No permission" text="You can't edit this recipe" icon="notfound" btnUrl="/" btnText="Home" />
+    );
 
 
     const initialValues: RecipeFormValues = {

@@ -5,6 +5,7 @@ import ProfileIcon from '@/public/profile.svg';
 import RecipeIcon from '@/public/chefhat.svg';
 import IngredientIcon from '@/public/apple.svg';
 import CartIcon from '@/public/cart.svg';
+import NotFound from '@/public/not_found.svg';
 
 import Link from "next/link";
 
@@ -30,6 +31,8 @@ export default function EmptyView(view : Props) {
             icon = <IngredientIcon className={EmptyViewStyles.icon} />
         } else if (view.icon === 'cart') {
             icon = <CartIcon className={EmptyViewStyles.icon} />
+        } else if (view.icon === 'notfound') {
+            icon = <NotFound className={EmptyViewStyles.icon} />
         }
     }
 

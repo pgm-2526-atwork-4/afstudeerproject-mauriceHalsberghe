@@ -8,6 +8,7 @@ import { useRouter } from "next/navigation";
 
 import RecipeForm, { RecipeFormValues } from "@/app/components/RecipeForm";
 import AddRecipeStyles from "@/app/styles/pages/addrecipe.module.css";
+import EmptyView from "@/app/components/EmptyView";
 
 export default function AddRecipe() {
     const auth = useContext(AuthContext);
@@ -70,6 +71,10 @@ export default function AddRecipe() {
             setError("Something went wrong.");
         }
     };
+
+    if (!loggedUserId) return (
+        <EmptyView title="No permission" text="Log in to add recipes" icon="notfound" btnUrl="/login" btnText="Log in" />
+    );
 
     return (
         <main className={AddRecipeStyles.page}>
