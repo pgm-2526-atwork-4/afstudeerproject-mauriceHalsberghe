@@ -121,6 +121,11 @@ public class RecipesController : ControllerBase
                             ? _context.InventoryIngredients.Any(ii =>
                                 ii.UserId == currentUserId.Value &&
                                 ii.IngredientId == ri.IngredientId)
+                            : null,
+                        IsInShoppingList = currentUserId.HasValue
+                            ? _context.ListIngredients.Any(ii =>
+                                ii.UserId == currentUserId.Value &&
+                                ii.IngredientId == ri.IngredientId)
                             : null
                     }).ToList(),
 

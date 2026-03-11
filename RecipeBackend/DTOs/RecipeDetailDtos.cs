@@ -32,4 +32,5 @@ public class RecipeIngredientDto
     public string? Unit { get; set; }
     public string IngredientName { get; set; } = "";
     public bool? IsInInventory { get; set; }
+    public bool? IsInShoppingList { get; set; }
 }
