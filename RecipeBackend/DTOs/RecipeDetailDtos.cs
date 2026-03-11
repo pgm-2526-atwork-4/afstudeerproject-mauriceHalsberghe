@@ -28,7 +28,7 @@ public class StepDto
 public class RecipeIngredientDto
 {
     public int Id { get; set; }
-    public int? Quantity { get; set; }
+    public decimal? Quantity { get; set; }
     public string? Unit { get; set; }
     public string IngredientName { get; set; } = "";
     public bool? IsInInventory { get; set; }

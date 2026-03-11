@@ -85,7 +85,7 @@ public class InventoryIngredientController : ControllerBase
     }
 
     [HttpPut("{id}")]
-    public async Task<IActionResult> UpdateInventoryIngredient(int id, UpdateInventoryIngredientDto dto)
+    public async Task<IActionResult> UpdateIngredient(int id, UpdateInventoryIngredientDto dto)
     {
         var item = await _context.InventoryIngredients
             .Include(i => i.Ingredient)
