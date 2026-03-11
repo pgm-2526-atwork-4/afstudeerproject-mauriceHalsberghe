@@ -118,21 +118,28 @@ export default function LikedRecipes() {
     <main className={HomeStyles.home}>
       <RecipeFilters filters={filters} onChange={setFilters} onlyUsersFilter={true} />
 
-      {filteredRecipes.length === 0 ? (
-        <EmptyView title='No Recipes found' text="Start exploring recipes and save the ones you love" btnText="Browse recipes" btnUrl="/" icon="recipe"/>
-      ) : (
-        <ul className={HomeStyles.recipes}>
-            {filteredRecipes.map((recipe) => (
-                <RecipeCard
-                key={recipe.id}
-                recipe={recipe}
-                onUnlike={(id) =>
-                    setRecipes((prev) => prev.filter((r) => r.id !== id))
-                }
-                />
-            ))}
-        </ul>
-      )}
+      {recipes.length === 0 ?
+          <EmptyView title='No Recipes found' text="Start exploring recipes and save the ones you love" btnText="Browse recipes" btnUrl="/" icon="recipe"/>
+
+        :
+      
+        filteredRecipes.length === 0 ? (
+          <EmptyView title="No recipes found" text="No recipes match your search" icon="recipe"/>
+        ) : (
+          <ul className={HomeStyles.recipes}>
+              {filteredRecipes.map((recipe) => (
+                  <RecipeCard
+                  key={recipe.id}
+                  recipe={recipe}
+                  onUnlike={(id) =>
+                      setRecipes((prev) => prev.filter((r) => r.id !== id))
+                  }
+                  />
+              ))}
+          </ul>
+        )
+      }
+
     </main>
   );
 }

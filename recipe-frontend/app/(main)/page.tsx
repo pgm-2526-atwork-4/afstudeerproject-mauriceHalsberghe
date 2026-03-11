@@ -9,6 +9,7 @@ import RecipeFilters, { RecipeFiltersState } from "../components/RecipeFilters";
 
 import HomeStyles from '@/app/styles//pages/home.module.css';
 import { AuthContext } from '@/context/AuthContext';
+import EmptyView from "../components/EmptyView";
 
 type Diet = {
   id: number;
@@ -125,11 +126,16 @@ export default function Home() {
       {loading ? (
         <p>Loading recipes...</p>
       ) : (
+        
+        filteredRecipes.length === 0 ? 
+        <EmptyView title="No recipes found" text="No recipes match your search" icon="recipe" btnUrl="./" btnText="Back"/>
+        :
         <ul className={HomeStyles.recipes}>
           {filteredRecipes.map((recipe) => (
             <RecipeCard key={recipe.id} recipe={recipe} />
           ))}
         </ul>
+        
       )}
     </main>
   );
