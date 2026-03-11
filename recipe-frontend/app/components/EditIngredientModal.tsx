@@ -62,6 +62,20 @@ export default function EditIngredientModal({ ingredient, onClose, onSuccess }: 
         fetchUnits();
     }, []);
 
+    const startHold = (quantityChange: number) => {
+        changeQuantity(quantityChange);
+        intervalRef.current = setInterval(() => {
+            changeQuantity(quantityChange);
+        }, 120);
+    };
+
+    const stopHold = () => {
+        if (intervalRef.current) {
+            clearInterval(intervalRef.current);
+            intervalRef.current = null;
+        }
+    };
+
     useEffect(() => {
         return () => stopHold();
     }, []);
@@ -107,10 +121,6 @@ export default function EditIngredientModal({ ingredient, onClose, onSuccess }: 
         if (e.target === e.currentTarget) onClose();
     };
 
-    if (quantity == null) {
-        return null;
-    }
-
     let stepSize = 1
     if (unitId === 1 || unitId == 2) {
         stepSize = 50
@@ -127,20 +137,6 @@ export default function EditIngredientModal({ ingredient, onClose, onSuccess }: 
         });
     };
 
-    const startHold = (quantityChange: number) => {
-        changeQuantity(quantityChange);
-        intervalRef.current = setInterval(() => {
-            changeQuantity(quantityChange);
-        }, 120);
-    };
-
-    const stopHold = () => {
-        if (intervalRef.current) {
-            clearInterval(intervalRef.current);
-            intervalRef.current = null;
-        }
-    };
-
     return (
         <div className={RatingModalStyles.modalOverlay} onClick={handleBackdropClick}>
         <div className={RatingModalStyles.modal}>
@@ -153,7 +149,7 @@ export default function EditIngredientModal({ ingredient, onClose, onSuccess }: 
 
                     <button
                         className={ButtonStyles.smallButton}
-                        disabled={quantity <= stepSize}
+                        disabled={(quantity ?? 0) <= stepSize}
                         onMouseDown={() => startHold(-stepSize)}
                         onMouseUp={stopHold}
                         onMouseLeave={stopHold}

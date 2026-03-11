@@ -53,7 +53,7 @@
 .inputs {
     display: flex;
     flex-direction: column;
-    max-width: 12rem;
+    max-width: 15rem;
     gap: 1rem;
 }
 
