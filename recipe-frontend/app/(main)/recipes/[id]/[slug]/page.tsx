@@ -56,6 +56,47 @@ export default function RecipeDetail() {
         fetchRecipe();
     }, [recipeId, loggedUserId]);
 
+    const hasMissingIngredients = recipe?.ingredients.some(
+        (ingredient) => ingredient.isInInventory === false && ingredient.isInShoppingList === false
+    );
+
+    const handleAddMissingToShoppingList = async () => {
+        if (!loggedUserId) return;
+        if (!recipe) return
+
+        const missingIngredients = recipe.ingredients.filter(
+            (ingredient) => ingredient.isInInventory === false && ingredient.isInShoppingList === false
+        );
+
+        if (missingIngredients.length === 0) return;
+
+        console.log(missingIngredients);
+
+        console.log(recipe);
+        
+        
+
+        try {
+            await Promise.all(
+                missingIngredients.map((ingredient) =>
+                    fetch(`${API_URL}/api/listingredients`, {
+                        method: "POST",
+                        headers: { "Content-Type": "application/json" },
+                        body: JSON.stringify({
+                            userId: loggedUserId,
+                            ingredientId: ingredient.ingredientId,
+                            quantity: ingredient.quantity ?? null,
+                            quantityUnitId: ingredient.quantityUnit?.id ?? null,
+                        }),
+                    })
+                )
+            );
+            await fetchRecipe();
+        } catch (err) {
+            console.error(err);
+        }
+    };
+
     if (!recipe) {
         return <p>Recipe not found</p>
     }
@@ -108,33 +149,44 @@ export default function RecipeDetail() {
     
             
             <h2 className={DetailStyles.subtitle}>Ingredients</h2>
+            
+            <div className={DetailStyles.content}>
 
-            <button className={ButtonStyles.smallButton}>Add missing to shopping list</button>
+                <ul className={DetailStyles.ingredients}>
+                    {recipe.ingredients.map((ingredient) => (
+                        <li className={DetailStyles.ingredient} key={ingredient.id}>
+                            {ingredient.isInInventory !== undefined && (
+                                <span className={DetailStyles.ingredientIcon}>
+                                    {ingredient.isInInventory ? <Checkmark/> : 
+                                        ingredient.isInShoppingList ? <Cart /> :
+                                    <Cross />}
+                                </span>
+                            )}
 
-            <ul className={DetailStyles.ingredients}>
-                {recipe.ingredients.map((ingredient) => (
-                    <li className={DetailStyles.ingredient} key={ingredient.id}>
-                        {ingredient.isInInventory !== undefined && (
-                            <span className={DetailStyles.ingredientIcon}>
-                                {ingredient.isInInventory ? <Checkmark/> : 
-                                    ingredient.isInShoppingList ? <Cart /> :
-                                <Cross />}
-                            </span>
-                        )}
-
-                        {
-                            ingredient.quantity &&
-                            <p className={DetailStyles.ingredientAmount}>
-                                {formatQuantity(ingredient.quantity)}
-                                {ingredient.unit}
+                            {
+                                ingredient.quantity &&
+                                <p className={DetailStyles.ingredientAmount}>
+                                    {formatQuantity(ingredient.quantity)}
+                                    {ingredient.unit}
+                                </p>
+                            }
+                            <p className={DetailStyles.ingredientName}>
+                                {ingredient.ingredientName}
                             </p>
-                        }
-                        <p className={DetailStyles.ingredientName}>
-                            {ingredient.ingredientName}
-                        </p>
-                    </li>
-                ))}
-            </ul>
+                        </li>
+                    ))}
+                </ul>
+
+                {hasMissingIngredients && (
+                    <button
+                        className={ButtonStyles.smallButton}
+                        onClick={handleAddMissingToShoppingList}
+                        disabled={!loggedUserId}
+                    >
+                        Add to shopping list
+                    </button>
+                )}
+            </div>
             
             <h2 className={DetailStyles.subtitle}>Instructions</h2>
             <ul className={DetailStyles.steps}>
