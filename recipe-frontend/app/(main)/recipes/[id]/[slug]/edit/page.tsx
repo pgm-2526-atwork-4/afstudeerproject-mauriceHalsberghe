@@ -7,6 +7,7 @@ import { useParams, useRouter } from "next/navigation";
 import RecipeForm, { RecipeFormValues } from "@/app/components/RecipeForm";
 import AddRecipeStyles from "@/app/styles/pages/addrecipe.module.css";
 import EmptyView from "@/app/components/EmptyView";
+import { slugifyTitle } from "@/lib/slugifyTitle";
 
 type Diet = {
     id: number;
@@ -167,7 +168,8 @@ export default function EditRecipe() {
                 await fetch(`${API_URL}/api/Recipes/${recipeId}/image`, { method: "POST", body: formData });
             }
 
-            const slug = values.title.toLowerCase().trim().replace(/[^a-z0-9\s-]/g, "").replace(/\s+/g, "-");
+            const slug = slugifyTitle(values.title);
+
             router.push(`/recipes/${recipeId}/${slug}`);
         } catch (err) {
             console.error(err);

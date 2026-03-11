@@ -9,6 +9,7 @@ import { useRouter } from "next/navigation";
 import RecipeForm, { RecipeFormValues } from "@/app/components/RecipeForm";
 import AddRecipeStyles from "@/app/styles/pages/addrecipe.module.css";
 import EmptyView from "@/app/components/EmptyView";
+import { slugifyTitle } from "@/lib/slugifyTitle";
 
 export default function AddRecipe() {
     const auth = useContext(AuthContext);
@@ -52,7 +53,7 @@ export default function AddRecipe() {
 
             const createdRecipe = await res.json();
             const recipeId = createdRecipe.id;
-            const recipeSlug = createdRecipe.title.toLowerCase().trim().replace(/[^a-z0-9\s-]/g, "").replace(/\s+/g, "-");
+            const recipeSlug = slugifyTitle(createdRecipe.title);
 
             if (pendingImageFile && recipeId) {
                 const formData = new FormData();
