@@ -159,7 +159,6 @@ public class UsersController : ControllerBase
         if (user == null)
             return NotFound("User not found.");
 
-        // Create unique filename
         var fileName = $"{Guid.NewGuid()}{Path.GetExtension(file.FileName)}";
 
         var uploadPath = Path.Combine(
@@ -185,7 +184,6 @@ public class UsersController : ControllerBase
         if (!allowedExtensions.Contains(extension))
             return BadRequest("Invalid file type.");
 
-        // Save relative path to database
         user.Avatar = $"{fileName}";
 
         await _context.SaveChangesAsync();

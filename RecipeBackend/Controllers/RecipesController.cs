@@ -140,11 +140,114 @@ public class RecipesController : ControllerBase
 
     [Authorize]
     [HttpPost]
-    public async Task<ActionResult<Recipe>> CreateRecipe(Recipe recipe)
+    public async Task<ActionResult<Recipe>> CreateRecipe(CreateRecipeDto dto)
     {
         var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
-        
+
+        var recipe = new Recipe
+        {
+            Title = dto.Title,
+            ImageUrl = dto.ImageUrl,
+            Time = dto.Time,
+            DietId = dto.DietId,
+            CuisineId = dto.CuisineId,
+            UserId = userId,
+            Steps = dto.Steps.Select(s => new Step
+            {
+                StepNumber = s.StepNumber,
+                Description = s.Description,
+            }).ToList(),
+            RecipeIngredients = dto.RecipeIngredients.Select(i => new RecipeIngredient
+            {
+                IngredientId = i.IngredientId,
+                Quantity = i.Quantity,
+                QuantityUnitId = i.QuantityUnitId,
+            }).ToList(),
+        };
+
         _context.Recipes.Add(recipe);
+        await _context.SaveChangesAsync();
+        return Ok(recipe);
+    }
+
+    
+    [HttpPost("{id}/image")]
+    public async Task<IActionResult> UploadRecipeImage(int id, IFormFile file)
+    {
+        if (file == null || file.Length == 0)
+            return BadRequest("No file uploaded.");
+
+        var allowedExtensions = new[] { ".jpg", ".jpeg", ".png", ".webp" };
+        var extension = Path.GetExtension(file.FileName).ToLower();
+        if (!allowedExtensions.Contains(extension))
+            return BadRequest("Invalid file type.");
+
+        var recipe = await _context.Recipes.FindAsync(id);
+        if (recipe == null)
+            return NotFound("Recipe not found.");
+
+        var fileName = $"{Guid.NewGuid()}{extension}";
+
+        var uploadPath = Path.Combine(
+            Directory.GetCurrentDirectory(),
+            "wwwroot", "uploads", "recipe-images"
+        );
+
+        if (!Directory.Exists(uploadPath))
+            Directory.CreateDirectory(uploadPath);
+
+        var filePath = Path.Combine(uploadPath, fileName);
+
+        using (var stream = new FileStream(filePath, FileMode.Create))
+        {
+            await file.CopyToAsync(stream);
+        }
+
+        recipe.ImageUrl = fileName;
+        await _context.SaveChangesAsync();
+
+        return Ok(new { imageUrl = recipe.ImageUrl });
+    }
+
+    [Authorize]
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateRecipe(int id, CreateRecipeDto dto)
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        var recipe = await _context.Recipes
+            .Include(r => r.Steps)
+            .Include(r => r.RecipeIngredients)
+            .FirstOrDefaultAsync(r => r.Id == id);
+
+        if (recipe == null)
+            return NotFound();
+
+        if (recipe.UserId != userId)
+            return Forbid();
+
+        recipe.Title = dto.Title;
+        recipe.ImageUrl = dto.ImageUrl;
+        recipe.Time = dto.Time;
+        recipe.DietId = dto.DietId;
+        recipe.CuisineId = dto.CuisineId;
+
+        _context.Steps.RemoveRange(recipe.Steps);
+        _context.RecipeIngredients.RemoveRange(recipe.RecipeIngredients);
+
+        recipe.Steps = dto.Steps.Select(s => new Step
+        {
+            StepNumber = s.StepNumber,
+            Description = s.Description,
+        }).ToList();
+
+        recipe.RecipeIngredients = dto.RecipeIngredients.Select(i => new RecipeIngredient
+        {
+            IngredientId = i.IngredientId,
+            Quantity = i.Quantity,
+            QuantityUnitId = i.QuantityUnitId,
+        }).ToList();
+
         await _context.SaveChangesAsync();
         return Ok(recipe);
     }

@@ -166,7 +166,7 @@ export default function AddIngredientHeader({ postUrl, onSuccess }: Props) {
             ))}
           </select>
         </div>
-        </div>
+      </div>
     )}
 
     {error && <p className={IngredientStyles.error}>{error}</p>}

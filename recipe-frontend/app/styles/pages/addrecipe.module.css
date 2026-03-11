@@ -1,0 +1,207 @@
+.page {
+    margin: 1rem;
+    display: flex;
+    flex-direction: column;
+    margin-bottom: 7rem;
+}
+
+.title {
+    font-size: 1.2rem;
+    border-bottom: 2px solid var(--gray-200);
+    padding-bottom: 1rem;
+    margin-bottom: 1rem;
+    padding-left: 1rem;
+}
+
+.form {
+    display: flex;
+    flex-direction: column;
+    gap: 1.5rem;
+}
+
+.label, .labelDuration {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    width: 100%;
+    color: var(--gray-300);
+}
+
+.labelDuration {
+    width: 10rem;
+}
+
+.input, .stepInput, .quantityInput {
+    flex: 1;
+    padding: 0.25rem 1rem;
+    display: flex;
+    border-radius: 2rem;
+    border: 2px solid var(--gray-200);
+    color: var(--black);
+}
+
+.quantityInput {
+    flex: 0;
+    width: 6.5rem;
+    border: 2px solid var(--gray-200);
+}
+
+.divs {
+    margin-top: 1rem;
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+}
+
+.buttons {
+    display: flex;
+    flex-direction: row;
+    gap: 1rem;
+    justify-content: center;
+    margin: 0 auto;
+    margin-top: 2rem;
+}
+
+.select {
+    cursor: pointer;
+    padding: 0 0.5rem;
+    height: 36px;
+    display: flex;
+    border-radius: 2rem;
+    border: 2px solid var(--green-200);
+    color: var(--green-200);
+    font-size: 1rem;
+    font-weight: 500;
+
+    option {
+        font-size: 1rem;
+    }
+
+    &:focus-visible {
+        outline: none;
+    }
+}
+
+.ingredients {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+}
+
+.ingredient {
+    display: flex;
+    gap: 0.5rem;
+    width: 100%;
+
+    div:first-child {
+        width: 100%;
+    }
+}
+
+.button {
+    width: 100%;
+}
+
+.steps {
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    margin-bottom: 1rem;
+}
+
+.step {
+    display: flex;
+    gap: 1rem;
+    flex-direction: row;
+}
+
+.stepInput {
+    resize: vertical;
+    width: 100%;
+    border-radius: 1rem;
+    min-height: 36px;
+    height: max-content;
+    field-sizing: content;
+}
+
+.stepNumber {
+    background-color: var(--gray-200);
+    min-width: 28px;
+    height: 28px;
+    font-size: 1.1rem;
+    text-align: center;
+    border-radius: 2rem;
+    margin-top: 0.25rem;
+}
+
+.imageUpload {
+    max-width: 500px;
+    color: var(--gray-300);
+    display: flex;
+    flex-direction: column;
+    gap: 0.5rem;
+    cursor: pointer;
+
+    input {
+        position: absolute;
+        opacity: 0;
+        cursor: pointer;
+    }
+
+}
+
+.image {
+    position: relative;
+    pointer-events: none;
+
+    img {
+        pointer-events: none;
+        border-radius: 1rem;
+        aspect-ratio: 5/3;
+        object-fit: cover;
+        object-position: center;
+        transition: filter 0.3s ease;
+    }
+}
+
+.uploadIcon {
+    position: absolute;
+    height: 10rem;
+    left: 50%;
+    top: 50%;
+    transform: translate(-50%, -50%);
+    transition: opacity 0.3s ease;
+
+    opacity: 0.8;
+
+    color: var(--white);
+    stroke: var(--black);
+    stroke-width: 2;
+    paint-order: stroke fill;
+}
+
+.progress {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  gap: 0.5rem;
+}
+
+.progressSubtitle {
+  color: var(--gray-300);
+}
+
+.progressBar {
+  background-color: var(--gray-200);
+  border-radius: 5rem;
+  height: 4px;
+  width: 100%;
+
+  span {
+    display: block;
+    height: 4px;
+    border-radius: 5rem;
+    background-color: var(--green-200);
+    transition: width 800ms ease;
+  }
+}

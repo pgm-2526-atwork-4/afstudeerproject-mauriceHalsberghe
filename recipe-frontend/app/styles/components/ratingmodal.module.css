@@ -12,7 +12,8 @@
     background: var(--white);
     border-radius: 12px;
     padding: 3rem 2rem;
-    max-width: 25rem;
+    max-width: 22rem;
+    min-width: 22rem;
     display: flex;
     align-items: center;
     flex-direction: column;
@@ -46,11 +47,13 @@
     align-items: center;
     margin-top: 1rem;
     gap: 1rem;
+    width: min-content;
 }
 
 .inputs {
     display: flex;
     flex-direction: column;
+    max-width: 12rem;
     gap: 1rem;
 }
 
@@ -75,6 +78,12 @@
 }
 
 .error {
-  font-style: italic;
-  color: var(--gray-300);
+    max-width: 300px;
+    font-style: italic;
+    color: var(--gray-300);
+}
+
+.quantityInputs {
+    display: flex;
+    gap: 0.5rem;
 }

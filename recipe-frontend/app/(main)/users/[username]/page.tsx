@@ -6,13 +6,13 @@ import { useParams } from "next/navigation";
 import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "@/context/AuthContext";
 import RecipeCard from "@/app/components/RecipeCard";
-import RecipeFilters, {
-  RecipeFiltersState,
-} from "@/app/components/RecipeFilters";
-import HomeStyles from "@/app/styles/pages/home.module.css";
+import RecipeFilters, { RecipeFiltersState } from "@/app/components/RecipeFilters";
 import EmptyView from "@/app/components/EmptyView";
-import { log } from "node:console";
 import Image from "next/image";
+
+import HomeStyles from "@/app/styles/pages/home.module.css";
+import ButtonsStyles from "@/app/styles/components/button.module.css"
+import Link from "next/link";
 
 type Diet = {
   id: number;
@@ -122,16 +122,26 @@ export default function Preferences() {
 
     return (
         <main className={HomeStyles.home}>
-            <div className={HomeStyles.userTitle}>
-                <Image
-                    className={HomeStyles.avatar}
-                    src={profileUser.avatar ? `${API_URL}/uploads/avatars/${profileUser.avatar}` : '/avatar.svg'} 
-                    alt={`${profileUser.username} avatar`}
-                    width={64}
-                    height={64}
-                    />
-                <h1 className={HomeStyles.title}>{profileUser?.username}&apos;s Recipes</h1>
+
+            <div className={HomeStyles.header}>
+                <div className={HomeStyles.userTitle}>
+                    <Image
+                        className={HomeStyles.avatar}
+                        src={profileUser.avatar ? `${API_URL}/uploads/avatars/${profileUser.avatar}` : '/avatar.svg'} 
+                        alt={`${profileUser.username} avatar`}
+                        width={64}
+                        height={64}
+                        />
+                    <h1 className={HomeStyles.title}>{profileUser?.username}&apos;s Recipes</h1>
+
+
+                </div>
+
+                {loggedUserId === profileUser.id &&
+                    <Link href={'/recipes/add'} className={ButtonsStyles.button}>Create recipe</Link>
+                }
             </div>
+
 
             <RecipeFilters filters={filters} onChange={setFilters} onlyUsersFilter={false} />
 
