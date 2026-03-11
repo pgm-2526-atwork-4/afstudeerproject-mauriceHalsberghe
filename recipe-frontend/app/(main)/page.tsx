@@ -38,6 +38,7 @@ type Recipe = {
   diet?: Diet;
   cuisine?: Cuisine;
   user?: User;
+  missingIngredientCount?: number | null;
 };
 
 export default function Home() {
@@ -51,6 +52,7 @@ export default function Home() {
     selectedCuisine: 0,
     time: 15,
     onlyUsers: false,
+    onlyInStock: false,
     selectedSort: 1,
   });
 
@@ -100,11 +102,15 @@ export default function Home() {
       const matchesOnlyUsers =
         !filters.onlyUsers || recipe.user !== null;
 
+      const matchesOnlyIngredients = 
+        !filters.onlyInStock || recipe.missingIngredientCount === 0;
+
       return (
         matchesDiet &&
         matchesCuisine &&
         matchesTitle &&
-        matchesOnlyUsers
+        matchesOnlyUsers &&
+        matchesOnlyIngredients
       );
     })
     .sort((a, b) => {
@@ -112,9 +118,15 @@ export default function Home() {
         return (b.averageRating ?? 0) - (a.averageRating ?? 0);
       }
 
-      if (filters.selectedSort === 2) {
+      else if (filters.selectedSort === 2) {
         return a.title.localeCompare(b.title);
       }
+
+      else if (filters.selectedSort === 3) {
+      const missingA = a.missingIngredientCount ?? Infinity;
+      const missingB = b.missingIngredientCount ?? Infinity;
+      return missingA - missingB;
+    }
 
       return 0;
     });

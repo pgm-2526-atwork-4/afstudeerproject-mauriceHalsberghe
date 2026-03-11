@@ -21,6 +21,7 @@ export type RecipeFiltersState = {
   selectedCuisine: number;
   time: number;
   onlyUsers: boolean;
+  onlyInStock: boolean;
   selectedSort: number;
 };
 
@@ -110,6 +111,20 @@ export default function RecipeFilters({ filters, onChange, onlyUsersFilter }: Pr
             />
             <output>{displayTime}</output>
           </div> */}
+
+          <div className={filtersStyles.checkbox}>
+            <input
+              type="checkbox"
+              id="ingredientsCheck"
+              className={filtersStyles.checkboxInput}
+              checked={filters.onlyInStock}
+              onChange={(e) => update({ onlyInStock: e.target.checked })}
+            />
+
+            <label className={filtersStyles.checkboxLabel} htmlFor="ingredientsCheck" >
+              In stock
+            </label>
+          </div>
           
           {onlyUsersFilter && 
 
@@ -133,6 +148,7 @@ export default function RecipeFilters({ filters, onChange, onlyUsersFilter }: Pr
             className={filtersStyles.select}
           >
             <option value={1}>Sort by Rating</option>
+            <option value={3}>Available ingredients</option>
             <option value={2}>Sort from A-Z</option>
           </select>
 
