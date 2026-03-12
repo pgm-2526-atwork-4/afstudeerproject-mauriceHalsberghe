@@ -68,7 +68,7 @@ export default function EditRecipe() {
         imageUrl: recipe.imageUrl ?? "/recipe.jpg",
         steps: recipe.steps
             .sort((a, b) => a.stepNumber - b.stepNumber)
-            .map((s) => ({ id: s.id, description: s.description })),
+            .map((s, index) => ({ id: s.id, stepNumber: index + 1, description: s.description })),
         ingredients: recipe.ingredients.map((ing, index) => {
             const unit = units.find(
                 u => u.shortName.toLowerCase() === ing.unit?.toLowerCase()
@@ -77,7 +77,7 @@ export default function EditRecipe() {
             return {
                 id: index,
                 ingredient: {
-                    value: ing.id,
+                    value: ing.ingredientId,
                     label: ing.ingredientName,
                     alwaysInStock: false,
                 },

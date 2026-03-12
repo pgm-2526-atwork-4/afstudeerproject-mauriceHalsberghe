@@ -1,22 +1,18 @@
 "use client";
 
 import { API_URL } from "@/lib/api";
-import { useRef, useState, useEffect, useContext } from "react";
-import { AuthContext } from "@/context/AuthContext";
+import { useRef, useState, useEffect } from "react";
+import Image from "next/image";
+import Link from "next/link";
+
 import IngredientSearch, { IngredientOption } from "@/app/components/IngredientSearch";
+import { Cuisine, Diet } from "@/types/RecipeTypes";
+import { QuantityUnit } from "@/types/IngredientTypes";
 
 import ButtonStyles from "@/app/styles/components/button.module.css";
 import AddRecipeStyles from "@/app/styles/pages/addrecipe.module.css";
-import Image from "next/image";
-import UploadIcon from "@/public/upload.svg";
-import Link from "next/link";
-import { Cuisine, Diet } from "@/types/RecipeTypes";
 
-type QuantityUnit = {
-    id: number;
-    name: string;
-    shortName: string;
-};
+import UploadIcon from "@/public/upload.svg";
 
 export interface RecipeIngredient {
     id: number;
@@ -25,8 +21,9 @@ export interface RecipeIngredient {
     unitId: number | undefined;
 }
 
-export interface Step {
+type Step = {
     id: number;
+    stepNumber: number;
     description: string;
 }
 
@@ -61,9 +58,11 @@ export default function RecipeForm({ initialValues, onSubmit, submitLabel = "Sav
             unitId: i.unitId ? Number(i.unitId) : undefined
         })) ?? [{ id: 0, ingredient: null, quantity: undefined, unitId: undefined }]
     );
+
     const [steps, setSteps] = useState<Step[]>(
-        initialValues?.steps ?? [{ id: 1, description: "" }]
+        initialValues?.steps ?? [{ id: 1, stepNumber: 1, description: "" }]
     );
+    
     const [imageUrl, setImageUrl] = useState<string>(initialValues?.imageUrl ?? "/recipe.jpg");
     const [uploaded, setUploaded] = useState(false);
     const [pendingImageFile, setPendingImageFile] = useState<File | null>(null);
@@ -105,9 +104,13 @@ export default function RecipeForm({ initialValues, onSubmit, submitLabel = "Sav
         setIngredients((prev) => prev.map((i) => (i.id === id ? { ...i, unitId } : i)));
 
     const addStep = () =>
-        setSteps((prev) => [...prev, { id: newId(), description: "" }]);
+        setSteps((prev) => [...prev, { id: newId(), stepNumber: prev.length + 1, description: "" }]);
     const removeStep = () =>
-        setSteps((prev) => (prev.length > 1 ? prev.slice(0, -1) : prev));
+        setSteps((prev) =>
+            prev.length > 1
+                ? prev.slice(0, -1).map((s, i) => ({ ...s, stepNumber: i + 1 }))
+                : prev
+        );
     const updateStep = (id: number, description: string) =>
         setSteps((prev) => prev.map((s) => (s.id === id ? { ...s, description } : s)));
 
@@ -130,7 +133,11 @@ export default function RecipeForm({ initialValues, onSubmit, submitLabel = "Sav
 
         const invalidIngredient = ingredients
             .filter((i) => i.ingredient && !i.ingredient.alwaysInStock)
-            .some((i) => (i.quantity === undefined) !== (i.unitId === undefined));
+            .some((i) => {
+                const hasQuantity = i.quantity !== undefined && i.quantity !== null;
+                const hasUnit = i.unitId !== undefined && i.unitId !== null && i.unitId !== ("" as unknown);
+                return hasQuantity !== hasUnit;
+            });
 
         if (invalidIngredient) {
             setInternalError("Please fill both quantity and unit for each ingredient, or leave both empty.");
