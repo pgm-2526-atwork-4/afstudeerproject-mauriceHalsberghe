@@ -92,5 +92,43 @@ public class ListIngredientsController : ControllerBase
 
         return Ok();
     }
+
+    [HttpPut("{id}")]
+    public async Task<IActionResult> UpdateIngredient(int id, UpdateListIngredientDto dto)
+    {
+        var item = await _context.ListIngredients
+            .Include(i => i.Ingredient)
+            .FirstOrDefaultAsync(i => i.Id == id);
+
+        if (item == null)
+            return NotFound("List ingredient not found.");
+
+        if (!string.IsNullOrWhiteSpace(dto.IngredientName) &&
+            !string.Equals(item.Ingredient.Name, dto.IngredientName, StringComparison.OrdinalIgnoreCase))
+        {
+            item.Ingredient.Name = dto.IngredientName;
+        }
+
+        item.Quantity = dto.Quantity;
+        item.QuantityUnitId = dto.QuantityUnitId;
+
+        await _context.SaveChangesAsync();
+
+        return Ok(item);
+    }
+
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteListIngredient(int id)
+    {
+        var item = await _context.ListIngredients.FindAsync(id);
+
+        if (item == null)
+            return NotFound("Inventory ingredient not found.");
+
+        _context.ListIngredients.Remove(item);
+        await _context.SaveChangesAsync();
+
+        return Ok();
+    }
     
 }

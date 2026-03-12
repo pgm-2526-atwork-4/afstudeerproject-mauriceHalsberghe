@@ -27,3 +27,9 @@ public record UpdateInventoryIngredientDto(
     decimal? Quantity,
     int? QuantityUnitId
 );
+
+public record UpdateListIngredientDto(
+    string IngredientName,
+    decimal? Quantity,
+    int? QuantityUnitId
+);
