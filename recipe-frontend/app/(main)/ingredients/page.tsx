@@ -243,6 +243,7 @@ export default function Ingredients() {
       {editingIngredient && (
         <EditIngredientModal
           ingredient={editingIngredient}
+          type="InventoryIngredient"
           onClose={() => {setEditingIngredient(null); setShowIngredientOptions(null);}}
           onSuccess={fetchIngredients}
         />
@@ -251,6 +252,7 @@ export default function Ingredients() {
       {deletingId !== null && (
         <DeleteIngredientModal
           ingredientId={deletingId}
+          type="InventoryIngredient"
           onClose={() => {
             setDeletingId(null);
             setShowIngredientOptions(null);

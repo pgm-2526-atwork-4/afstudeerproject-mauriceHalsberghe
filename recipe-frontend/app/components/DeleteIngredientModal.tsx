@@ -7,12 +7,14 @@ import ButtonStyles from '@/app/styles/components/button.module.css';
 
 type Props = {
   ingredientId: number;
+  type: string;
   onClose: () => void;
   onSuccess: () => void;
 };
 
 export default function DeleteIngredientModal({
   ingredientId,
+  type,
   onClose,
   onSuccess,
 }: Props) {
@@ -24,7 +26,7 @@ export default function DeleteIngredientModal({
     setError(null);
 
     try {
-      const res = await fetch(`${API_URL}/api/InventoryIngredient/${ingredientId}`, {
+      const res = await fetch(`${API_URL}/api/${type}/${ingredientId}`, {
         method: "DELETE",
       });
 
@@ -53,7 +55,7 @@ export default function DeleteIngredientModal({
 
         <div className={RatingModalStyles.text}>
           <h2 className={RatingModalStyles.title}>Delete Ingredient</h2>
-          <p className={RatingModalStyles.subtitle}>Are you sure you want to remove this ingredient from your inventory?</p>
+          <p className={RatingModalStyles.subtitle}>Are you sure you want to remove this ingredient?</p>
         </div>
 
         {error && <p className={RatingModalStyles.error}>{error}</p>}

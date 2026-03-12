@@ -9,11 +9,12 @@ import { InventoryIngredient, QuantityUnit } from "@/types/IngredientTypes";
 
 type Props = {
     ingredient: InventoryIngredient;
+    type: string;
     onClose: () => void;
     onSuccess: () => void;
 };
 
-export default function EditIngredientModal({ ingredient, onClose, onSuccess }: Props) {
+export default function EditIngredientModal({ ingredient, type, onClose, onSuccess }: Props) {
     const [name, setName] = useState(ingredient.ingredient.name);
     const [quantity, setQuantity] = useState<number | undefined>(ingredient.quantity);
     const [unitId, setUnitId] = useState<number | undefined>(ingredient.quantityUnit?.id);
@@ -75,7 +76,7 @@ export default function EditIngredientModal({ ingredient, onClose, onSuccess }: 
         setError(null);
 
         try {
-            const res = await fetch(`${API_URL}/api/InventoryIngredient/${ingredient.id}`, {
+            const res = await fetch(`${API_URL}/api/${type}/${ingredient.id}`, {
                 method: "PUT",
                 headers: { "Content-Type": "application/json" },
                 body: JSON.stringify({
@@ -84,6 +85,9 @@ export default function EditIngredientModal({ ingredient, onClose, onSuccess }: 
                     quantityUnitId: unitId ?? null,
                 }),
             });
+
+            console.log(res);
+            
 
             if (!res.ok) {
                 setError("Failed to update ingredient. Please try again.");

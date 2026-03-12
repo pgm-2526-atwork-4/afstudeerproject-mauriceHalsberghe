@@ -210,6 +210,9 @@
   height: 2rem;
   color: var(--gray-300);
   cursor: pointer;
+  path {
+      stroke-width: 1px;
+    }
 }
 
 .deleteBtn:active {

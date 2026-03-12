@@ -12,10 +12,15 @@ import EmptyView from "@/app/components/EmptyView";
 import IngredientStyles from "@/app/styles/pages/ingredients.module.css";
 import ButtonStyles from "@/app/styles/components/button.module.css";
 
+import EditIngredientModal from "@/app/components/EditIngredientModal";
+import DeleteIngredientModal from "@/app/components/DeleteIngredientModal";
+
 import CartIcon from '@/public/cart.svg'
+import EditIcon from "@/public/pencil.svg";
+import TrashIcon from "@/public/trash.svg";
 
 import { formatQuantity } from "@/lib/formatQuantity";
-import { ListIngredient } from "@/types/IngredientTypes";
+import { InventoryIngredient, ListIngredient } from "@/types/IngredientTypes";
 
 export default function ShoppingList() {
     const [loading, setLoading] = useState(true);
@@ -23,6 +28,11 @@ export default function ShoppingList() {
 
     const uncheckedIngredients = ingredients.filter((i) => !i.checked);
     const checkedIngredients = ingredients.filter((i) => i.checked);
+
+    const [showIngredientOptions, setShowIngredientOptions ] = useState<number | null>(null);
+    const [editingIngredient, setEditingIngredient] = useState<InventoryIngredient | null>(null);
+    const [deletingId, setDeletingId] = useState<number | null>(null);
+    const [deleteLoading, setDeleteLoading] = useState(false);
 
     const auth = useContext(AuthContext);
     const loggedUserId = auth?.user?.id;
@@ -144,7 +154,15 @@ export default function ShoppingList() {
                 {uncheckedIngredients.length > 0 && (
                     <ul className={IngredientStyles.list}>
                         {uncheckedIngredients.map((ingredient) => (
-                            <li className={IngredientStyles.ingredient} key={ingredient.id}>
+                            <li 
+                                className={IngredientStyles.ingredient} 
+                                key={ingredient.id}
+                                onClick={() =>
+                                    setShowIngredientOptions(prev =>
+                                    prev === ingredient.id ? null : ingredient.id
+                                    )
+                                }
+                            >
                                 <div className={IngredientStyles.ingredientSign}>
                                     <Checkbox
                                         initialChecked={ingredient.checked}
@@ -155,11 +173,38 @@ export default function ShoppingList() {
                                     <p>{ingredient.ingredient.name}</p>
                                 </div>
 
-                                {ingredient.quantity != null && ingredient.quantityUnit && (
-                                    <p className={IngredientStyles.ingredientQuantity}>
-                                        {formatQuantity(ingredient.quantity)} {ingredient.quantityUnit?.shortName ?? ""}
-                                    </p>
-                                )}
+                                {
+                                    showIngredientOptions !== ingredient.id ? 
+                                        <>
+                                            {ingredient.quantity != null && ingredient.quantityUnit && (
+                                            <p className={IngredientStyles.ingredientQuantity}>
+                                                {formatQuantity(ingredient.quantity)} {ingredient.quantityUnit?.shortName ?? ""}
+                                            </p>
+                                            )}
+                                        </>
+                                    :
+
+                                    <div className={IngredientStyles.buttons}>
+                                        {!ingredient.ingredient.alwaysInStock && (
+                                            <button
+                                                className={IngredientStyles.editBtn}
+                                                onClick={() => setEditingIngredient(ingredient)}
+                                                aria-label="Edit ingredient"
+                                            >
+                                                <EditIcon />
+                                            </button>
+                                        )}
+                                        <button
+                                        className={IngredientStyles.deleteBtn}
+                                        onClick={() => setDeletingId(ingredient.id)}
+                                        aria-label="Delete ingredient"
+                                        >
+                                        <TrashIcon />
+                                        </button>
+                                    </div>
+
+                                }
+                                
                             </li>
                         ))}
                     </ul>
@@ -210,6 +255,28 @@ export default function ShoppingList() {
                     </button>
                 </div>
             )}
+
+            {editingIngredient && (
+                <EditIngredientModal
+                    ingredient={editingIngredient}
+                    type="ListIngredients"
+                    onClose={() => {setEditingIngredient(null); setShowIngredientOptions(null);}}
+                    onSuccess={fetchShoppingList}
+                />
+            )}
+            
+            {deletingId !== null && (
+                <DeleteIngredientModal
+                    ingredientId={deletingId}
+                    type="ListIngredients"
+                    onClose={() => {
+                    setDeletingId(null);
+                    setShowIngredientOptions(null);
+                    }}
+                    onSuccess={fetchShoppingList}
+                />
+            )}
+
         </main>
     );
 }
