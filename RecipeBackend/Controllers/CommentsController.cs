@@ -19,11 +19,25 @@ public class CommentsController : ControllerBase
     }
  
     [HttpGet("recipe/{recipeId}")]
-    public async Task<ActionResult<IEnumerable<Comment>>> GetCommentsByRecipe(int recipeId)
+    public async Task<ActionResult<IEnumerable<CommentDto>>> GetCommentsByRecipe(int recipeId)
     {
         return await _context.Comments
             .Where(c => c.RecipeId == recipeId)
             .OrderBy(c => c.CreatedAt)
+            .Include(c => c.User)
+            .Select(c => new CommentDto
+            {
+                Id = c.Id,
+                Message = c.Message,
+                CreatedAt = c.CreatedAt,
+                RecipeId = c.RecipeId,
+                User = new CommentUserDto
+                {
+                    Id = c.User.Id,
+                    Username = c.User.Username,
+                    Avatar = c.User.Avatar
+                }
+            })
             .ToListAsync();
     }
  

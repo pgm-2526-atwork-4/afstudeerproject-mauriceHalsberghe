@@ -8,4 +8,6 @@ public class Comment
     public required string Message { get; set; }
     public int? CommentId { get; set; }
     public DateTime CreatedAt { get; set; } = DateTime.UtcNow;
+
+    public User User { get; set; }
 }
