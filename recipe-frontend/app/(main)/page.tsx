@@ -15,7 +15,6 @@ import { Recipe } from "@/types/RecipeTypes";
 export default function Home() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
   const [loading, setLoading] = useState(true);
-  const [mounted, setMounted] = useState(false);
 
   const [filters, setFilters] = useState<RecipeFiltersState>({
     search: "",
@@ -45,16 +44,11 @@ export default function Home() {
     }
   };
 
-  useEffect(() => {
-    setMounted(true);
-  }, []);
 
   useEffect(() => {
     if (auth?.loading) return;
     fetchRecipes();
   }, [loggedUserId, auth?.loading]);
-
-  if (!mounted) return <p>Loading...</p>;
 
   const filteredRecipes = recipes
     .filter((recipe) => {
@@ -102,9 +96,23 @@ export default function Home() {
       return 0;
     });
 
+  if (auth?.loading || loading) {
+    return <main className={HomeStyles.home}>
+        <div className={HomeStyles.header}>
+        </div>
+        <div className={HomeStyles.main}>
+            {[...Array(3)].map((_, i) => (
+                <div key={i} className={HomeStyles.skeletonCard} />
+            ))}
+        </div>
+    </main>;
+  }
+
   return (
     <main className={HomeStyles.home}>
-      <RecipeFilters filters={filters} onChange={setFilters} onlyUsersFilter={true} />
+      <div className={HomeStyles.header}>
+        <RecipeFilters filters={filters} onChange={setFilters} onlyUsersFilter={true} />
+      </div>
 
       {loading ? (
         <p>Loading recipes...</p>

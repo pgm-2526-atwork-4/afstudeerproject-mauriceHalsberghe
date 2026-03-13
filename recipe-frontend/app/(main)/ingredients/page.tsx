@@ -132,6 +132,19 @@ export default function Ingredients() {
     }))
     .filter((group) => group.items.length > 0);
 
+  if (auth?.loading || loading) {
+    return <main className={IngredientStyles.page}>
+        <div className={IngredientStyles.header}>
+            <h1 className={IngredientStyles.title}><AppleIcon />Shopping List</h1>
+        </div>
+        <div className={IngredientStyles.main}>
+            {[...Array(5)].map((_, i) => (
+                <div key={i} className={IngredientStyles.skeletonRow} />
+            ))}
+        </div>
+    </main>;
+  }
+
   if (!loggedUserId) {
     return <EmptyView title='Not logged in' text="Log in to add ingredients" btnText='Log In' btnUrl='/login' icon="profile" />
   }
