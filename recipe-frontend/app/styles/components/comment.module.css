@@ -1,0 +1,52 @@
+.page {
+    margin-top: 1.5rem;
+}
+
+.title {
+    font-weight: 500;
+    color: var(--black);
+    margin-bottom: 1rem;
+}
+
+.comments {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem;
+}
+
+.commentCard {
+    display: flex;
+    align-items: start;
+    gap: 1rem;
+    color: var(--black);
+}
+
+.avatar {
+    border-radius: 5rem;
+    height: 2.5rem;
+    width: 2.5rem;
+    min-width: 2.5rem;
+    object-fit: cover;
+}
+
+.username {
+    font-weight: 500;
+}
+
+.text {
+    display: flex;
+    flex-direction: column;
+}
+
+.commentInfo {
+    display: flex;
+    flex-direction: row;
+    align-items: end;
+    gap: 0.3rem;
+
+}
+
+.date {
+    font-size: 14px;
+    color: var(--gray-300);
+}
