@@ -18,9 +18,12 @@ export type Ingredient = {
   quantity: number;
   unit: string;
   quantityUnit?: QuantityUnit;
+  quantityUnitId? : number;
   alwaysInStock: boolean;
   ingredientName: string;
-  isInInventory?: boolean;
+  hasPartialInInventory?: boolean;
+  hasEnoughInInventory? :boolean;
+  missingAmount?: number;
   isInShoppingList?: boolean;
   ingredientTypeId: number;
 };

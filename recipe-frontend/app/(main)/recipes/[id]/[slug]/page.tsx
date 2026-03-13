@@ -20,6 +20,8 @@ import { AuthContext } from "@/context/AuthContext";
 import Checkmark from "@/public/ingredient_stock.svg";
 import Cross from "@/public/ingredient_not_stock.svg";
 import Cart from "@/public/ingredient_cart.svg";
+import Apple from "@/public/ingredient_half_stock.svg";
+
 
 import { formatQuantity } from "@/lib/formatQuantity";
 import { slugifyTitle } from "@/lib/slugifyTitle";
@@ -52,13 +54,16 @@ export default function RecipeDetail() {
     }
   };
 
+  console.log(recipe);
+  
+
   useEffect(() => {
     fetchRecipe();
   }, [recipeId, loggedUserId]);
 
   const hasMissingIngredients = recipe?.ingredients.some(
     (ingredient) =>
-      ingredient.isInInventory === false &&
+      ingredient.hasEnoughInInventory === false &&
       ingredient.isInShoppingList === false,
   );
 
@@ -68,13 +73,14 @@ export default function RecipeDetail() {
 
     const missingIngredients = recipe.ingredients.filter(
       (ingredient) =>
-        ingredient.isInInventory === false &&
+        ingredient.hasEnoughInInventory === false &&
         ingredient.isInShoppingList === false,
     );
 
     if (missingIngredients.length === 0) return;
 
-    try {
+    try {      
+      
       await Promise.all(
         missingIngredients.map((ingredient) =>
           fetch(`${API_URL}/api/listingredients`, {
@@ -83,8 +89,8 @@ export default function RecipeDetail() {
             body: JSON.stringify({
               userId: loggedUserId,
               ingredientId: ingredient.ingredientId,
-              quantity: ingredient.quantity ?? null,
-              quantityUnitId: ingredient.quantityUnit?.id ?? null,
+              quantity: ingredient.alwaysInStock ? null : ingredient.missingAmount ?? ingredient.quantity ?? null,
+              quantityUnitId: ingredient.alwaysInStock ? null : ingredient.quantityUnitId ?? null,
             }),
           }),
         ),
@@ -97,7 +103,7 @@ export default function RecipeDetail() {
 
   if (!recipe) {
     return <p>Recipe not found</p>;
-  }
+  }  
 
   return (
     <div className={DetailStyles.page}>
@@ -163,12 +169,14 @@ export default function RecipeDetail() {
         <ul className={DetailStyles.ingredients}>
           {recipe.ingredients.map((ingredient) => (
             <li className={DetailStyles.ingredient} key={ingredient.id}>
-              {ingredient.isInInventory !== undefined && (
+              {ingredient.hasEnoughInInventory !== undefined && (
                 <span className={DetailStyles.ingredientIcon}>
-                  {ingredient.isInInventory ? (
+                  {ingredient.hasEnoughInInventory ? (
                     <Checkmark />
                   ) : ingredient.isInShoppingList ? (
                     <Cart />
+                  ) : ingredient.hasPartialInInventory ? (
+                    <Apple />
                   ) : (
                     <Cross />
                   )}
