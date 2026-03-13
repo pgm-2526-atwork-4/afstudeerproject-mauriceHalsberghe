@@ -139,6 +139,12 @@ public class RecipesController : ControllerBase
                                     .Sum(ii => ii.Quantity ?? 0) < (ri.Quantity ?? 0))
                             : null,
 
+                        MissingAmount = currentUserId.HasValue && !ri.Ingredient.AlwaysInStock
+                            ? Math.Max(0, (ri.Quantity ?? 0) - _context.InventoryIngredients
+                                .Where(ii => ii.UserId == currentUserId.Value && ii.IngredientId == ri.IngredientId)
+                                .Sum(ii => ii.Quantity ?? 0))
+                            : null,
+
                         IsInShoppingList = currentUserId.HasValue
                             ? _context.ListIngredients.Any(ii =>
                                 ii.UserId == currentUserId.Value &&

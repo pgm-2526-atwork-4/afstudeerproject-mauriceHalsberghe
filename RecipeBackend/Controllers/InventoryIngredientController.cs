@@ -70,18 +70,29 @@ public class InventoryIngredientController : ControllerBase
         if (invalidIds.Any())
             return BadRequest("error");
 
-        var newItems = dtos.Select(dto => new InventoryIngredient
+        foreach (var dto in dtos)
         {
-            UserId = dto.UserId,
-            IngredientId = dto.IngredientId,
-            Quantity = dto.Quantity,
-            QuantityUnitId = dto.QuantityUnitId
-        }).ToList();
+            var existing = await _context.InventoryIngredients
+                .FirstOrDefaultAsync(ii => ii.UserId == dto.UserId && ii.IngredientId == dto.IngredientId);
 
-        _context.InventoryIngredients.AddRange(newItems);
+            if (existing != null)
+            {
+                existing.Quantity = (existing.Quantity ?? 0) + (dto.Quantity ?? 0);
+            }
+            else
+            {
+                _context.InventoryIngredients.Add(new InventoryIngredient
+                {
+                    UserId = dto.UserId,
+                    IngredientId = dto.IngredientId,
+                    Quantity = dto.Quantity,
+                    QuantityUnitId = dto.QuantityUnitId
+                });
+            }
+        }
+
         await _context.SaveChangesAsync();
-
-        return Ok(newItems);
+        return Ok();
     }
 
     [HttpPut("{id}")]

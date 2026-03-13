@@ -29,9 +29,18 @@ public class RecipeIngredientDto
 {
     public int Id { get; set; }
     public int IngredientId { get; set; }
+
     public decimal? Quantity { get; set; }
+
+    public int? QuantityUnitId { get; set; }
     public string? Unit { get; set; }
+
     public string IngredientName { get; set; } = "";
-    public bool? IsInInventory { get; set; }
+    
+    public bool? HasEnoughInInventory  { get; set; }
+    public bool? HasPartialInInventory  { get; set; }
+    public decimal? MissingAmount  { get; set; }
+
     public bool? IsInShoppingList { get; set; }
+    public bool AlwaysInStock { get; set; }
 }
