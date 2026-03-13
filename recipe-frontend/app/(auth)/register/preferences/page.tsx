@@ -12,23 +12,7 @@ import AllergySelector from '@/app/components/AllergySelector';
 import PrefStyles from '@/app/styles/pages/preferences.module.css';
 import ButtonStyles from '@/app/styles/components/button.module.css';
 import AvatarUpload from '@/app/components/AvatarUpload';
-
-type Diet = {
-  id: number;
-  name: string;
-};
-
-enum AllergyType {
-    ingredient,
-    ingredientType
-}
-
-type Allergy = {
-  id: number;
-  typeId: number;
-  name: string;
-  type: AllergyType
-};
+import { Allergy, AllergyType, Diet } from "@/types/RecipeTypes";
 
 export default function RegisterPreferences() {
     const [step, setStep] = useState(1);

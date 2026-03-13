@@ -10,6 +10,8 @@ import Link from "next/link";
 import AuthStyles from '@/app/styles/pages/auth.module.css';
 import ButtonStyles from '@/app/styles/components/button.module.css';
 
+import LogoIcon from "@/public/mealio_logo.svg"
+
 export default function LoginPage() {
   const router = useRouter();
   const [form, setForm] = useState({
@@ -41,7 +43,8 @@ export default function LoginPage() {
 
   return (
     <div className={AuthStyles.page}>
-        <h1 className={AuthStyles.title}>Welcome to Mealio</h1>
+        <LogoIcon className={AuthStyles.logo} />
+        <h1 className={AuthStyles.title}>Welcome to <span>Mealio</span></h1>
         <h2 className={AuthStyles.subtitle}>Log into your account</h2>
 
         <form className={AuthStyles.form} onSubmit={handleSubmit}>
@@ -82,7 +85,6 @@ export default function LoginPage() {
         {error && <p className={AuthStyles.error}>{error}</p>}
 
         <p className={AuthStyles.text}>No account yet? <Link className={AuthStyles.link} href={'./register'}>Register</Link></p>
-
         <Link className={AuthStyles.link} href={'./'}>Continue as a Guest</Link>
     </div>
   );

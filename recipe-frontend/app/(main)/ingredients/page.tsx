@@ -13,33 +13,12 @@ import EditIngredientModal from "@/app/components/EditIngredientModal";
 import IngredientStyles from '@/app/styles/pages/ingredients.module.css';
 import DeleteIngredientModal from "@/app/components/DeleteIngredientModal";
 
+import { formatQuantity } from "@/lib/formatQuantity";
+
 import EditIcon from "@/public/pencil.svg";
 import TrashIcon from "@/public/trash.svg";
-
-type InventoryIngredient = {
-  id: number;
-  quantity?: number;
-  quantityUnit?: QuantityUnit;
-  ingredient: Ingredient;
-};
-
-type QuantityUnit = {
-  id: number;
-  name: string;
-  shortName: string;
-};
-
-type Ingredient = {
-  id: number;
-  name: string;
-  alwaysInStock: boolean;
-  ingredientTypeId: number;
-};
-
-type IngredientType = {
-  id: number;
-  name: string;
-}
+import AppleIcon from '@/public/apple.svg'
+import { IngredientType, InventoryIngredient } from "@/types/IngredientTypes";
 
 export default function Ingredients() {
   const [loading, setLoading] = useState(true);
@@ -153,6 +132,19 @@ export default function Ingredients() {
     }))
     .filter((group) => group.items.length > 0);
 
+  if (auth?.loading || loading) {
+    return <main className={IngredientStyles.page}>
+        <div className={IngredientStyles.header}>
+            <h1 className={IngredientStyles.title}><AppleIcon />Shopping List</h1>
+        </div>
+        <div className={IngredientStyles.main}>
+            {[...Array(5)].map((_, i) => (
+                <div key={i} className={IngredientStyles.skeletonRow} />
+            ))}
+        </div>
+    </main>;
+  }
+
   if (!loggedUserId) {
     return <EmptyView title='Not logged in' text="Log in to add ingredients" btnText='Log In' btnUrl='/login' icon="profile" />
   }
@@ -163,7 +155,8 @@ export default function Ingredients() {
 
       <div className={IngredientStyles.header}>
 
-        <h1 className={IngredientStyles.title}>Ingredient Inventory</h1>
+        <h1 className={IngredientStyles.title}><AppleIcon /> Ingredient Inventory</h1>
+
         <AddIngredientHeader
           postUrl={`${API_URL}/api/InventoryIngredient`}
           onSuccess={fetchIngredients}
@@ -224,7 +217,7 @@ export default function Ingredients() {
                           <>
                             {ingredient.quantity != null && ingredient.quantityUnit && (
                               <p className={IngredientStyles.ingredientQuantity}>
-                                {ingredient.quantity} {ingredient.quantityUnit?.shortName ?? ""}
+                                {formatQuantity(ingredient.quantity)} {ingredient.quantityUnit?.shortName ?? ""}
                               </p>
                             )}
                           </>
@@ -263,6 +256,7 @@ export default function Ingredients() {
       {editingIngredient && (
         <EditIngredientModal
           ingredient={editingIngredient}
+          type="InventoryIngredient"
           onClose={() => {setEditingIngredient(null); setShowIngredientOptions(null);}}
           onSuccess={fetchIngredients}
         />
@@ -271,6 +265,7 @@ export default function Ingredients() {
       {deletingId !== null && (
         <DeleteIngredientModal
           ingredientId={deletingId}
+          type="InventoryIngredient"
           onClose={() => {
             setDeletingId(null);
             setShowIngredientOptions(null);

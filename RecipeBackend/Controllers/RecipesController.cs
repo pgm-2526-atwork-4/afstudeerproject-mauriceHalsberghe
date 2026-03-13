@@ -114,14 +114,43 @@ public class RecipesController : ControllerBase
                     .Select(ri => new RecipeIngredientDto
                     {
                         Id = ri.Id,
+                        IngredientId = ri.IngredientId,
                         Quantity = ri.Quantity,
+                        QuantityUnitId = ri.QuantityUnitId,
                         Unit = ri.QuantityUnit != null ? ri.QuantityUnit.ShortName : null,
                         IngredientName = ri.Ingredient.Name,
-                        IsInInventory = currentUserId.HasValue
-                            ? _context.InventoryIngredients.Any(ii =>
+
+                        HasEnoughInInventory = currentUserId.HasValue
+                            ? (ri.Ingredient.AlwaysInStock
+                                ? _context.InventoryIngredients
+                                    .Any(ii => ii.UserId == currentUserId.Value && ii.IngredientId == ri.IngredientId)
+                                : _context.InventoryIngredients
+                                    .Where(ii => ii.UserId == currentUserId.Value && ii.IngredientId == ri.IngredientId)
+                                    .Sum(ii => ii.Quantity ?? 0) >= (ri.Quantity ?? 0))
+                            : null,
+
+                        HasPartialInInventory = currentUserId.HasValue
+                            ? (!ri.Ingredient.AlwaysInStock &&
+                                _context.InventoryIngredients
+                                    .Where(ii => ii.UserId == currentUserId.Value && ii.IngredientId == ri.IngredientId)
+                                    .Sum(ii => ii.Quantity ?? 0) > 0 &&
+                                _context.InventoryIngredients
+                                    .Where(ii => ii.UserId == currentUserId.Value && ii.IngredientId == ri.IngredientId)
+                                    .Sum(ii => ii.Quantity ?? 0) < (ri.Quantity ?? 0))
+                            : null,
+
+                        MissingAmount = currentUserId.HasValue && !ri.Ingredient.AlwaysInStock
+                            ? Math.Max(0, (ri.Quantity ?? 0) - _context.InventoryIngredients
+                                .Where(ii => ii.UserId == currentUserId.Value && ii.IngredientId == ri.IngredientId)
+                                .Sum(ii => ii.Quantity ?? 0))
+                            : null,
+
+                        IsInShoppingList = currentUserId.HasValue
+                            ? _context.ListIngredients.Any(ii =>
                                 ii.UserId == currentUserId.Value &&
                                 ii.IngredientId == ri.IngredientId)
-                            : null
+                            : null,
+                        AlwaysInStock = ri.Ingredient.AlwaysInStock
                     }).ToList(),
 
                 LikeCount = r.Likes.Count(),
@@ -250,5 +279,26 @@ public class RecipesController : ControllerBase
 
         await _context.SaveChangesAsync();
         return Ok(recipe);
+    }
+
+    [Authorize]
+    [HttpDelete("{id}")]
+    public async Task<IActionResult> DeleteRecipe(int id)
+    {
+        var userId = int.Parse(User.FindFirstValue(ClaimTypes.NameIdentifier)!);
+
+        var recipe = await _context.Recipes
+            .FirstOrDefaultAsync(r => r.Id == id);
+
+        if (recipe == null)
+            return NotFound();
+
+        if (recipe.UserId != userId)
+            return Forbid();
+
+        _context.Recipes.Remove(recipe);
+        await _context.SaveChangesAsync();
+
+        return NoContent();
     }
 }

@@ -10,35 +10,7 @@ import RecipeFilters, {
 } from "@/app/components/RecipeFilters";
 import HomeStyles from "@/app/styles/pages/home.module.css";
 import EmptyView from "@/app/components/EmptyView";
-
-type Diet = {
-  id: number;
-  name: string;
-};
-
-type Cuisine = {
-  id: number;
-  name: string;
-};
-
-type User = {
-  id: number;
-  username: string;
-  avatar: string;
-};
-
-type Recipe = {
-  id: number;
-  title: string;
-  imageUrl: string;
-  time: number;
-  likeCount: number;
-  isLikedByCurrentUser: boolean;
-  diet?: Diet;
-  cuisine?: Cuisine;
-  user?: User;
-  averageRating: number;
-};
+import { Recipe } from "@/types/RecipeTypes";
 
 export default function LikedRecipes() {
   const [recipes, setRecipes] = useState<Recipe[]>([]);
@@ -50,7 +22,8 @@ export default function LikedRecipes() {
     selectedCuisine: 0,
     time: 15,
     onlyUsers: false,
-    selectedSort: 1,
+    onlyInStock: false,
+    selectedSort: 3,
   });
 
   const auth = useContext(AuthContext);
@@ -84,12 +57,6 @@ export default function LikedRecipes() {
     fetchLikedRecipes();
   }, [loggedUserId, auth?.loading]);
 
-  if (auth?.loading || loading) return <p>Loading your favorites...</p>;
-
-  if (!loggedUserId) {
-    return <EmptyView title='Not logged in' text="Log in to see your liked recipes" btnText='Log In' btnUrl='/login' icon="profile" />
-  }
-
   const filteredRecipes = recipes.filter((recipe) => {
     const matchesDiet =
       filters.selectedDiet === 0 ||
@@ -106,6 +73,9 @@ export default function LikedRecipes() {
     const matchesOnlyUsers =
       !filters.onlyUsers || recipe.user !== null;
 
+    const matchesOnlyIngredients = 
+      !filters.onlyInStock || recipe.missingIngredientCount === 0;
+
     return (
       matchesDiet &&
       matchesCuisine &&
@@ -114,25 +84,54 @@ export default function LikedRecipes() {
     );
   });
 
+  if (auth?.loading || loading) {
+    return <main className={HomeStyles.home}>
+        <div className={HomeStyles.header}>
+        </div>
+        <div className={HomeStyles.main}>
+            {[...Array(3)].map((_, i) => (
+                <div key={i} className={HomeStyles.skeletonCard}>
+                  <span className={HomeStyles.skeletonCardInfo}>
+                    <span></span>
+                  </span>
+                </div>
+            ))}
+        </div>
+    </main>;
+  }
+
+  if (!loggedUserId) {
+    return <EmptyView title='Not logged in' text="Log in to see your liked recipes" btnText='Log In' btnUrl='/login' icon="profile" />
+  }
+
   return (
     <main className={HomeStyles.home}>
       <RecipeFilters filters={filters} onChange={setFilters} onlyUsersFilter={true} />
 
-      {filteredRecipes.length === 0 ? (
-        <EmptyView title='No Recipes found' text="Start exploring recipes and save the ones you love" btnText="Browse recipes" btnUrl="/" icon="recipe"/>
-      ) : (
-        <ul className={HomeStyles.recipes}>
-            {filteredRecipes.map((recipe) => (
-                <RecipeCard
-                key={recipe.id}
-                recipe={recipe}
-                onUnlike={(id) =>
-                    setRecipes((prev) => prev.filter((r) => r.id !== id))
-                }
-                />
-            ))}
-        </ul>
-      )}
+      {recipes.length === 0 ?
+          <EmptyView title='No Recipes found' text="Start exploring recipes and save the ones you love" btnText="Browse recipes" btnUrl="/" icon="recipe"/>
+
+        :
+      
+
+
+        filteredRecipes.length === 0 ? (
+          <EmptyView title="No recipes found" text="No recipes match your search" icon="recipe"/>
+        ) : (
+          <ul className={HomeStyles.recipes}>
+              {filteredRecipes.map((recipe) => (
+                  <RecipeCard
+                  key={recipe.id}
+                  recipe={recipe}
+                  onUnlike={(id) =>
+                      setRecipes((prev) => prev.filter((r) => r.id !== id))
+                  }
+                  />
+              ))}
+          </ul>
+        )
+      }
+
     </main>
   );
 }

@@ -5,57 +5,21 @@ import { useContext, useEffect, useState } from "react";
 import { AuthContext } from "@/context/AuthContext";
 import { useParams, useRouter } from "next/navigation";
 import RecipeForm, { RecipeFormValues } from "@/app/components/RecipeForm";
+import EmptyView from "@/app/components/EmptyView";
+import { slugifyTitle } from "@/lib/slugifyTitle";
+import { RecipeDetails } from "@/types/RecipeTypes";
+
 import AddRecipeStyles from "@/app/styles/pages/addrecipe.module.css";
-
-type Diet = {
-    id: number;
-    name: string;
-};
-
-type Cuisine = {
-    id: number;
-    name: string;
-};
-
-type User = {
-    id: number;
-    username: string;
-    avatar: string;
-};
-
-type Step = {
-    id: number;
-    stepNumber: number;
-    description: string;
-}
-
-type Ingredient = {
-    id: number;
-    quantity: number;
-    unit: string;
-    ingredientName: string;
-    isInInventory?: boolean;
-};
-
-type Recipe = {
-    id: number;
-    title: string;
-    imageUrl: string;
-    time: number;
-    diet?: Diet;
-    cuisine?: Cuisine;
-    user?: User;
-    steps: Step[];
-    ingredients: Ingredient[];
-    likeCount: number;
-    averageRating?: number;
-};
+import ButtonStyles from "@/app/styles/components/button.module.css";
+import ModalStyles from "@/app/styles/components/modal.module.css";
 
 export default function EditRecipe() {
-    const [recipe, setRecipe] = useState<Recipe | null>(null);
+    const [recipe, setRecipe] = useState<RecipeDetails | null>(null);
     const [loading, setLoading] = useState(true);
     const [error, setError] = useState("");
     const [units, setUnits] = useState<{ id: number; name: string; shortName: string }[]>([]);
+
+    const [showDeleteModal, setShowDeleteModal] = useState(false);
 
     const auth = useContext(AuthContext);
     const loggedUserId = auth?.user?.id;
@@ -95,7 +59,9 @@ export default function EditRecipe() {
         return 
     }
 
-    if (recipe?.user?.id !== loggedUserId) return <div>Can&apos;t edit this recipe</div>;
+    if (recipe?.user?.id !== loggedUserId) return (
+        <EmptyView title="No permission" text="You can't edit this recipe" icon="notfound" btnUrl="/" btnText="Home" />
+    );
 
 
     const initialValues: RecipeFormValues = {
@@ -106,7 +72,7 @@ export default function EditRecipe() {
         imageUrl: recipe.imageUrl ?? "/recipe.jpg",
         steps: recipe.steps
             .sort((a, b) => a.stepNumber - b.stepNumber)
-            .map((s) => ({ id: s.id, description: s.description })),
+            .map((s, index) => ({ id: s.id, stepNumber: index + 1, description: s.description })),
         ingredients: recipe.ingredients.map((ing, index) => {
             const unit = units.find(
                 u => u.shortName.toLowerCase() === ing.unit?.toLowerCase()
@@ -115,7 +81,7 @@ export default function EditRecipe() {
             return {
                 id: index,
                 ingredient: {
-                    value: ing.id,
+                    value: ing.ingredientId,
                     label: ing.ingredientName,
                     alwaysInStock: false,
                 },
@@ -164,7 +130,8 @@ export default function EditRecipe() {
                 await fetch(`${API_URL}/api/Recipes/${recipeId}/image`, { method: "POST", body: formData });
             }
 
-            const slug = values.title.toLowerCase().trim().replace(/[^a-z0-9\s-]/g, "").replace(/\s+/g, "-");
+            const slug = slugifyTitle(values.title);
+
             router.push(`/recipes/${recipeId}/${slug}`);
         } catch (err) {
             console.error(err);
@@ -172,9 +139,39 @@ export default function EditRecipe() {
         }
     };
 
+    const handleDelete = async () => {
+        setLoading(true);
+
+        try {
+            const res = await fetch(`${API_URL}/api/recipes/${recipeId}`, {
+                method: "DELETE",
+                headers: {
+                    Authorization: `Bearer ${localStorage.getItem("token")}`
+                }
+            });
+
+            if (!res.ok) {
+                setError("Failed to delete recipe. Please try again.");
+                return;
+            }
+
+            router.push("/");
+
+        } catch (err) {
+            console.error(err);
+            setError("Something went wrong. Please try again.");
+        } finally {
+            setLoading(false);
+            setShowDeleteModal(false);
+        }
+    };
+
     return (
         <main className={AddRecipeStyles.page}>
-            <h1 className={AddRecipeStyles.title}>Edit recipe</h1>
+            <div className={AddRecipeStyles.header}>
+                <h1 className={AddRecipeStyles.title}>Edit recipe</h1>
+                <button className={`${ButtonStyles.buttonRed} ${ButtonStyles.smallButton}`} onClick={() => setShowDeleteModal(true)}>Delete Recipe</button>
+            </div>
             { loading ? <p>Loading...</p> : 
                 <RecipeForm
                     key={recipe.id}
@@ -183,6 +180,40 @@ export default function EditRecipe() {
                     submitLabel="Update Recipe"
                     error={error}
                 />
+            }
+
+            {
+                showDeleteModal && 
+                <div className={ModalStyles.modalOverlay} onClick={() => setShowDeleteModal(false)}>
+                    <div className={ModalStyles.modal}>
+                        <div className={ModalStyles.text}>
+                        <h2 className={ModalStyles.title}>Delete Recipe</h2>
+                        <p className={ModalStyles.subtitle}>
+                            Are you sure you want to delete this recipe?
+                        </p>
+                        </div>
+
+                        {error && <p className={ModalStyles.error}>{error}</p>}
+
+                        <div className={ModalStyles.buttons}>
+                        <button
+                            className={ButtonStyles.secondaryButton}
+                            onClick={() => setShowDeleteModal(false)}
+                            disabled={loading}
+                        >
+                            Cancel
+                        </button>
+
+                        <button
+                            className={ButtonStyles.buttonRed}
+                            onClick={handleDelete}
+                            disabled={loading}
+                        >
+                            {loading ? "Deleting..." : "Delete"}
+                        </button>
+                        </div>
+                    </div>
+                    </div>
             }
         </main>
     );

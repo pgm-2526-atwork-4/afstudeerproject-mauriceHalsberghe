@@ -5,12 +5,17 @@
     margin-bottom: 7rem;
 }
 
-.title {
-    font-size: 1.2rem;
+.header {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
     border-bottom: 2px solid var(--gray-200);
     padding-bottom: 1rem;
     margin-bottom: 1rem;
-    padding-left: 1rem;
+}
+
+.title {
+    font-size: 1.2rem;
 }
 
 .form {

@@ -1,28 +1,49 @@
 "use client";
 
 import PrefStyles from '@/app/styles/pages/preferences.module.css';
+import { Diet } from '@/types/RecipeTypes';
 
-export type Diet = {
-  id: number;
-  name: string;
-};
 
-type DietSelectorProps = {
+type Props = {
   diets: Diet[];
   selectedDiet: number | null;
   onChange: (dietId: number | null) => void;
   disabled: boolean;
 };
 
-export default function DietSelector({ diets, selectedDiet, onChange, disabled}: DietSelectorProps) {
+export default function DietSelector({ diets, selectedDiet, onChange, disabled}: Props) {
 
-  const handleClick = (dietId: number) => {
+  const handleClick = (dietId: number | null) => {
     if (disabled) return;
     onChange(selectedDiet === dietId ? null : dietId);
   };
 
   return (
     <div className={PrefStyles.list}>
+
+      <div className={PrefStyles.radio}>
+        <input
+          id="diet-none"
+          value="none"
+          className={PrefStyles.radioInput}
+          type="radio"
+          disabled={disabled}
+          checked={selectedDiet === null}
+          onChange={() => {}}
+          onClick={() => handleClick(null)}
+        />
+        <label
+          htmlFor="diet-none"
+          className={PrefStyles.radioLabel}
+          onClick={(e) => {
+            e.preventDefault();
+            handleClick(null);
+          }}
+        >
+          No Diet
+        </label>
+      </div>
+
       {diets.map((diet) => (
         <div key={diet.id} className={PrefStyles.radio}>
           <input

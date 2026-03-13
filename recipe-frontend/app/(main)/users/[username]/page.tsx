@@ -13,36 +13,8 @@ import Image from "next/image";
 import HomeStyles from "@/app/styles/pages/home.module.css";
 import ButtonsStyles from "@/app/styles/components/button.module.css"
 import Link from "next/link";
-
-type Diet = {
-  id: number;
-  name: string;
-};
-
-type Cuisine = {
-  id: number;
-  name: string;
-};
-
-type User = {
-  id: number;
-  username: string;
-  avatar: string;
-};
-
-type Recipe = {
-  id: number;
-  title: string;
-  imageUrl: string;
-  time: number;
-  likeCount: number;
-  isLikedByCurrentUser: boolean;
-  diet?: Diet;
-  cuisine?: Cuisine;
-  user?: User;
-  averageRating: number;
-};
-
+import { Recipe } from "@/types/RecipeTypes";
+import { User } from "@/types/UserTypes";
 
 export default function Preferences() {
     const [recipes, setRecipes] = useState<Recipe[]>([]);
@@ -56,6 +28,7 @@ export default function Preferences() {
         selectedCuisine: 0,
         time: 15,
         onlyUsers: false,
+        onlyInStock: false,
         selectedSort: 1
     });
 

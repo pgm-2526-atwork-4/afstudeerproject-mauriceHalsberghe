@@ -23,10 +23,7 @@ export default function Checkbox({ initialChecked, userId, listIngredientId, onC
     }, [initialChecked]);
 
     const toggleCheck = async () => {
-        if (!userId) {
-            console.log("Log in to modify list");
-            return;
-        }
+        if (!userId) return;
 
         if (loading) return;
 

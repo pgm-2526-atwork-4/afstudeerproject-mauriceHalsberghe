@@ -14,12 +14,7 @@ import ButtonStyles from "@/app/styles/components/button.module.css";
 
 import PencilIcon from "@/public/edit.svg"
 import EmptyView from "@/app/components/EmptyView";
-
-type Diet = { id: number; name: string };
-
-enum AllergyType { ingredient, ingredientType }
-
-type Allergy = { id: number; typeId: number; name: string; type: AllergyType };
+import { Allergy, AllergyType, Diet } from "@/types/RecipeTypes";
 
 const ALLERGIES: Allergy[] = [
     { id: 1, typeId: 37, name: 'Gluten',  type: AllergyType.ingredient },

@@ -33,7 +33,6 @@ export default function LikeButton({
   const toggleLike = async () => {
     if (!userId) {
       setShowModal(true);
-      console.log("log in to like");
       return;
     }
 
@@ -98,8 +97,10 @@ export default function LikeButton({
             className={LikeButtonStyles.modal}
             onClick={(e) => e.stopPropagation()}
           >
-            <h2 className={LikeButtonStyles.modalTitle}>Not logged in</h2>
-            <p className={LikeButtonStyles.modalText}>Log in to like recipes</p>
+            <div className={LikeButtonStyles.text}>
+              <h2 className={LikeButtonStyles.title}>Not logged in</h2>
+              <p className={LikeButtonStyles.subtitle}>Log in to like recipes</p>
+            </div>
 
             <div className={LikeButtonStyles.buttons}>
               <button

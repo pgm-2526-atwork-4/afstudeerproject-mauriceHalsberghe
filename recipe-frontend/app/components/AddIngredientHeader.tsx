@@ -10,18 +10,7 @@ import IngredientStyles from "@/app/styles/pages/ingredients.module.css";
 import ButtonStyles from "@/app/styles/components/button.module.css";
 
 import { IngredientOption } from "@/app/components/IngredientSearch";
-
-type QuantityUnit = {
-  id: number;
-  name: string;
-  shortName: string;
-};
-
-type Ingredient = {
-  id: number;
-  name: string;
-  alwaysInStock: boolean;
-};
+import { QuantityUnit } from "@/types/IngredientTypes";
 
 type Props = {
   postUrl: string;

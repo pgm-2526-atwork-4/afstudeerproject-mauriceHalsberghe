@@ -7,37 +7,7 @@ import Link from 'next/link';
 import LikeButton from "./LikeButton";
 import { useContext } from 'react';
 import { AuthContext } from '@/context/AuthContext';
-
-
-type Diet = {
-  id: number;
-  name: string;
-};
-
-type Cuisine = {
-  id: number;
-  name: string;
-};
-
-type User = {
-  id: number;
-  username: string;
-  avatar: string;
-};
-
-type Recipe = {
-  id: number;
-  title: string;
-  imageUrl: string;
-  time: number;
-  likeCount: number;
-  isLikedByCurrentUser: boolean;
-  averageRating: number;
-  diet?: Diet;
-  cuisine?: Cuisine;
-  user?: User;
-  missingIngredientCount?: number | null;
-};
+import { Recipe } from "@/types/RecipeTypes";
 
 type Props = {
   recipe: Recipe;
@@ -45,7 +15,7 @@ type Props = {
 };
 
 function RecipeCard({ recipe, onUnlike }: Props) {
-  const auth = useContext(AuthContext);  
+  const auth = useContext(AuthContext);    
 
   return (
     <div className={RecipeCardStyles.card}>
@@ -54,7 +24,7 @@ function RecipeCard({ recipe, onUnlike }: Props) {
           className={RecipeCardStyles.image}
           width={400}
           height={200}
-          src={`${API_URL}/uploads/recipe-images/${recipe.imageUrl}`}
+          src={recipe.imageUrl === '/recipe.jpg' ? '/recipe.jpg' : `${API_URL}/uploads/recipe-images/${recipe.imageUrl}` }
           alt={recipe.title}
         />
         <div className={RecipeCardStyles.text}>

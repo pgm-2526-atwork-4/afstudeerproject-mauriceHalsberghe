@@ -5,12 +5,7 @@ import { API_URL } from "@/lib/api";
 import { useState } from "react";
 import { AsyncPaginate, LoadOptions } from "react-select-async-paginate";
 import { GroupBase } from "react-select";
-
-type Ingredient = {
-  id: number;
-  name: string;
-  alwaysInStock: boolean;
-};
+import { Ingredient } from "@/types/IngredientTypes";
 
 export type IngredientOption = {
   value: number;

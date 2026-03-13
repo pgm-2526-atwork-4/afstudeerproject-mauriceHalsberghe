@@ -2,17 +2,19 @@
 
 import { useState } from "react";
 import { API_URL } from "@/lib/api";
-import RatingModalStyles from '@/app/styles/components/ratingmodal.module.css';
-import ButtonStyles from '@/app/styles/components/button.module.css';
+import ModalStyles from "@/app/styles/components/modal.module.css";
+import ButtonStyles from "@/app/styles/components/button.module.css";
 
 type Props = {
   ingredientId: number;
+  type: string;
   onClose: () => void;
   onSuccess: () => void;
 };
 
 export default function DeleteIngredientModal({
   ingredientId,
+  type,
   onClose,
   onSuccess,
 }: Props) {
@@ -24,7 +26,7 @@ export default function DeleteIngredientModal({
     setError(null);
 
     try {
-      const res = await fetch(`${API_URL}/api/InventoryIngredient/${ingredientId}`, {
+      const res = await fetch(`${API_URL}/api/${type}/${ingredientId}`, {
         method: "DELETE",
       });
 
@@ -48,17 +50,18 @@ export default function DeleteIngredientModal({
   };
 
   return (
-    <div className={RatingModalStyles.modalOverlay} onClick={handleBackdropClick}>
-      <div className={RatingModalStyles.modal}>
-
-        <div className={RatingModalStyles.text}>
-          <h2 className={RatingModalStyles.title}>Delete Ingredient</h2>
-          <p className={RatingModalStyles.subtitle}>Are you sure you want to remove this ingredient from your inventory?</p>
+    <div className={ModalStyles.modalOverlay} onClick={handleBackdropClick}>
+      <div className={ModalStyles.modal}>
+        <div className={ModalStyles.text}>
+          <h2 className={ModalStyles.title}>Delete Ingredient</h2>
+          <p className={ModalStyles.subtitle}>
+            Are you sure you want to remove this ingredient?
+          </p>
         </div>
 
-        {error && <p className={RatingModalStyles.error}>{error}</p>}
+        {error && <p className={ModalStyles.error}>{error}</p>}
 
-        <div className={RatingModalStyles.buttons}>
+        <div className={ModalStyles.buttons}>
           <button
             className={ButtonStyles.secondaryButton}
             onClick={onClose}
@@ -75,7 +78,6 @@ export default function DeleteIngredientModal({
             {loading ? "Deleting..." : "Delete"}
           </button>
         </div>
-
       </div>
     </div>
   );

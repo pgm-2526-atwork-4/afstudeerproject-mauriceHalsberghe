@@ -1,32 +1,17 @@
 "use client";
 
 import PrefStyles from '@/app/styles/pages/preferences.module.css';
+import { Allergy } from '@/types/RecipeTypes';
 
-export enum AllergyType {
-  ingredient,
-  ingredientType,
-}
 
-export type Allergy = {
-  id: number;
-  typeId: number;
-  name: string;
-  type: AllergyType;
-};
-
-type AllergySelectorProps = {
+type Props = {
   allergies: Allergy[];
   selectedAllergies: number[];
   onToggle: (allergyId: number) => void;
   disabled: boolean;
 };
 
-export default function AllergySelector({
-  allergies,
-  selectedAllergies,
-  onToggle,
-  disabled
-}: AllergySelectorProps) {
+export default function AllergySelector({allergies, selectedAllergies, onToggle, disabled}: Props) {
   return (
     <div className={PrefStyles.list}>
       {allergies.map((allergy) => (

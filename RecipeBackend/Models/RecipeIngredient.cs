@@ -4,7 +4,7 @@ public class RecipeIngredient
 {
     public int Id { get; set; }
 
-    public int? Quantity { get; set; }
+    public decimal? Quantity { get; set; }
 
     public int? QuantityUnitId { get; set; }
     public QuantityUnit? QuantityUnit { get; set; }

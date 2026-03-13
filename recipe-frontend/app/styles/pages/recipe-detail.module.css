@@ -88,6 +88,12 @@
     margin: 1rem 0 0.5rem 0;
 }
 
+.content {
+    display: flex;
+    flex-direction: row;
+    justify-content:space-between;
+}
+
 .ingredients {
     width: fit-content;
     padding-left: 1rem;
