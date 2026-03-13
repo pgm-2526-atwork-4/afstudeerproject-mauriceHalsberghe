@@ -116,18 +116,35 @@ public class RecipesController : ControllerBase
                         Id = ri.Id,
                         IngredientId = ri.IngredientId,
                         Quantity = ri.Quantity,
+                        QuantityUnitId = ri.QuantityUnitId,
                         Unit = ri.QuantityUnit != null ? ri.QuantityUnit.ShortName : null,
                         IngredientName = ri.Ingredient.Name,
-                        IsInInventory = currentUserId.HasValue
-                            ? _context.InventoryIngredients.Any(ii =>
-                                ii.UserId == currentUserId.Value &&
-                                ii.IngredientId == ri.IngredientId)
+
+                        HasEnoughInInventory = currentUserId.HasValue
+                            ? (ri.Ingredient.AlwaysInStock
+                                ? _context.InventoryIngredients
+                                    .Any(ii => ii.UserId == currentUserId.Value && ii.IngredientId == ri.IngredientId)
+                                : _context.InventoryIngredients
+                                    .Where(ii => ii.UserId == currentUserId.Value && ii.IngredientId == ri.IngredientId)
+                                    .Sum(ii => ii.Quantity ?? 0) >= (ri.Quantity ?? 0))
                             : null,
+
+                        HasPartialInInventory = currentUserId.HasValue
+                            ? (!ri.Ingredient.AlwaysInStock &&
+                                _context.InventoryIngredients
+                                    .Where(ii => ii.UserId == currentUserId.Value && ii.IngredientId == ri.IngredientId)
+                                    .Sum(ii => ii.Quantity ?? 0) > 0 &&
+                                _context.InventoryIngredients
+                                    .Where(ii => ii.UserId == currentUserId.Value && ii.IngredientId == ri.IngredientId)
+                                    .Sum(ii => ii.Quantity ?? 0) < (ri.Quantity ?? 0))
+                            : null,
+
                         IsInShoppingList = currentUserId.HasValue
                             ? _context.ListIngredients.Any(ii =>
                                 ii.UserId == currentUserId.Value &&
                                 ii.IngredientId == ri.IngredientId)
-                            : null
+                            : null,
+                        AlwaysInStock = ri.Ingredient.AlwaysInStock
                     }).ToList(),
 
                 LikeCount = r.Likes.Count(),
