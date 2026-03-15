@@ -11,6 +11,11 @@ export type Cuisine = {
   name: string;
 };
 
+export type DishType = {
+  id: number;
+  name: string;
+};
+
 export type Recipe = {
   id: number;
   title: string;
@@ -21,6 +26,7 @@ export type Recipe = {
   averageRating: number;
   diet?: Diet;
   cuisine?: Cuisine;
+  dishType?: DishType;
   user?: User;
   missingIngredientCount?: number | null;
 };

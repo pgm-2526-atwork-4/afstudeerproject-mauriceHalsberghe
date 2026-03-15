@@ -53,6 +53,7 @@ function RecipeCard({ recipe, onUnlike }: Props) {
           <div className={RecipeCardStyles.tags}>
             { recipe.diet && <p className={RecipeCardStyles.tag}>{recipe.diet.name}</p>}
             { recipe.cuisine && <p className={RecipeCardStyles.tag}>{recipe.cuisine.name}</p> }
+            { recipe.dishType && <p className={RecipeCardStyles.tag}>{recipe.dishType.name}</p> }
           </div>
         </div>
       </Link>
