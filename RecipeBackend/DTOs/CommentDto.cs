@@ -17,6 +17,7 @@ public class CommentDto
     public DateTime CreatedAt { get; set; }
     public int RecipeId { get; set; }
     public CommentUserDto User { get; set; }
+    public int? CommentId { get; set; }
 }
 
 public class CommentUserDto

@@ -31,6 +31,7 @@ public class CommentsController : ControllerBase
                 Message = c.Message,
                 CreatedAt = c.CreatedAt,
                 RecipeId = c.RecipeId,
+                CommentId = c.CommentId,
                 User = new CommentUserDto
                 {
                     Id = c.User.Id,
