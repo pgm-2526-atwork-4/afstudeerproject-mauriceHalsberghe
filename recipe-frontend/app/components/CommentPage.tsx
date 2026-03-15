@@ -8,6 +8,7 @@ import CommentStyles from "@/app/styles/components/comment.module.css"
 import ButtonStyles from "@/app/styles/components/button.module.css"
 
 import { formatDistanceToNow } from 'date-fns'
+import Link from "next/link";
 
 type Comment = {
     id: number;
@@ -76,9 +77,15 @@ export default function CommentPage({ recipeId, loggedUserId }: Props) {
         
     }
 
-    const sortedComments = [...comments].sort((a, b) => 
-        new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime()
-    );
+    const topLevelComments = [...comments]
+        .filter(c => c.commentId === null || c.commentId === undefined)
+        .sort((a, b) => new Date(b.createdAt).getTime() - new Date(a.createdAt).getTime());
+
+    const getReplies = (commentId: number) =>
+        comments
+            .filter(c => c.commentId === commentId)
+            .sort((a, b) => new Date(a.createdAt).getTime() - new Date(b.createdAt).getTime());
+
 
     return (
         <div className={CommentStyles.page}>
@@ -110,22 +117,43 @@ export default function CommentPage({ recipeId, loggedUserId }: Props) {
             </form>
 
             <div className={CommentStyles.comments}>
-                {sortedComments.map((comment) => (
+                {topLevelComments.map((comment) => (
                     <div key={comment.id} className={CommentStyles.commentCard}>
-                        <Image
-                            className={CommentStyles.avatar}
-                            src={comment.user.avatar ? `${API_URL}/uploads/avatars/${comment.user.avatar}` : '/avatar.svg'} 
-                            alt={`avatar`}
-                            width={64}
-                            height={64}
-                        />
-                        <div className={CommentStyles.text}>
-                            <div className={CommentStyles.commentInfo}>
-                                <h3 className={CommentStyles.username}>{comment.user.username}</h3>
-                                <time className={CommentStyles.date}>• {formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })}</time>
+                        <div className={CommentStyles.mainComment}>
+                            <Image
+                                className={CommentStyles.avatar}
+                                src={comment.user.avatar ? `${API_URL}/uploads/avatars/${comment.user.avatar}` : '/avatar.svg'} 
+                                alt={`avatar`}
+                                width={64}
+                                height={64}
+                            />
+                            <div className={CommentStyles.text}>
+                                <div className={CommentStyles.commentInfo}>
+                                    <Link href={`/users/${comment.user.username}`} className={CommentStyles.username}>{comment.user.username}</Link>
+                                    <time className={CommentStyles.date}>• {formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })}</time>
+                                </div>
+                                <p className={CommentStyles.comment}>{comment.message}</p>
                             </div>
-                            <p className={CommentStyles.comment}>{comment.message}</p>
                         </div>
+
+                        {getReplies(comment.id).map((reply) => (
+                            <div key={reply.id} className={CommentStyles.replyCard}>
+                                <Image
+                                    className={CommentStyles.avatar}
+                                    src={reply.user.avatar ? `${API_URL}/uploads/avatars/${reply.user.avatar}` : '/avatar.svg'}
+                                    alt={`avatar`}
+                                    width={40}
+                                    height={40}
+                                />
+                                <div className={CommentStyles.text}>
+                                    <div className={CommentStyles.commentInfo}>
+                                        <Link href={`/users/${reply.user.username}`} className={CommentStyles.username}>{reply.user.username}</Link>
+                                        <time className={CommentStyles.date}>• {formatDistanceToNow(new Date(reply.createdAt), { addSuffix: true })}</time>
+                                    </div>
+                                    <p className={CommentStyles.comment}>{reply.message}</p>
+                                </div>
+                            </div>
+                        ))}
                     </div>
                 ))}
             </div>
