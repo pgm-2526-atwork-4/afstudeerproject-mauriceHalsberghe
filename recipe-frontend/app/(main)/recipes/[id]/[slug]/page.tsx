@@ -140,128 +140,132 @@ export default function RecipeDetail() {
         </div>
       </div>
 
-      <Image
-        className={DetailStyles.image}
-        width={360}
-        height={200}
-        alt={recipe.title}
-        src={`${API_URL}/uploads/recipe-images/${recipe.imageUrl}`}
-      />
+      <div className={DetailStyles.main}>
 
-      <div className={DetailStyles.detailData}>
-        <div onClick={() => setShowModal(true)}>
-          {recipe.averageRating ? (
-            <div className={DetailStyles.ratingAmount}>
-              <RatingStars amount={recipe.averageRating} />
-              <p>{recipe.averageRating}</p>
-            </div>
-          ) : (
-            <p className={DetailStyles.rating}>No ratings yet</p>
+        <Image
+          className={DetailStyles.image}
+          width={360}
+          height={200}
+          alt={recipe.title}
+          src={`${API_URL}/uploads/recipe-images/${recipe.imageUrl}`}
+        />
+
+        <div className={DetailStyles.detailData}>
+          <div onClick={() => setShowModal(true)}>
+            {recipe.averageRating ? (
+              <div className={DetailStyles.ratingAmount}>
+                <RatingStars amount={recipe.averageRating} />
+                <p>{recipe.averageRating}</p>
+              </div>
+            ) : (
+              <p className={DetailStyles.rating}>No ratings yet</p>
+            )}
+          </div>
+          <p className={DetailStyles.duration}>{recipe.time} min</p>
+        </div>
+
+        <h2 className={DetailStyles.subtitle}>Ingredients</h2>
+
+        <div className={DetailStyles.content}>
+          <ul className={DetailStyles.ingredients}>
+            {recipe.ingredients.map((ingredient) => (
+              <li className={DetailStyles.ingredient} key={ingredient.id}>
+                {ingredient.hasEnoughInInventory !== undefined && (
+                  <span className={DetailStyles.ingredientIcon}>
+                    {ingredient.hasEnoughInInventory ? (
+                      <Checkmark />
+                    ) : ingredient.isInShoppingList ? (
+                      <Cart />
+                    ) : ingredient.hasPartialInInventory ? (
+                      <Apple />
+                    ) : (
+                      <Cross />
+                    )}
+                  </span>
+                )}
+
+                {ingredient.quantity && (
+                  <p className={DetailStyles.ingredientAmount}>
+                    {formatQuantity(ingredient.quantity)}
+                    {ingredient.unit}
+                  </p>
+                )}
+                <p className={DetailStyles.ingredientName}>
+                  {ingredient.ingredientName}
+                </p>
+              </li>
+            ))}
+          </ul>
+
+          {hasMissingIngredients && (
+            <button
+              className={ButtonStyles.smallButton}
+              onClick={handleAddMissingToShoppingList}
+              disabled={!loggedUserId}
+            >
+              Add to shopping list
+            </button>
           )}
         </div>
-        <p className={DetailStyles.duration}>{recipe.time} min</p>
-      </div>
 
-      <h2 className={DetailStyles.subtitle}>Ingredients</h2>
-
-      <div className={DetailStyles.content}>
-        <ul className={DetailStyles.ingredients}>
-          {recipe.ingredients.map((ingredient) => (
-            <li className={DetailStyles.ingredient} key={ingredient.id}>
-              {ingredient.hasEnoughInInventory !== undefined && (
-                <span className={DetailStyles.ingredientIcon}>
-                  {ingredient.hasEnoughInInventory ? (
-                    <Checkmark />
-                  ) : ingredient.isInShoppingList ? (
-                    <Cart />
-                  ) : ingredient.hasPartialInInventory ? (
-                    <Apple />
-                  ) : (
-                    <Cross />
-                  )}
-                </span>
-              )}
-
-              {ingredient.quantity && (
-                <p className={DetailStyles.ingredientAmount}>
-                  {formatQuantity(ingredient.quantity)}
-                  {ingredient.unit}
-                </p>
-              )}
-              <p className={DetailStyles.ingredientName}>
-                {ingredient.ingredientName}
-              </p>
+        <h2 className={DetailStyles.subtitle}>Instructions</h2>
+        <ul className={DetailStyles.steps}>
+          {recipe.steps.map((step) => (
+            <li className={DetailStyles.step} key={step.id}>
+              <p className={DetailStyles.stepNumber}>{step.stepNumber}</p>
+              <p className={DetailStyles.stepDescription}>{step.description}</p>
             </li>
           ))}
         </ul>
 
-        {hasMissingIngredients && (
-          <button
-            className={ButtonStyles.smallButton}
-            onClick={handleAddMissingToShoppingList}
-            disabled={!loggedUserId}
-          >
-            Add to shopping list
-          </button>
-        )}
+        {showModal &&
+          (loggedUserId ? (
+            <div
+              className={ModalStyles.modalOverlay}
+              onClick={() => setShowModal(false)}
+            >
+              <div onClick={(e) => e.stopPropagation()}>
+                <RatingModal
+                  userId={loggedUserId}
+                  recipeId={recipeId}
+                  onClose={() => setShowModal(false)}
+                  onRated={fetchRecipe}
+                />
+              </div>
+            </div>
+          ) : (
+            <div
+              className={ModalStyles.modalOverlay}
+              onClick={() => setShowModal(false)}
+            >
+              <div
+                className={ModalStyles.modal}
+                onClick={(e) => e.stopPropagation()}
+              >
+                <div className={ModalStyles.text}>
+                  <h2 className={ModalStyles.title}>Not logged in</h2>
+                  <p className={ModalStyles.subtitle}>Log in to rate recipes</p>
+                </div>
+
+                <div className={ModalStyles.buttons}>
+                  <button
+                    className={ButtonStyles.secondaryButton}
+                    onClick={() => setShowModal(false)}
+                  >
+                    Cancel
+                  </button>
+
+                  <Link className={ButtonStyles.button} href={"/login"}>
+                    Log in
+                  </Link>
+                </div>
+              </div>
+            </div>
+          ))}
+
+          <CommentPage recipeId={recipeId} loggedUserId={loggedUserId}/>
       </div>
 
-      <h2 className={DetailStyles.subtitle}>Instructions</h2>
-      <ul className={DetailStyles.steps}>
-        {recipe.steps.map((step) => (
-          <li className={DetailStyles.step} key={step.id}>
-            <p className={DetailStyles.stepNumber}>{step.stepNumber}</p>
-            <p className={DetailStyles.stepDescription}>{step.description}</p>
-          </li>
-        ))}
-      </ul>
-
-      {showModal &&
-        (loggedUserId ? (
-          <div
-            className={ModalStyles.modalOverlay}
-            onClick={() => setShowModal(false)}
-          >
-            <div onClick={(e) => e.stopPropagation()}>
-              <RatingModal
-                userId={loggedUserId}
-                recipeId={recipeId}
-                onClose={() => setShowModal(false)}
-                onRated={fetchRecipe}
-              />
-            </div>
-          </div>
-        ) : (
-          <div
-            className={ModalStyles.modalOverlay}
-            onClick={() => setShowModal(false)}
-          >
-            <div
-              className={ModalStyles.modal}
-              onClick={(e) => e.stopPropagation()}
-            >
-              <div className={ModalStyles.text}>
-                <h2 className={ModalStyles.title}>Not logged in</h2>
-                <p className={ModalStyles.subtitle}>Log in to rate recipes</p>
-              </div>
-
-              <div className={ModalStyles.buttons}>
-                <button
-                  className={ButtonStyles.secondaryButton}
-                  onClick={() => setShowModal(false)}
-                >
-                  Cancel
-                </button>
-
-                <Link className={ButtonStyles.button} href={"/login"}>
-                  Log in
-                </Link>
-              </div>
-            </div>
-          </div>
-        ))}
-
-        <CommentPage recipeId={recipeId} loggedUserId={loggedUserId}/>
     </div>
   );
 }

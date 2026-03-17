@@ -9,7 +9,22 @@
 }
 
 .header {
-  min-height: 7.5rem;
+  height: fit-content;
+  margin-bottom: 1rem;
+}
+
+.userHeader {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  margin-bottom: 1rem;
+}
+
+.userTitle {
+  display: flex;
+  flex-direction: row;
+  gap: 1rem;
+  align-items: center;
 }
 
 .title {
