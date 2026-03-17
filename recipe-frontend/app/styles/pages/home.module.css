@@ -4,10 +4,7 @@
   width: 100%;
 
   @media (min-width: 1000px) {
-    margin-left: 12rem;
-  }
-  @media (min-width: 1300px) {
-    margin-left: 14rem;
+    margin-left: 16rem;
   }
 }
 
