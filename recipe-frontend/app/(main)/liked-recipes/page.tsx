@@ -77,13 +77,15 @@ export default function LikedRecipes() {
       <main className={HomeStyles.home}>
         <div className={HomeStyles.header} />
         <div className={HomeStyles.main}>
-          {[...Array(3)].map((_, i) => (
-            <div key={i} className={HomeStyles.skeletonCard}>
-              <span className={HomeStyles.skeletonCardInfo}>
-                <span></span>
-              </span>
-            </div>
-          ))}
+          <div className={HomeStyles.skeletonGrid}>
+            {[...Array(3)].map((_, i) => (
+              <div key={i} className={HomeStyles.skeletonCard}>
+                <span className={HomeStyles.skeletonCardInfo}>
+                  <span></span>
+                </span>
+              </div>
+            ))}
+          </div>
         </div>
       </main>
     );

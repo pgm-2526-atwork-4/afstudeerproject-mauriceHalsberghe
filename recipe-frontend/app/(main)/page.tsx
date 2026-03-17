@@ -99,7 +99,11 @@ export default function Home() {
         <div className={HomeStyles.main}>
           <div className={HomeStyles.skeletonGrid}>
             {[...Array(5)].map((_, i) => (
-              <div key={i} className={HomeStyles.skeletonCard} />
+              <div key={i} className={HomeStyles.skeletonCard}>
+                <span className={HomeStyles.skeletonCardInfo}>
+                  <span></span>
+                </span>
+              </div>
             ))}
           </div>
         </div>
