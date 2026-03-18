@@ -89,7 +89,10 @@ export default function Ingredients() {
   };
 
   useEffect(() => {
-    if (!loggedUserId) return;
+    if (!loggedUserId) {
+      setLoading(false);
+      return;
+    }
     
     const loadIngredients = async () => {
       await fetchIngredients();

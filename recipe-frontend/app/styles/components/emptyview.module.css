@@ -8,6 +8,10 @@
     left: 50%;
     top: 45%;
     transform: translate(-50%, -50%);
+
+      @media (min-width: 1000px) {
+    margin-left: 8rem;
+  }
 }
 
 .textDiv {

@@ -6,11 +6,17 @@
   @media (min-width: 1000px) {
     margin-left: 16rem;
   }
+  @media (min-width: 1300px) {
+    padding: 2rem 6rem 5rem 6rem;
+  }
 }
 
 .header {
   height: fit-content;
   margin-bottom: 1rem;
+  @media (min-width: 1000px) {
+    margin-bottom: 3rem;
+  }
 }
 
 .userHeader {

@@ -63,7 +63,11 @@ export default function ShoppingList() {
     };
 
     useEffect(() => {
-        if (!loggedUserId) return;
+        if (!loggedUserId) {
+            setLoading(false);
+            return;
+        }
+  
 
         const loadData = async () => {
         await fetchShoppingList();
