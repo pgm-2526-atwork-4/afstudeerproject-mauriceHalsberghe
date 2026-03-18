@@ -27,11 +27,6 @@ public class ListIngredientsController : ControllerBase
             .Include(i => i.QuantityUnit)
             .ToListAsync();
 
-        if (!userList.Any())
-        {
-            return NotFound($"No List found for user {userId}");
-        }
-
         return Ok(userList);
     }
 

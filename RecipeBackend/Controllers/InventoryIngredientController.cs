@@ -25,11 +25,6 @@ public class InventoryIngredientController : ControllerBase
             .Include(i => i.QuantityUnit)
             .ToListAsync();
 
-        if (!userInventory.Any())
-        {
-            return NotFound($"No inventory found for user {userId}");
-        }
-
         return Ok(userInventory);
     }
 
