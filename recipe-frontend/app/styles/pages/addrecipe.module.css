@@ -6,9 +6,9 @@
 
     @media (min-width: 1000px) {
         min-width: 55rem;
-        margin: 0 auto;
+        margin: auto;
         padding-left: 16rem;
-        margin-top: 1rem;
+        margin-top: 2rem;
     }
 }
 

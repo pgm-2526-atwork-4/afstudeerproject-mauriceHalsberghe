@@ -8,6 +8,11 @@ export async function generateStaticParams() {
   return usernames.map((username) => ({ username }));
 }
 
-export default function Page({ params }: { params: { username: string } }) {
-  return <UserRecipesClient username={params.username} />;
+export default async function Page({
+  params,
+}: {
+  params: Promise<{ username: string }>;
+}) {
+  const { username } = await params;
+  return <UserRecipesClient username={username} />;
 }
