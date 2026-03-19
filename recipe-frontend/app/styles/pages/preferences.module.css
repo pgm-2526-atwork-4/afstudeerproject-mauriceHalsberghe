@@ -35,13 +35,6 @@
   }
 }
 
-@media (min-width: 1000px) {
-  .pageProfile {
-      width: 100%;
-      margin-left: 8rem;
-  }
-}
-
 .pageProfile {
   margin-top: 0;
   gap: 2rem;
@@ -116,7 +109,7 @@
     font-size: 1.2rem;
 }
 
-.list {
+.list, .listAllergy {
     display: grid;
     grid-template-columns: auto auto;
     gap: 1rem 2rem;
@@ -147,7 +140,7 @@
 .radio input + .radioLabel,
 .checkbox input + .checkboxLabel {
   cursor: pointer;
-  font-size: 1.2rem;
+  font-size: 1rem;
   position: relative;
 }
 
@@ -209,5 +202,210 @@
   display: none;
   @media (min-width: 1000px) {
     display: flex;
+    gap: 1rem;
+  }
+}
+
+.dietDesc {
+  display: none;
+}
+
+@media (min-width: 1000px) {
+
+  .message {
+    position: absolute;
+    left: 50%;
+    transform: translateX(50%);
+    bottom: 3rem;
+  }
+
+  .header {
+    padding: 0 3rem;
+  }
+
+  .pageProfile {
+    width: 100%;
+    margin-left: 16rem;
+    margin-bottom: 4rem;
+  }
+
+  .pageStepProfile {
+    min-width: 37rem;
+    align-items: start;
+    background-color: var(--white);
+    border-radius: 1rem;
+    padding: 1rem 2rem;
+    .list {
+      gap: 1rem;
+    }
+    
+    .listAllergy {
+      grid-template-columns: repeat(3, 1fr);
+      gap: 1rem;
+    }
+  }
+
+  .dietDesc {
+    display: block;
+    font-size: 14px;
+    color: var(--gray-300);
+  }
+
+  .radio input + .radioLabel::before,
+  .checkbox input + .checkboxLabel::before {
+    display: none;
+  }
+
+  .radio, .checkbox {
+    border: 2px solid var(--gray-200);
+    background-color: var(--white);
+    border-radius: 0.5rem;
+    min-width: 16rem;
+    padding: 1rem;
+    transition: background-color 0.3s ease;
+    cursor: pointer;
+  }
+
+  .checkbox {
+    min-width: 10rem;
+  }
+
+  .radio:has(input:disabled),
+  .checkbox:has(input:disabled) {
+    cursor: default;
+    background-color: var(--gray-100);
+    transition: background-color 0.3s ease;
+  }
+
+  .radio:has(input:checked) {
+    background-color: var(--green-50);
+    transition: background-color 0.3s ease;
+    border-color: var(--green-200);
+    position: relative;
+
+    &:after {
+      content: "";
+      display: inline-block;
+      width: 1.5rem;
+      height: 1.5rem;
+
+      position: absolute;
+      right: 0.5rem;
+      top: 0.5rem;
+
+      background-image: url('/checkbox_checked.svg');
+      background-size: contain;
+      background-repeat: no-repeat;
+      background-position: center;
+    }
+  }
+
+  .checkbox:has(input:checked) {
+    background-color: var(--red-50);
+    transition: background-color 0.3s ease;
+    border-color: var(--red-100);
+    position: relative;
+  }
+}
+
+
+.switchRowDiet,
+.switchRowAllergy {
+  padding: 0.5rem 1rem;
+  border-radius: 0.5rem;
+  width: 100%;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 1rem;
+
+  cursor: pointer;
+}
+
+.switchRowDiet {
+  border: 2px solid var(--blue-100);
+  background-color: var(--blue-50);
+}
+
+.switchRowAllergy {
+  border: 2px solid var(--yellow-100);
+  background-color: var(--yellow-50);
+}
+
+.labelText {
+  font-size: 14px;
+  line-height: 1.4;
+  color: var(--gray-300);
+  h2 {
+    color: var(--black);
+    font-size: 1rem;
+  }
+}
+
+.switch {
+  position: relative;
+  width: 50px;
+  height: 28px;
+  flex-shrink: 0;
+}
+
+.switch input {
+  opacity: 0;
+  width: 0;
+  height: 0;
+}
+
+.slider {
+  position: absolute;
+  inset: 0;
+  background-color: var(--gray-200);
+  border-radius: 999px;
+  transition: 0.3s;
+}
+
+.slider:before {
+  content: "";
+  position: absolute;
+  height: 22px;
+  width: 22px;
+  left: 3px;
+  bottom: 3px;
+  background-color: var(--white);
+  border-radius: 50%;
+  transition: 0.3s;
+  box-shadow: 0 1px 3px rgba(0,0,0,0.2);
+}
+
+.switch input:checked + .slider {
+  background-color: var(--green-200);
+}
+
+.switch input:checked + .slider:before {
+  transform: translateX(22px);
+}
+
+@media (min-width: 1500px) {
+
+  .header {
+    position: absolute;
+    top: 0;
+    width: calc(100vw - 16rem);
+  }
+
+  .pageProfile {
+    flex-direction: row;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height: 100vh;
+    margin-bottom: 0;
+  }
+
+  .pageStepProfile {
+    min-height: 30rem;
+
+    .switchRowAllergy, .switchRowDiet {
+      margin-top: auto;
+    }
   }
 }

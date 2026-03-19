@@ -21,7 +21,7 @@ export default function DietSelector({ diets, selectedDiet, onChange, disabled}:
   return (
     <div className={PrefStyles.list}>
 
-      <div className={PrefStyles.radio}>
+      <div className={PrefStyles.radio} onClick={(e) => {e.preventDefault(); handleClick(null);}}>
         <input
           id="diet-none"
           value="none"
@@ -42,10 +42,11 @@ export default function DietSelector({ diets, selectedDiet, onChange, disabled}:
         >
           No Diet
         </label>
+        <p className={PrefStyles.dietDesc}>No dietary restrictions</p>
       </div>
 
       {diets.map((diet) => (
-        <div key={diet.id} className={PrefStyles.radio}>
+        <div key={diet.id} className={PrefStyles.radio} onClick={() => handleClick(diet.id)}>
           <input
             id={`diet-${diet.id}`}
             value={diet.id}
@@ -66,6 +67,7 @@ export default function DietSelector({ diets, selectedDiet, onChange, disabled}:
           >
             {diet.name}
           </label>
+          <p className={PrefStyles.dietDesc}>{diet.description}</p>
         </div>
       ))}
     </div>

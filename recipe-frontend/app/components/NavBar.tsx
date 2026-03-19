@@ -44,7 +44,7 @@ function NavBar() {
                     className={`${NavBarStyles.navitem} ${
                     isActive("/ingredients") ? NavBarStyles["navitem-current"] : ""}`}  
                 >
-                    <Link href={'/ingredients'}><AppleIcon className={NavBarStyles.icon} />Ingedients</Link>
+                    <Link href={'/ingredients'}><AppleIcon className={NavBarStyles.icon} />Ingredients</Link>
                 </li>
                 <li 
                     className={`${NavBarStyles.navitem} ${

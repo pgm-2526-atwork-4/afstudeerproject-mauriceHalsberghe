@@ -4,6 +4,7 @@ import { User } from "./UserTypes";
 export type Diet = {
   id: number;
   name: string;
+  description: string;
 };
 
 export type Cuisine = {

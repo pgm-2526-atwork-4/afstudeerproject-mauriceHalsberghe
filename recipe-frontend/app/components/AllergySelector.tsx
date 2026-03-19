@@ -13,9 +13,9 @@ type Props = {
 
 export default function AllergySelector({allergies, selectedAllergies, onToggle, disabled}: Props) {
   return (
-    <div className={PrefStyles.list}>
+    <div className={PrefStyles.listAllergy}>
       {allergies.map((allergy) => (
-        <div key={allergy.id} className={PrefStyles.checkbox}>
+        <div key={allergy.id} className={PrefStyles.checkbox} onClick={() => onToggle(allergy.id)}>
           <input
             id={`allergy-${allergy.id}`}
             className={PrefStyles.checkboxInput}

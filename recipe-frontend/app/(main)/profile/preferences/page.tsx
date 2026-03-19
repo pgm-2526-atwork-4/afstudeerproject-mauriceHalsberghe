@@ -157,7 +157,7 @@ export default function Preferences() {
             </header>
 
             <div className={PrefStyles.pageStepProfile}>
-                <h3 className={PrefStyles.subtitle}>Diet</h3>
+                <h3 className={PrefStyles.subtitle}>Diet type</h3>
                 <DietSelector
                     diets={diets}
                     selectedDiet={selectedDiet}
@@ -165,15 +165,21 @@ export default function Preferences() {
                     disabled={!isEditing}
                 />
 
-                <label className="switch">
-                    Show only recipes of your diet
-                    <input type="checkbox" />
-                    <span className="slider round"></span>
+                <label className={PrefStyles.switchRowDiet}>
+                    <span className={PrefStyles.labelText}>
+                        <h2>Filter by diet</h2>
+                        Show only recipes of your diet
+                    </span>
+
+                    <div className={PrefStyles.switch}>
+                        <input type="checkbox" />
+                        <span className={PrefStyles.slider}></span>
+                    </div>
                 </label>
             </div>
 
             <div className={PrefStyles.pageStepProfile}>
-                <h3 className={PrefStyles.subtitle}>Allergies</h3>
+                <h3 className={PrefStyles.subtitle}>Allergies & Intolerances</h3>
                 <AllergySelector
                     allergies={ALLERGIES}
                     selectedAllergies={selectedAllergies}
@@ -181,10 +187,16 @@ export default function Preferences() {
                     disabled={!isEditing}
                 />
 
-                <label className="switch">
-                    Show only recipes without allergies
-                    <input type="checkbox" />
-                    <span className="slider round"></span>
+                    <label className={PrefStyles.switchRowAllergy}>
+                    <span className={PrefStyles.labelText}>
+                        <h2>Exclude recipes with allergens</h2>
+                        Hide recipes containing your selected allergens
+                    </span>
+
+                    <div className={PrefStyles.switch}>
+                        <input type="checkbox" />
+                        <span className={PrefStyles.slider}></span>
+                    </div>
                 </label>
             </div>
 
