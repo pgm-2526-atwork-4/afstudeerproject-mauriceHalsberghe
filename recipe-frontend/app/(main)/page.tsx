@@ -130,7 +130,16 @@ export default function Home() {
   if (auth?.loading || (loading && recipes.length === 0)) {
     return (
       <main className={HomeStyles.home}>
-        <div className={HomeStyles.header} />
+        <div className={HomeStyles.header}>
+          <RecipeFilters
+            key="recipe-filters"
+            filters={filters}
+            onChange={setFilters}
+            onlyUsersFilter={true}
+            userDietId={userDietId}
+            filterByDiet={filterByDiet}
+          />
+        </div>
         <div className={HomeStyles.main}>
           <div className={HomeStyles.skeletonGrid}>
             {[...Array(5)].map((_, i) => (
