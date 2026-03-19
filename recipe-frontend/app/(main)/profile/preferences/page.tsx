@@ -27,15 +27,24 @@ const ALLERGIES: Allergy[] = [
 ];
 
 export default function Preferences() {
-    const auth = useContext(AuthContext);
-
     const [diets, setDiets] = useState<Diet[]>([]);
     const [selectedDiet, setSelectedDiet] = useState<number | null>(null);
     const [selectedAllergies, setSelectedAllergies] = useState<number[]>([]);
+
+    const [filterByDiet, setFilterByDiet] = useState(false);
+    const [filterByAllergens, setFilterByAllergens] = useState(false);
+
     const [loading, setLoading] = useState(true);
     const [saveStatus, setSaveStatus] = useState<"idle" | "success" | "error">("idle");
     const [isEditing, setIsEditing] = useState(false);
-    const [oldPreferences, setOldPreferences] = useState<{ diet: number | null; allergies: number[] }>({ diet: null, allergies: [] });
+    const [oldPreferences, setOldPreferences] = useState<{
+        diet: number | null;
+        allergies: number[];
+        filterByDiet: boolean;
+        filterByAllergens: boolean;
+        }>({ diet: null, allergies: [], filterByDiet: false, filterByAllergens: false });
+
+    const auth = useContext(AuthContext);
 
     useEffect(() => {
         if (!auth || !auth.user || !auth.token) {
@@ -56,6 +65,8 @@ export default function Preferences() {
                 const prefData = await prefRes.json();
 
                 setSelectedDiet(prefData.dietId);
+                setFilterByDiet(prefData.filterByDiet ?? false);
+                setFilterByAllergens(prefData.filterByAllergens ?? false);
 
                 const matchedIds = ALLERGIES
                     .filter(a =>
@@ -83,13 +94,20 @@ export default function Preferences() {
 
     const handleEdit = () => {
         setSaveStatus("idle");
-        setOldPreferences({ diet: selectedDiet, allergies: [...selectedAllergies] });
+        setOldPreferences({
+            diet: selectedDiet,
+            allergies: [...selectedAllergies],
+            filterByDiet,
+            filterByAllergens,
+        });
         setIsEditing(true);
     };
 
     const handleCancel = () => {
         setSelectedDiet(oldPreferences.diet);
         setSelectedAllergies(oldPreferences.allergies);
+        setFilterByDiet(oldPreferences.filterByDiet);
+        setFilterByAllergens(oldPreferences.filterByAllergens);
         setIsEditing(false);
         setSaveStatus("idle");
     };
@@ -113,7 +131,13 @@ export default function Preferences() {
                     "Content-Type": "application/json",
                     Authorization: `Bearer ${auth.token}`,
                 },
-                body: JSON.stringify({ dietId: selectedDiet, ingredientAllergyIds, ingredientTypeAllergyIds }),
+                body: JSON.stringify({
+                    dietId: selectedDiet,
+                    ingredientAllergyIds,
+                    ingredientTypeAllergyIds,
+                    filterByDiet,
+                    filterByAllergens,
+                }),
             });
 
             if (res.ok) {
@@ -168,11 +192,16 @@ export default function Preferences() {
                 <label className={PrefStyles.switchRowDiet}>
                     <span className={PrefStyles.labelText}>
                         <h2>Filter by diet</h2>
-                        Show only recipes of your diet
+                        <p>Show only recipes of your diet</p>
                     </span>
 
                     <div className={PrefStyles.switch}>
-                        <input type="checkbox" />
+                        <input 
+                            type="checkbox"
+                            checked={filterByDiet}
+                            onChange={e => isEditing && setFilterByDiet(e.target.checked)}
+                            disabled={!isEditing}
+                         />
                         <span className={PrefStyles.slider}></span>
                     </div>
                 </label>
@@ -190,11 +219,16 @@ export default function Preferences() {
                     <label className={PrefStyles.switchRowAllergy}>
                     <span className={PrefStyles.labelText}>
                         <h2>Exclude recipes with allergens</h2>
-                        Hide recipes containing your selected allergens
+                        <p>Hide recipes containing your selected allergens</p>
                     </span>
 
                     <div className={PrefStyles.switch}>
-                        <input type="checkbox" />
+                        <input 
+                            type="checkbox"
+                            checked={filterByAllergens}
+                            onChange={e => isEditing && setFilterByAllergens(e.target.checked)}
+                            disabled={!isEditing}
+                        />
                         <span className={PrefStyles.slider}></span>
                     </div>
                 </label>
