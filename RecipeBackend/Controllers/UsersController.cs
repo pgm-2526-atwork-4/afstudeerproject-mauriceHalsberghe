@@ -37,6 +37,8 @@ public class UsersController : ControllerBase
         if (user == null) return NotFound();
 
         user.DietId = dto.DietId;
+        user.FilterByDiet = dto.FilterByDiet;
+        user.FilterByAllergens = dto.FilterByAllergens;
 
         var existingAllergies = _context.Allergies.Where(a => a.UserId == user.Id);
         _context.Allergies.RemoveRange(existingAllergies);
@@ -66,6 +68,8 @@ public class UsersController : ControllerBase
         return Ok(new
         {
             DietId = user.DietId,
+            FilterByDiet = user.FilterByDiet,
+            FilterByAllergens = user.FilterByAllergens,
             IngredientAllergyIds = allergies
                 .Where(a => a.IngredientId != null)
                 .Select(a => a.IngredientId),
