@@ -6,6 +6,8 @@ import { useRouter } from "next/navigation";
 
 import ButtonStyles from '@/app/styles/components/button.module.css'
 
+import LogoutIcon from "@/public/logout.svg"
+
 type Props = {
   type?: string;
 }
@@ -27,5 +29,10 @@ export default function LogoutButton({type} : Props) {
 
   if (type) className = ButtonStyles[type];
 
-  return <button className={className} onClick={handleLogout}>Logout</button>;
+  return (
+    <button className={className} onClick={handleLogout}>
+      <LogoutIcon />
+      Logout
+    </button>
+  )
 }
