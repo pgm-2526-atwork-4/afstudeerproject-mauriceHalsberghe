@@ -203,4 +203,19 @@ public class UsersController : ControllerBase
         return Ok(new { avatarUrl = user.Avatar });
     }
 
+    [Authorize]
+    [HttpPatch("username")]
+    public async Task<IActionResult> UpdateUsername(UpdateUsernameDto dto)
+    {
+        var user = await _context.Users.FindAsync(GetUserIdFromToken());
+        if (user == null) return NotFound();
+
+        var taken = await _context.Users.AnyAsync(u => u.Username == dto.Username && u.Id != user.Id);
+        if (taken) return Conflict("Username already taken.");
+
+        user.Username = dto.Username;
+        await _context.SaveChangesAsync();
+        return Ok();
+    }
+
 }
