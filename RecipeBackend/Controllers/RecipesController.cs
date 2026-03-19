@@ -30,6 +30,7 @@ public class RecipesController : ControllerBase
         bool onlyUsers = false,
         bool onlyInStock = false,
         int sortBy = 3,
+        bool onlyLiked = false,
         bool filterByDiet = false,  
         bool filterByAllergens = false) 
     {
@@ -54,6 +55,9 @@ public class RecipesController : ControllerBase
 
         if (onlyUsers)
             query = query.Where(r => r.UserId != null);
+        
+        if (onlyLiked && currentUserId.HasValue)
+            query = query.Where(r => r.Likes.Any(l => l.UserId == currentUserId.Value));
 
         if (filterByDiet && currentUserId.HasValue)
         {
