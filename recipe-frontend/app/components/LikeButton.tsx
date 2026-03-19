@@ -16,6 +16,8 @@ type LikeButtonProps = {
   initialLikeCount: number;
   userId?: number;
   onUnlike?: () => void;
+  onLikeCountChange?: (count: number) => void;
+  onLikedChange?: (liked: boolean) => void;
 };
 
 export default function LikeButton({
@@ -24,11 +26,18 @@ export default function LikeButton({
   initialLikeCount,
   userId,
   onUnlike,
+  onLikeCountChange,
+  onLikedChange,
 }: LikeButtonProps) {
   const [liked, setLiked] = useState(initialLiked);
   const [likeCount, setLikeCount] = useState(initialLikeCount);
   const [loading, setLoading] = useState(false);
   const [showModal, setShowModal] = useState(false);
+
+  const updateCount = (next: number) => {
+    setLikeCount(next);
+    onLikeCountChange?.(next);
+  };
 
   const toggleLike = async () => {
     if (!userId) {
@@ -53,7 +62,8 @@ export default function LikeButton({
         });
 
         setLiked(true);
-        setLikeCount((prev) => prev + 1);
+        onLikedChange?.(true);
+        updateCount(likeCount + 1);
       } else {
         await fetch(
           `${API_URL}/api/likes?userId=${userId}&recipeId=${recipeId}`,
@@ -63,7 +73,8 @@ export default function LikeButton({
         );
 
         setLiked(false);
-        setLikeCount((prev) => Math.max(prev - 1, 0));
+        onLikedChange?.(false);
+        updateCount(Math.max(likeCount - 1, 0));
 
         onUnlike?.();
       }
@@ -77,16 +88,13 @@ export default function LikeButton({
   return (
     <>
   
-      <div className={LikeButtonStyles.like}>
-        <p className={LikeButtonStyles.count}>{likeCount}</p>
-        <button
-          className={LikeButtonStyles.button}
-          onClick={toggleLike}
-          disabled={loading}
-        >
-          {liked ? <LikeFilledIcon /> : <LikeUnfilledIcon />}
-        </button>
-      </div>
+      <button
+        className={LikeButtonStyles.button}
+        onClick={toggleLike}
+        disabled={loading}
+      >
+        {liked ? <LikeFilledIcon /> : <LikeUnfilledIcon />}
+      </button>
 
       {showModal && (
         <div

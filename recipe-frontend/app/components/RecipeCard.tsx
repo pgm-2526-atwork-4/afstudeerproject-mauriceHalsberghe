@@ -5,9 +5,12 @@ import Image from 'next/image';
 import RecipeCardStyles from '@/app/styles/components/recipecard.module.css';
 import Link from 'next/link';
 import LikeButton from "./LikeButton";
-import { useContext } from 'react';
+import { useContext, useState } from 'react';
 import { AuthContext } from '@/context/AuthContext';
 import { Recipe } from "@/types/RecipeTypes";
+
+import LikeFilledIcon from '@/public/like_filled.svg';
+import LikeUnfilledIcon from '@/public/like_unfilled.svg';
 
 type Props = {
   recipe: Recipe;
@@ -15,7 +18,9 @@ type Props = {
 };
 
 function RecipeCard({ recipe, onUnlike }: Props) {
-  const auth = useContext(AuthContext);    
+  const auth = useContext(AuthContext);
+  const [likeCount, setLikeCount] = useState(recipe.likeCount);
+  const [liked, setLiked] = useState(recipe.isLikedByCurrentUser);
 
   return (
     <div className={RecipeCardStyles.card}>
@@ -49,6 +54,10 @@ function RecipeCard({ recipe, onUnlike }: Props) {
                 ? <p className={RecipeCardStyles.ingredient}>In stock</p>
                 : <p className={RecipeCardStyles.ingredientMissing}>{recipe.missingIngredientCount} missing</p>
             )}
+            <p className={RecipeCardStyles.likeCount}>
+              {liked ? <LikeFilledIcon /> : <LikeUnfilledIcon />}
+              {likeCount}
+            </p>
           </div>
           <div className={RecipeCardStyles.tags}>
             { recipe.diet && <p className={RecipeCardStyles.tag}>{recipe.diet.name}</p>}
@@ -63,6 +72,8 @@ function RecipeCard({ recipe, onUnlike }: Props) {
         initialLikeCount={recipe.likeCount}
         userId={auth?.user?.id}
         onUnlike={() => onUnlike?.(recipe.id)}
+        onLikeCountChange={setLikeCount}
+        onLikedChange={setLiked}
       />
     </div>
   );

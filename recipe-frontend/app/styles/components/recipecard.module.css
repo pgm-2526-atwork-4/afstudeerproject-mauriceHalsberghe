@@ -32,6 +32,18 @@
   gap: 1rem;
 }
 
+.likeCount {
+  position: absolute;
+  right: 1rem;
+  display: flex;
+  align-items: center;
+  gap: 0.25rem;
+  svg {
+    width: .875rem;
+    height: .875rem;
+  }
+}
+
 .time,
 .rating,
 .ingredient,
@@ -89,10 +101,10 @@
 }
 
 .avatar {
-  width: 2rem;
-  height: 2rem;
+  width: 2.5rem;
+  height: 2.5rem;
   position: absolute;
-  top: -2.5rem;
+  top: -3rem;
   right: 0.5rem;
   border-radius: 3rem;
 }
