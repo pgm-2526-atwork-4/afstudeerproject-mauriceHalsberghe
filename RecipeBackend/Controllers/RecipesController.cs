@@ -106,13 +106,17 @@ public class RecipesController : ControllerBase
                 ? r.RecipeIngredients.Count(ri => !_context.InventoryIngredients
                     .Any(ii => ii.UserId == currentUserId.Value && ii.IngredientId == ri.IngredientId))
                 : (int?)null,
+            RawAverageRating = r.Reviews.Any()
+                ? r.Reviews.Average(rv => (double)rv.Rating) / 2.0
+                : 0,
         });
 
         projected = sortBy switch
         {
             1 => projected.OrderByDescending(r => r.AverageRating ?? 0),
             2 => projected.OrderBy(r => r.Title),
-            3 => projected.OrderBy(r => r.MissingIngredientCount ?? int.MaxValue),
+            3 => projected.OrderBy(r => r.MissingIngredientCount ?? int.MaxValue)
+                .ThenByDescending(r => r.RawAverageRating),
             _ => projected
         };
 

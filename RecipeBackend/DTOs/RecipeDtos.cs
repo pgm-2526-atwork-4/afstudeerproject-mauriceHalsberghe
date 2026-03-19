@@ -24,6 +24,7 @@ public class RecipeDto
 
     public int LikeCount { get; set; }
     public bool IsLikedByCurrentUser { get; set; }
+    public double RawAverageRating { get; set; }
     public double? AverageRating { get; set; }
 
     public int? MissingIngredientCount { get; set; }
