@@ -7,10 +7,10 @@ const nextConfig: NextConfig = {
   images: {
     remotePatterns: [
       {
-        protocol: "https",
-        hostname: "recipebackend-api.azurewebsites.net",
-        // protocol: "http",
-        // hostname: "localhost",
+        // protocol: "https",
+        // hostname: "recipebackend-api.azurewebsites.net",
+        protocol: "http",
+        hostname: "localhost",
         pathname: "/uploads/**",
       },
     ],
