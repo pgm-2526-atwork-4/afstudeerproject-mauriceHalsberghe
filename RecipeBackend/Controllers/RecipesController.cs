@@ -113,7 +113,7 @@ public class RecipesController : ControllerBase
 
         projected = sortBy switch
         {
-            1 => projected.OrderByDescending(r => r.AverageRating ?? 0),
+            1 => projected.OrderByDescending(r => r.RawAverageRating),
             2 => projected.OrderBy(r => r.Title),
             3 => projected.OrderBy(r => r.MissingIngredientCount ?? int.MaxValue)
                 .ThenByDescending(r => r.RawAverageRating),

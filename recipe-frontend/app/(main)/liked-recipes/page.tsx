@@ -106,7 +106,7 @@ export default function LikedRecipes() {
   return (
     <main className={HomeStyles.home}>
       <div className={HomeStyles.header}>
-        <RecipeFilters filters={filters} onChange={setFilters} onlyUsersFilter={false} />
+        <RecipeFilters filters={filters} onChange={setFilters} onlyUsersFilter={false} key="recipe-filters" />
       </div>
 
       {recipes.length === 0 ? (

@@ -150,6 +150,7 @@ export default function Home() {
     <main className={HomeStyles.home}>
       <div className={HomeStyles.header}>
         <RecipeFilters
+          key="recipe-filters"
           filters={filters}
           onChange={setFilters}
           onlyUsersFilter={true}

@@ -60,6 +60,7 @@ export default function RecipeFilters({ filters, onChange, onlyUsersFilter, user
           placeholder="Search Recipes"
           value={filters.search}
           onChange={(e) => update({ search: e.target.value })}
+          autoFocus
         />
       </div>
 
