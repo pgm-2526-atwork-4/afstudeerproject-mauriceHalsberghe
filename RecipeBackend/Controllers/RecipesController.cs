@@ -255,8 +255,10 @@ public class RecipesController : ControllerBase
             Title = dto.Title,
             ImageUrl = dto.ImageUrl,
             Time = dto.Time,
+            Servings = dto.Servings,
             DietId = dto.DietId,
             CuisineId = dto.CuisineId,
+            DishTypeId = dto.DishTypeId,
             UserId = userId,
             Steps = dto.Steps.Select(s => new Step
             {
@@ -335,8 +337,10 @@ public class RecipesController : ControllerBase
         recipe.Title = dto.Title;
         recipe.ImageUrl = dto.ImageUrl;
         recipe.Time = dto.Time;
+        recipe.Servings = dto.Servings; 
         recipe.DietId = dto.DietId;
         recipe.CuisineId = dto.CuisineId;
+        recipe.DishTypeId = dto.DishTypeId;
 
         _context.Steps.RemoveRange(recipe.Steps);
         _context.RecipeIngredients.RemoveRange(recipe.RecipeIngredients);
