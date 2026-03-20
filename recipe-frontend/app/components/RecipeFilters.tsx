@@ -30,6 +30,22 @@ export default function RecipeFilters({ filters, onChange, onlyUsersFilter, user
 
   const displayTime = filters.time === 90 ? "90+" : filters.time;
 
+  const [scrolled, setScrolled] = useState(false);
+  const [searchFocused, setSearchFocused] = useState(false);
+  const [selectOpen, setSelectOpen] = useState(false);
+
+  const filtersVisible = !scrolled || searchFocused || selectOpen;
+
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 40);
+      if (window.scrollY < 40) setSearchFocused(false);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
+
   useEffect(() => {
     const fetchMetadata = async () => {
       try {
@@ -53,18 +69,22 @@ export default function RecipeFilters({ filters, onChange, onlyUsersFilter, user
   };
 
   return (
-    <>
-      <div className={filtersStyles.search}>
+    <div className={filtersStyles.header}>
+      <div className={`${filtersStyles.search} ${scrolled ? filtersStyles.searchScrolled : ""} ${filtersVisible ? filtersStyles.filtersVisible : ""}`}>
         <input
           type="text"
           placeholder="Search Recipes"
           value={filters.search}
-          onChange={(e) => update({ search: e.target.value })}
-          autoFocus
+          onChange={(e) => {
+            update({ search: e.target.value })
+            setSearchFocused(true)
+          }}
+          onFocus={() => setSearchFocused(true)}
+          onBlur={() => setSearchFocused(false)}
         />
       </div>
 
-      <div className={filtersStyles.filterWrapper}>
+      <div className={`${filtersStyles.filterWrapper} ${!filtersVisible && filtersStyles.filtersHidden}`}>
 
         <div className={filtersStyles.filters}>
 
@@ -73,6 +93,8 @@ export default function RecipeFilters({ filters, onChange, onlyUsersFilter, user
               value={filters.selectedDiet}
               onChange={(e) => update({ selectedDiet: Number(e.target.value) })}
               className={filtersStyles.select}
+              onMouseDown={() => setSelectOpen(true)}
+              onBlur={() => setSelectOpen(false)}
             >
               <option value={0}>All Diets</option>
               {diets.map((diet) => (
@@ -87,6 +109,8 @@ export default function RecipeFilters({ filters, onChange, onlyUsersFilter, user
             value={filters.selectedCuisine}
             onChange={(e) => update({ selectedCuisine: Number(e.target.value) })}
             className={filtersStyles.select}
+            onMouseDown={() => setSelectOpen(true)}
+            onBlur={() => setSelectOpen(false)}
           >
             <option value={0}>All Cuisines</option>
             {cuisines.map((cuisine) => (
@@ -143,6 +167,8 @@ export default function RecipeFilters({ filters, onChange, onlyUsersFilter, user
           <select
             onChange={(e) => update({ selectedSort: Number(e.target.value) })}
             className={filtersStyles.select}
+            onMouseDown={() => setSelectOpen(true)}
+            onBlur={() => setSelectOpen(false)}
           >
             <option value={3}>Available ingredients</option>
             <option value={1}>Sort by Rating</option>
@@ -151,7 +177,6 @@ export default function RecipeFilters({ filters, onChange, onlyUsersFilter, user
 
         </div>
       </div>
-
-    </>
+    </div>
   );
 }

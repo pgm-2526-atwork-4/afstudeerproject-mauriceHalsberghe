@@ -157,7 +157,6 @@ export default function Home() {
 
   return (
     <main className={HomeStyles.home}>
-      <div className={HomeStyles.header}>
         <RecipeFilters
           key="recipe-filters"
           filters={filters}
@@ -166,7 +165,7 @@ export default function Home() {
           userDietId={userDietId}
           filterByDiet={filterByDiet}
         />
-      </div>
+
 
       {recipes.length === 0 ? (
         <EmptyView title="No recipes found" text="No recipes match your search" icon="recipe" btnUrl="./" btnText="Back" />
