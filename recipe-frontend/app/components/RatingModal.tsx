@@ -58,7 +58,7 @@ export default function RatingModal({
 
       <div className={ModalStyles.buttons}>
         <button className={ButtonStyles.secondaryButton} onClick={onClose}>
-          Cancel
+          No thanks
         </button>
         <button
           className={ButtonStyles.button}

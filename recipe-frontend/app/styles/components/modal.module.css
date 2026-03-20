@@ -19,6 +19,10 @@
     flex-direction: column;
     gap: 1.5rem;
     box-shadow: 0 8px 32px rgba(0, 0, 0, 0.15);
+
+    @media (min-width: 1000px) { 
+        max-width: 30rem;
+    }
 }
 
 .text {
@@ -33,13 +37,19 @@
     margin: 0;
     font-weight: 500;
     color: var(--black);
+    text-align: center;
 }
 
-.subtitle {
+.subtitle, .list {
     color: var(--gray-300);
     font-size: 1.2rem;
     margin: 0;
     text-align: center;
+}
+
+.list {
+    list-style:disc;
+    text-align: left;
 }
 
 .buttons {
