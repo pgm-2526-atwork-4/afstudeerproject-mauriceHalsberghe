@@ -4,6 +4,8 @@ import { API_URL } from "@/lib/api";
 
 import { useEffect, useState } from "react";
 import filtersStyles from "@/app/styles/components/recipefilers.module.css";
+import ButtonStyles from "@/app/styles/components/button.module.css";
+
 import { Cuisine, Diet } from "@/types/RecipeTypes";
 
 import CrossIcon from "@/public/cross.svg";
@@ -37,6 +39,24 @@ export default function RecipeFilters({ filters, onChange, onlyUsersFilter, user
   const [selectOpen, setSelectOpen] = useState(false);
 
   const filtersVisible = !scrolled || searchFocused || selectOpen;
+
+  const defaultFilters: RecipeFiltersState = {
+    search: "",
+    selectedDiet: 0,
+    selectedCuisine: 0,
+    time: 90,
+    onlyUsers: false,
+    onlyInStock: false,
+    selectedSort: 3,
+  };
+
+  const isAnyFilterActive =
+    filters.search !== "" ||
+    filters.selectedDiet !== 0 ||
+    filters.selectedCuisine !== 0 ||
+    filters.onlyInStock ||
+    filters.onlyUsers ||
+    filters.selectedSort !== 3;
 
 
   useEffect(() => {
@@ -187,6 +207,16 @@ export default function RecipeFilters({ filters, onChange, onlyUsersFilter, user
             <option value={1}>Sort by Rating</option>
             <option value={2}>Sort from A-Z</option>
           </select>
+
+          {isAnyFilterActive && (
+            <button
+              className={ButtonStyles.smallButton}
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => onChange(defaultFilters)}
+            >
+              Clear
+            </button>
+          )}
 
         </div>
       </div>
