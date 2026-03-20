@@ -84,10 +84,20 @@ export default function RecipeFilters({ filters, onChange, onlyUsersFilter, user
           onFocus={() => setSearchFocused(true)}
           onBlur={() => setSearchFocused(false)}
         />
-        <CrossIcon className={`${filtersStyles.cross} ${filters.search ? filtersStyles.crossActive : ""}`} onClick={() => update({ search: "" })} />
+        <CrossIcon
+          className={`${filtersStyles.cross} ${filters.search ? filtersStyles.crossActive : ""}`}
+          onClick={() => filters.search && update({ search: "" })}
+        />
       </div>
 
-      <div className={`${filtersStyles.filterWrapper} ${!filtersVisible && filtersStyles.filtersHidden}`}>
+      <div
+        className={`${filtersStyles.filterWrapper} ${!filtersVisible && filtersStyles.filtersHidden}`}
+        onMouseDown={(e) => {
+          if ((e.target as HTMLElement).tagName !== "SELECT") {
+            e.preventDefault();
+          }
+        }}
+      >
 
         <div className={filtersStyles.filters}>
 
