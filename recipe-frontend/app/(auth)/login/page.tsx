@@ -26,7 +26,10 @@ export default function LoginPage() {
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
     try {
-        const res = await loginUser(form);
+        const res = await loginUser({
+            email: form.email.trim().toLowerCase(),
+            password: form.password,
+        });
 
         auth?.login(res.user, res.token);
 
@@ -81,11 +84,10 @@ export default function LoginPage() {
                         />
                     </label>
                 </div>
-
+                
                 <button className={ButtonStyles.button} type="submit">Login</button>
+                {error && <p className={AuthStyles.error}>{error}</p>}
             </form>
-
-            {error && <p className={AuthStyles.error}>{error}</p>}
 
             <p className={AuthStyles.text}>No account yet? <Link className={AuthStyles.link} href={'/register'}>Register</Link></p>
             <Link className={AuthStyles.link} href={'/'}>Continue as a Guest</Link>

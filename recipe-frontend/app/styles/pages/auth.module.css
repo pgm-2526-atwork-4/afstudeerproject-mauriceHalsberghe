@@ -65,30 +65,42 @@
     flex-direction: column;
     align-items: center;
     gap: 5rem;
+    position: relative;
 }
 
 .inputs {
     display: flex;
     flex-direction: column;
     align-items: center;
-    gap: 1.5rem;
+    gap: 2rem;
 
 }
 
 .label {
+    position: relative;
     display: flex;
     flex-direction: column;
     font-size: 1.2rem;
     gap: 8px;
+    .error {
+        font-size: 1rem;
+        bottom: -1.6rem;
+    }
 }
 
 .input {
     width: 360px;
     padding: 6px 12px;
     border-bottom: var(--green-200) 2px solid;
+
+    &:focus {
+        outline: none;
+    }
 }
 
 .error {
+    bottom: 4rem;
+    position: absolute;
     color: var(--red-100);
     font-size: 1.2rem;
 }

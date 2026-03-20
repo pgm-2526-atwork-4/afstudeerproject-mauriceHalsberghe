@@ -3,6 +3,7 @@ export const API_URL = process.env.NEXT_PUBLIC_API_URL;
 interface AuthData {
   email: string;
   password: string;
+  username?: string;
 }
 
 export async function registerUser(data: AuthData) {
