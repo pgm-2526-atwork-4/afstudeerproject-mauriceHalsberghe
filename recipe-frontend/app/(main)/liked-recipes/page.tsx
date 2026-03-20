@@ -108,6 +108,12 @@ export default function LikedRecipes() {
 
   useEffect(() => {
     if (auth?.loading || !prefsLoaded) return;
+    
+    if (!loggedUserId) {
+      setLoading(false);
+      return;
+    }
+
     setLoading(true);
     fetchRecipes(true);
   }, [filters, loggedUserId, auth?.loading, prefsLoaded, filterByDiet, filterByAllergens]);
