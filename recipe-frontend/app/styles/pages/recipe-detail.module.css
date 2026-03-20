@@ -10,6 +10,7 @@
 }
 
 .main {
+    position: relative;
     @media (min-width: 1000px) {
         max-width: 50rem;
         margin: 0 auto;
@@ -70,6 +71,22 @@
     }
 }
 
+.tags {
+  display: flex;
+  position: absolute;
+  gap: 0.5rem;
+  top: 0.5rem;
+  left: 0.5rem;
+}
+
+.tag {
+  background-color: var(--green-200);
+  color: var(--white);
+  padding: 0.125rem 0.5rem;
+  border-radius: 5rem;
+  font-size: 14px;
+}
+
 .detailData {
     display: flex;
     gap: 1rem;
@@ -104,6 +121,19 @@
 
 .duration::before {
     background-image: url('/clock.svg');
+}
+
+.likeCount {
+    color: var(--gray-300);
+    position: absolute;
+    right: 1rem;
+    display: flex;
+    align-items: center;
+    gap: 0.25rem;
+    svg {
+        width: .875rem;
+        height: .875rem;
+    }
 }
 
 .subtitle {

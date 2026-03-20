@@ -39,10 +39,12 @@ export type RecipeDetails = {
     time: number;
     diet?: Diet;
     cuisine?: Cuisine;
+    dishType?: DishType;
     user?: User;
     steps: Step[];
     ingredients: Ingredient[];
     likeCount: number;
+    isLikedByCurrentUser: boolean;
     averageRating?: number;
 };
 

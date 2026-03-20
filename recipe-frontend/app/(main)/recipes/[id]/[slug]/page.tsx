@@ -21,7 +21,8 @@ import Checkmark from "@/public/ingredient_stock.svg";
 import Cross from "@/public/ingredient_not_stock.svg";
 import Cart from "@/public/ingredient_cart.svg";
 import Apple from "@/public/ingredient_half_stock.svg";
-
+import LikeFilledIcon from '@/public/like_filled.svg';
+import LikeUnfilledIcon from '@/public/like_unfilled.svg';
 
 import { formatQuantity } from "@/lib/formatQuantity";
 import { slugifyTitle } from "@/lib/slugifyTitle";
@@ -150,6 +151,12 @@ export default function RecipeDetail() {
           src={`${API_URL}/uploads/recipe-images/${recipe.imageUrl}`}
         />
 
+      <div className={DetailStyles.tags}>
+        { recipe.diet && <p className={DetailStyles.tag}>{recipe.diet.name}</p>}
+        { recipe.cuisine && <p className={DetailStyles.tag}>{recipe.cuisine.name}</p> }
+        { recipe.dishType && <p className={DetailStyles.tag}>{recipe.dishType.name}</p> }
+      </div>
+
         <div className={DetailStyles.detailData}>
           <div onClick={() => setShowModal(true)}>
             {recipe.averageRating ? (
@@ -162,6 +169,11 @@ export default function RecipeDetail() {
             )}
           </div>
           <p className={DetailStyles.duration}>{recipe.time} min</p>
+
+           <p className={DetailStyles.likeCount}>
+              {recipe.isLikedByCurrentUser ? <LikeFilledIcon /> : <LikeUnfilledIcon />}
+              {recipe.likeCount}
+            </p>
         </div>
 
         <h2 className={DetailStyles.subtitle}>Ingredients</h2>
