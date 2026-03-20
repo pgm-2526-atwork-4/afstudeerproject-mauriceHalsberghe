@@ -182,8 +182,8 @@ export default function LikedRecipes() {
       )}
 
       <div ref={loaderRef}>
-        {loadingMore && <p className={HomeStyles.message}>Loading more...</p>}
-        {!hasMore && recipes.length > 0 && <p className={HomeStyles.message}>All recipes loaded</p>}
+        {loadingMore && loggedUserId && <p className={HomeStyles.message}>Loading more...</p>}
+        {!hasMore && loggedUserId && recipes.length > 0 && <p className={HomeStyles.message}>All recipes loaded</p>}
       </div>
     </main>
   );
