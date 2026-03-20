@@ -3,7 +3,7 @@
 import { API_URL } from "@/lib/api";
 import { useContext, useEffect, useRef, useState, useCallback } from "react";
 import RecipeCard from '../components/RecipeCard';
-import RecipeFilters, { RecipeFiltersState } from "../components/RecipeFilters";
+import RecipeFilters, { RecipeFiltersState } from "@/app/components/RecipeFilters";
 import HomeStyles from '@/app/styles/pages/home.module.css';
 import { AuthContext } from '@/context/AuthContext';
 import EmptyView from "../components/EmptyView";
@@ -33,6 +33,7 @@ export default function Home() {
     search: "",
     selectedDiet: 0,
     selectedCuisine: 0,
+    selectedDishType: 0,
     time: 15,
     onlyUsers: false,
     onlyInStock: false,
@@ -86,6 +87,7 @@ export default function Home() {
     });
     if (filters.selectedDiet) params.set("dietId", filters.selectedDiet.toString());
     if (filters.selectedCuisine) params.set("cuisineId", filters.selectedCuisine.toString());
+    if (filters.selectedDishType) params.set("dishTypeId", filters.selectedDishType.toString());
 
     try {
       const res = await fetch(`${API_URL}/api/recipes?${params}`);

@@ -34,6 +34,7 @@ export default function UserRecipesPage() {
         search: "",
         selectedDiet: 0,
         selectedCuisine: 0,
+        selectedDishType: 0,
         time: 15,
         onlyUsers: false,
         onlyInStock: false,
@@ -82,6 +83,7 @@ export default function UserRecipesPage() {
         });
         if (filters.selectedDiet) params.set("dietId", filters.selectedDiet.toString());
         if (filters.selectedCuisine) params.set("cuisineId", filters.selectedCuisine.toString());
+        if (filters.selectedDishType) params.set("dishTypeId", filters.selectedDishType.toString());
 
         try {
             const res = await fetch(`${API_URL}/api/users/${username}/recipes?${params}`);

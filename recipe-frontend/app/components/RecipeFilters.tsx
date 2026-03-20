@@ -3,10 +3,10 @@
 import { API_URL } from "@/lib/api";
 
 import { useEffect, useState } from "react";
-import filtersStyles from "@/app/styles/components/recipefilers.module.css";
+import filtersStyles from "@/app/styles/components/recipefilters.module.css";
 import ButtonStyles from "@/app/styles/components/button.module.css";
 
-import { Cuisine, Diet } from "@/types/RecipeTypes";
+import { Cuisine, Diet, DishType } from "@/types/RecipeTypes";
 
 import CrossIcon from "@/public/cross.svg";
 
@@ -14,6 +14,7 @@ export type RecipeFiltersState = {
   search: string;
   selectedDiet: number;
   selectedCuisine: number;
+  selectedDishType: number;
   time: number;
   onlyUsers: boolean;
   onlyInStock: boolean;
@@ -31,6 +32,7 @@ type Props = {
 export default function RecipeFilters({ filters, onChange, onlyUsersFilter, userDietId, filterByDiet }: Props) {
   const [diets, setDiets] = useState<Diet[]>([]);
   const [cuisines, setCuisines] = useState<Cuisine[]>([]);
+  const [dishTypes, setDishTypes] = useState<DishType[]>([]);
 
   const displayTime = filters.time === 90 ? "90+" : filters.time;
 
@@ -44,6 +46,7 @@ export default function RecipeFilters({ filters, onChange, onlyUsersFilter, user
     search: "",
     selectedDiet: 0,
     selectedCuisine: 0,
+    selectedDishType: 0,
     time: 90,
     onlyUsers: false,
     onlyInStock: false,
@@ -54,6 +57,7 @@ export default function RecipeFilters({ filters, onChange, onlyUsersFilter, user
     filters.search !== "" ||
     filters.selectedDiet !== 0 ||
     filters.selectedCuisine !== 0 ||
+    filters.selectedDishType !== 0 ||
     filters.onlyInStock ||
     filters.onlyUsers ||
     filters.selectedSort !== 3;
@@ -70,13 +74,15 @@ export default function RecipeFilters({ filters, onChange, onlyUsersFilter, user
   useEffect(() => {
     const fetchMetadata = async () => {
       try {
-        const [dietRes, cuisineRes] = await Promise.all([
+        const [dietRes, cuisineRes, dishTypeRes] = await Promise.all([
           fetch(`${API_URL}/api/diets`),
           fetch(`${API_URL}/api/cuisines`),
+          fetch(`${API_URL}/api/dishtypes`),
         ]);
 
         setDiets(await dietRes.json());
         setCuisines(await cuisineRes.json());
+        setDishTypes(await dishTypeRes.json());
       } catch (err) {
         console.error(err);
       }
@@ -149,6 +155,19 @@ export default function RecipeFilters({ filters, onChange, onlyUsersFilter, user
               <option key={cuisine.id} value={cuisine.id}>
                 {cuisine.name}
               </option>
+            ))}
+          </select>
+
+          <select
+            value={filters.selectedDishType}
+            onChange={(e) => update({ selectedDishType: Number(e.target.value) })}
+            className={filtersStyles.select}
+            onMouseDown={() => setSelectOpen(true)}
+            onBlur={() => setSelectOpen(false)}
+          >
+            <option value={0}>All Dish Types</option>
+            {dishTypes.map((dishType) => (
+              <option key={dishType.id} value={dishType.id}>{dishType.name}</option>
             ))}
           </select>
 

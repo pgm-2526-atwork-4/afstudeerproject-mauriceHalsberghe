@@ -33,6 +33,7 @@ export default function LikedRecipes() {
     search: "",
     selectedDiet: 0,
     selectedCuisine: 0,
+    selectedDishType: 0,
     time: 15,
     onlyUsers: false,
     onlyInStock: false,
@@ -87,6 +88,7 @@ export default function LikedRecipes() {
     });
     if (filters.selectedDiet) params.set("dietId", filters.selectedDiet.toString());
     if (filters.selectedCuisine) params.set("cuisineId", filters.selectedCuisine.toString());
+    if (filters.selectedDishType) params.set("dishTypeId", filters.selectedDishType.toString());
 
     try {
       const res = await fetch(`${API_URL}/api/recipes?${params}`);
