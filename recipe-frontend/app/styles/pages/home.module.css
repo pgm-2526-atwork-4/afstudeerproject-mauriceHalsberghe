@@ -27,6 +27,7 @@
   align-items: center;
   justify-content: space-between;
   margin-bottom: 1rem;
+  margin-top: 8rem;
 }
 
 .userTitle {
@@ -47,7 +48,7 @@
   border-radius: 5rem;
 }
 
-.recipes, .skeletonGrid {
+.recipes, .skeletonGrid, .UserRecipes, .skeletonGridUser {
   display: flex;
   flex-direction: column;
   gap: 1rem;
@@ -61,6 +62,10 @@
     gap: 2rem;
     grid-template-columns: repeat(3, 1fr);
   }
+}
+
+.UserRecipes, .skeletonGridUser {
+  margin-top: 1rem;
 }
 
 .skeletonCard {
