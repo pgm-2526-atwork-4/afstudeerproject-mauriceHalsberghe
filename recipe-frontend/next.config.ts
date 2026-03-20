@@ -17,11 +17,9 @@ const nextConfig: NextConfig = {
 
     remotePatterns: [
       {
-        // protocol: "https",
-        // hostname: "recipebackend-api.azurewebsites.net",
-        port: '5041',
-        protocol: "http",
-        hostname: "localhost",
+        port: process.env.NEXT_PUBLIC_API_PORT ?? "5041",
+        protocol: (process.env.NEXT_PUBLIC_API_PROTOCOL as "http" | "https") ?? "http",
+        hostname: process.env.NEXT_PUBLIC_API_HOSTNAME ?? "localhost",
         pathname: "/uploads/**",
       },
     ],
