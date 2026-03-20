@@ -8,10 +8,11 @@ import HomeStyles from '@/app/styles/pages/home.module.css';
 import { AuthContext } from '@/context/AuthContext';
 import EmptyView from "../components/EmptyView";
 import { Recipe } from "@/types/RecipeTypes";
-
-const PAGE_SIZE = 9;
+import { usePageSize } from "@/lib/usePageSize";
 
 export default function Home() {
+  const PAGE_SIZE = usePageSize();
+
   const auth = useContext(AuthContext);
   const loggedUserId = auth?.user?.id;
 
@@ -69,12 +70,13 @@ export default function Home() {
   }, [auth?.loading, auth?.user?.id]);
 
   const fetchRecipes = useCallback(async (isInitial = false) => {
+    const pageSize = PAGE_SIZE ?? 6;
     const currentPage = isInitial ? 1 : page;
     
     const params = new URLSearchParams({
       currentUserId: loggedUserId?.toString() ?? "",
       page: currentPage.toString(),
-      pageSize: PAGE_SIZE.toString(),
+      pageSize: pageSize.toString(),
       search: filters.search,
       sortBy: filters.selectedSort.toString(),
       onlyUsers: filters.onlyUsers.toString(),
@@ -99,7 +101,7 @@ export default function Home() {
         return [...prev, ...uniqueNewRecipes];
       });
 
-      const moreAvailable = (currentPage * PAGE_SIZE) < data.totalCount;
+      const moreAvailable = (currentPage * pageSize) < data.totalCount;
       setHasMore(moreAvailable);
       setPage(prev => isInitial ? 2 : prev + 1);
 
@@ -112,7 +114,7 @@ export default function Home() {
   }, [filters, loggedUserId, page, filterByDiet, filterByAllergens]);
 
   useEffect(() => {
-    if (auth?.loading || !prefsLoaded) return;
+    if (auth?.loading || !prefsLoaded || PAGE_SIZE === null) return;
     setLoading(true);
     fetchRecipes(true).then(() => setInitialLoading(false));
   }, [filters, loggedUserId, auth?.loading, prefsLoaded, filterByDiet, filterByAllergens]);
@@ -142,7 +144,7 @@ export default function Home() {
 
       {(initialLoading && recipes.length === 0) || auth?.loading ? (
         <div className={HomeStyles.skeletonGrid}>
-          {[...Array(5)].map((_, i) => (
+          {[...Array(PAGE_SIZE ?? 6)].map((_, i) => (
             <div key={i} className={HomeStyles.skeletonCard}>
               <span className={HomeStyles.skeletonCardInfo}>
                 <span></span>
