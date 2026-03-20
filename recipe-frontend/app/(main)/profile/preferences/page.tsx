@@ -15,6 +15,7 @@ import ButtonStyles from "@/app/styles/components/button.module.css";
 import PencilIcon from "@/public/edit.svg"
 import EmptyView from "@/app/components/EmptyView";
 import { Allergy, AllergyType, Diet } from "@/types/RecipeTypes";
+import { IngredientOption } from "@/app/components/IngredientSearch";
 
 const ALLERGIES: Allergy[] = [
     { id: 1, typeId: 37, name: 'Gluten',  type: AllergyType.ingredient },
@@ -42,7 +43,10 @@ export default function Preferences() {
         allergies: number[];
         filterByDiet: boolean;
         filterByAllergens: boolean;
-        }>({ diet: null, allergies: [], filterByDiet: false, filterByAllergens: false });
+        customAllergies: IngredientOption[];
+    }>({ diet: null, allergies: [], filterByDiet: false, filterByAllergens: false, customAllergies: [] });
+
+    const [customAllergies, setCustomAllergies] = useState<IngredientOption[]>([]);
 
     const auth = useContext(AuthContext);
 
@@ -76,6 +80,29 @@ export default function Preferences() {
                     .map(a => a.id);
 
                 setSelectedAllergies(matchedIds);
+
+                const knownIngredientTypeIds = new Set(
+                    ALLERGIES
+                        .filter(a => a.type === AllergyType.ingredient)
+                        .map(a => a.typeId)
+                );
+
+                const customIds = (prefData.ingredientAllergyIds as number[])
+                    .filter(id => !knownIngredientTypeIds.has(id));
+
+                if (customIds.length > 0) {
+                    const results = await Promise.all(
+                        customIds.map(id =>
+                            fetch(`${API_URL}/api/ingredients/${id}`).then(r => r.json())
+                        )
+                    );
+                    setCustomAllergies(results.map(i => ({
+                        value: i.id,
+                        label: i.name,
+                        alwaysInStock: i.alwaysInStock,
+                    })));
+                }
+
             } catch (err) {
                 console.error(err);
             } finally {
@@ -99,6 +126,7 @@ export default function Preferences() {
             allergies: [...selectedAllergies],
             filterByDiet,
             filterByAllergens,
+            customAllergies: [...customAllergies],
         });
         setIsEditing(true);
     };
@@ -108,6 +136,7 @@ export default function Preferences() {
         setSelectedAllergies(oldPreferences.allergies);
         setFilterByDiet(oldPreferences.filterByDiet);
         setFilterByAllergens(oldPreferences.filterByAllergens);
+        setCustomAllergies(oldPreferences.customAllergies);
         setIsEditing(false);
         setSaveStatus("idle");
     };
@@ -116,9 +145,12 @@ export default function Preferences() {
         if (!auth?.token) return;
         setSaveStatus("idle");
 
-        const ingredientAllergyIds = ALLERGIES
-            .filter(a => selectedAllergies.includes(a.id) && a.type === AllergyType.ingredient)
-            .map(a => a.typeId);
+        const ingredientAllergyIds = [
+            ...ALLERGIES
+                .filter(a => selectedAllergies.includes(a.id) && a.type === AllergyType.ingredient)
+                .map(a => a.typeId),
+            ...customAllergies.map(i => i.value),
+        ];
 
         const ingredientTypeAllergyIds = ALLERGIES
             .filter(a => selectedAllergies.includes(a.id) && a.type === AllergyType.ingredientType)
@@ -153,6 +185,12 @@ export default function Preferences() {
             setSaveStatus("error");
         }
     };
+
+    function handleAddCustomAllergy(ingredient: IngredientOption) {
+        setCustomAllergies(prev =>
+            prev.some(i => i.value === ingredient.value) ? prev : [...prev, ingredient]
+        );
+    }
 
     if (!auth || !auth.user || !auth.token) return <EmptyView title='Not logged in' btnText='Log In' btnUrl='/login' icon='profile'/>;
 
@@ -191,7 +229,7 @@ export default function Preferences() {
 
                 <label className={PrefStyles.switchRowDiet}>
                     <span className={PrefStyles.labelText}>
-                        <h2>Filter by diet</h2>
+                        <h2>Filter recipes by diet</h2>
                         <p>Show only recipes of your diet</p>
                     </span>
 
@@ -214,6 +252,10 @@ export default function Preferences() {
                     selectedAllergies={selectedAllergies}
                     onToggle={isEditing ? toggleAllergy : () => {}}
                     disabled={!isEditing}
+                    onAddCustomAllergy={handleAddCustomAllergy}
+                    customAllergies={customAllergies}
+                    onRemoveCustomAllergy={isEditing ? (id) =>
+                        setCustomAllergies(prev => prev.filter(i => i.value !== id)) : () => {}}
                 />
 
                     <label className={PrefStyles.switchRowAllergy}>

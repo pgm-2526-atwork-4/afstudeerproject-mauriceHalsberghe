@@ -4,7 +4,11 @@ import { API_URL } from "@/lib/api";
 
 import { useEffect, useState } from "react";
 import filtersStyles from "@/app/styles/components/recipefilers.module.css";
+import ButtonStyles from "@/app/styles/components/button.module.css";
+
 import { Cuisine, Diet } from "@/types/RecipeTypes";
+
+import CrossIcon from "@/public/cross.svg";
 
 export type RecipeFiltersState = {
   search: string;
@@ -20,7 +24,7 @@ type Props = {
   filters: RecipeFiltersState;
   onlyUsersFilter: boolean;
   onChange: (filters: RecipeFiltersState) => void;
-  userDietId?: number | null;       // new
+  userDietId?: number | null;
   filterByDiet?: boolean;   
 };
 
@@ -29,6 +33,39 @@ export default function RecipeFilters({ filters, onChange, onlyUsersFilter, user
   const [cuisines, setCuisines] = useState<Cuisine[]>([]);
 
   const displayTime = filters.time === 90 ? "90+" : filters.time;
+
+  const [scrolled, setScrolled] = useState(false);
+  const [searchFocused, setSearchFocused] = useState(false);
+  const [selectOpen, setSelectOpen] = useState(false);
+
+  const filtersVisible = !scrolled || searchFocused || selectOpen;
+
+  const defaultFilters: RecipeFiltersState = {
+    search: "",
+    selectedDiet: 0,
+    selectedCuisine: 0,
+    time: 90,
+    onlyUsers: false,
+    onlyInStock: false,
+    selectedSort: 3,
+  };
+
+  const isAnyFilterActive =
+    filters.search !== "" ||
+    filters.selectedDiet !== 0 ||
+    filters.selectedCuisine !== 0 ||
+    filters.onlyInStock ||
+    filters.onlyUsers ||
+    filters.selectedSort !== 3;
+
+  useEffect(() => {
+    const handleScroll = () => {
+      setScrolled(window.scrollY > 40);
+      if (window.scrollY < 40) setSearchFocused(false);
+    };
+    window.addEventListener("scroll", handleScroll, { passive: true });
+    return () => window.removeEventListener("scroll", handleScroll);
+  }, []);
 
   useEffect(() => {
     const fetchMetadata = async () => {
@@ -53,18 +90,33 @@ export default function RecipeFilters({ filters, onChange, onlyUsersFilter, user
   };
 
   return (
-    <>
-      <div className={filtersStyles.search}>
+    <div className={filtersStyles.header}>
+      <div className={`${filtersStyles.search} ${scrolled ? filtersStyles.searchScrolled : ""} ${filtersVisible ? filtersStyles.filtersVisible : ""}`}>
         <input
           type="text"
           placeholder="Search Recipes"
           value={filters.search}
-          onChange={(e) => update({ search: e.target.value })}
-          autoFocus
+          onChange={(e) => {
+            update({ search: e.target.value })
+            setSearchFocused(true)
+          }}
+          onFocus={() => setSearchFocused(true)}
+          onBlur={() => setSearchFocused(false)}
+        />
+        <CrossIcon
+          className={`${filtersStyles.cross} ${filters.search ? filtersStyles.crossActive : ""}`}
+          onClick={() => filters.search && update({ search: "" })}
         />
       </div>
 
-      <div className={filtersStyles.filterWrapper}>
+      <div
+        className={`${filtersStyles.filterWrapper} ${!filtersVisible && filtersStyles.filtersHidden}`}
+        onMouseDown={(e) => {
+          if ((e.target as HTMLElement).tagName !== "SELECT") {
+            e.preventDefault();
+          }
+        }}
+      >
 
         <div className={filtersStyles.filters}>
 
@@ -73,6 +125,8 @@ export default function RecipeFilters({ filters, onChange, onlyUsersFilter, user
               value={filters.selectedDiet}
               onChange={(e) => update({ selectedDiet: Number(e.target.value) })}
               className={filtersStyles.select}
+              onMouseDown={() => setSelectOpen(true)}
+              onBlur={() => setSelectOpen(false)}
             >
               <option value={0}>All Diets</option>
               {diets.map((diet) => (
@@ -87,6 +141,8 @@ export default function RecipeFilters({ filters, onChange, onlyUsersFilter, user
             value={filters.selectedCuisine}
             onChange={(e) => update({ selectedCuisine: Number(e.target.value) })}
             className={filtersStyles.select}
+            onMouseDown={() => setSelectOpen(true)}
+            onBlur={() => setSelectOpen(false)}
           >
             <option value={0}>All Cuisines</option>
             {cuisines.map((cuisine) => (
@@ -141,17 +197,29 @@ export default function RecipeFilters({ filters, onChange, onlyUsersFilter, user
           }
 
           <select
+            value={filters.selectedSort}
             onChange={(e) => update({ selectedSort: Number(e.target.value) })}
             className={filtersStyles.select}
+            onMouseDown={() => setSelectOpen(true)}
+            onBlur={() => setSelectOpen(false)}
           >
             <option value={3}>Available ingredients</option>
             <option value={1}>Sort by Rating</option>
             <option value={2}>Sort from A-Z</option>
           </select>
 
+          {isAnyFilterActive && (
+            <button
+              className={ButtonStyles.smallButton}
+              onMouseDown={(e) => e.preventDefault()}
+              onClick={() => onChange(defaultFilters)}
+            >
+              Clear
+            </button>
+          )}
+
         </div>
       </div>
-
-    </>
+    </div>
   );
 }

@@ -68,13 +68,15 @@ export default function IngredientSearch({ value, onIngredientChange, placeholde
       isSearchable
       menuPortalTarget={typeof document !== "undefined" ? document.body : undefined}
       styles={{
-        menu: (base) => ({ ...base, zIndex: 10 }),
+        menu: (base) => ({ ...base, zIndex: 1002 }),
+        menuPortal: base => ({ ...base, zIndex: 9999 }),
         control: () => ({
           display: "flex",
           borderWidth: "2px",
           borderColor: "var(--gray-200)",
           borderRadius: "5rem",
           padding: "0 6px",
+          zIndex: 2000,
         }),
         placeholder: (base) => ({ ...base, color: "var(--gray-300)" }),
         option: (base, state) => ({

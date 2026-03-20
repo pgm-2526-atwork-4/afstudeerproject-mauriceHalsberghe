@@ -127,4 +127,39 @@ public class InventoryIngredientController : ControllerBase
 
         return Ok();
     }
+
+    [HttpPost("remove/{recipeId}/user/{userId}")]
+    public async Task<IActionResult> UseRecipeIngredients(int recipeId, int userId)
+    {
+        var recipeIngredients = await _context.RecipeIngredients
+            .Include(ri => ri.Ingredient)
+            .Where(ri => ri.RecipeId == recipeId && ri.Ingredient != null && !ri.Ingredient.AlwaysInStock)
+            .ToListAsync();
+
+        if (!recipeIngredients.Any())
+            return Ok();
+
+        foreach (var recipeIngredient in recipeIngredients)
+        {
+            var inventoryItem = await _context.InventoryIngredients
+                .FirstOrDefaultAsync(ii => ii.UserId == userId && ii.IngredientId == recipeIngredient.IngredientId);
+
+            if (inventoryItem == null) continue;
+
+            if (inventoryItem.Quantity.HasValue && recipeIngredient.Quantity.HasValue)
+            {
+                inventoryItem.Quantity -= recipeIngredient.Quantity.Value;
+
+                if (inventoryItem.Quantity <= 0)
+                    _context.InventoryIngredients.Remove(inventoryItem);
+            }
+            else
+            {
+                _context.InventoryIngredients.Remove(inventoryItem);
+            }
+        }
+
+        await _context.SaveChangesAsync();
+        return Ok();
+    }
 }

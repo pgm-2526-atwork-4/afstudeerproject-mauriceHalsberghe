@@ -19,14 +19,48 @@ export default function RegisterPage() {
     password: "",
   });
   const [error, setError] = useState("");
+  const [errors, setErrors] = useState({
+    username: "",
+    email: "",
+    password: "",
+  });
 
   const auth = useContext(AuthContext);
 
+  function validate() {
+    const newErrors = { username: "", email: "", password: "" };
+    let valid = true;
+
+    if (form.username.trim().length < 3) {
+      newErrors.username = "Username must be at least 3 characters";
+      valid = false;
+    }
+
+    const emailRegex = /^[^\s@]+@[^\s@]+\.[^\s@]+$/;
+    if (!emailRegex.test(form.email.trim())) {
+      newErrors.email = "Please enter a valid email address";
+      valid = false;
+    }
+
+    if (form.password.length < 8) {
+      newErrors.password = "Password must be at least 8 characters";
+      valid = false;
+    }
+
+    setErrors(newErrors);
+    return valid;
+  }
 
   async function handleSubmit(e: React.FormEvent) {
     e.preventDefault();
+    if (!validate()) return;
+
     try {
-      const res = await registerUser(form);
+      const res = await registerUser({
+        username: form.username.trim(),
+        email: form.email.trim().toLowerCase(),
+        password: form.password,
+      });
 
       auth?.login(res.user, res.token);
 
@@ -57,10 +91,12 @@ export default function RegisterPage() {
                   required
                   placeholder="Username"
                   id="username"
-                  onChange={(e) =>
-                    setForm({ ...form, username: e.target.value })
-                  }
+                  onChange={(e) => {
+                    setForm({ ...form, username: e.target.value });
+                    setErrors({ ...errors, username: "" });
+                  }}
                 />
+                {errors.username && <p className={AuthStyles.error}>{errors.username}</p>}
               </label>
               
               <label className={AuthStyles.label} htmlFor="email">
@@ -70,10 +106,12 @@ export default function RegisterPage() {
                   type="email"
                   placeholder="Email"
                   id="email"
-                  onChange={(e) =>
-                    setForm({ ...form, email: e.target.value })
-                  }
+                  onChange={(e) => {
+                    setForm({ ...form, email: e.target.value });
+                    setErrors({ ...errors, email: "" });
+                  }}
                 />
+                {errors.email && <p className={AuthStyles.error}>{errors.email}</p>}
               </label>
 
               <label className={AuthStyles.label} htmlFor="password">
@@ -83,17 +121,19 @@ export default function RegisterPage() {
                   placeholder="Password"
                   type="password"
                   id="password"
-                  onChange={(e) =>
-                    setForm({ ...form, password: e.target.value })
-                  }
+                  onChange={(e) => {
+                    setForm({ ...form, password: e.target.value });
+                    setErrors({ ...errors, password: "" });
+                  }}
                 />
+                {errors.password && <p className={AuthStyles.error}>{errors.password}</p>}
               </label>
             </div>
 
             <button className={ButtonStyles.button} type="submit">Register</button>
+            {error && <p className={AuthStyles.error}>{error}</p>}
           </form>
 
-        {error && <p className={AuthStyles.error}>{error}</p>}
 
         <p className={AuthStyles.text}>Already an account? <Link className={AuthStyles.link} href={'/login'}>Log in</Link></p>
 

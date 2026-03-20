@@ -162,6 +162,12 @@ public class RecipesController : ControllerBase
                     Name = r.Cuisine.Name
                 },
 
+                DishType = r.DishType == null ? null : new DishTypeDto
+                {
+                    Id = r.DishType.Id,
+                    Name = r.DishType.Name
+                },
+
                 User = r.User == null ? null : new UserSummaryDto
                 {
                     Id = r.User.Id,
@@ -222,6 +228,8 @@ public class RecipesController : ControllerBase
                     }).ToList(),
 
                 LikeCount = r.Likes.Count(),
+
+                IsLikedByCurrentUser = currentUserId.HasValue && r.Likes.Any(l => l.UserId == currentUserId.Value),
 
                 AverageRating = r.Reviews.Any()
                     ? Math.Round(r.Reviews.Average(rv => rv.Rating) / 2.0, 1)

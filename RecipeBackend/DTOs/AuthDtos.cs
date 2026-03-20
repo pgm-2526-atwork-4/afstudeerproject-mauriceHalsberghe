@@ -25,3 +25,8 @@ public record UserDto(
     string? Avatar,
     string? Bio
 );
+
+public class UpdateUsernameDto
+{
+    public required string Username { get; set; }
+}

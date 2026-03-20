@@ -93,22 +93,56 @@ public class UsersController : ControllerBase
     }
 
     [HttpGet("{username}/recipes")]
-    public async Task<ActionResult<IEnumerable<RecipeDto>>> GetRecipesByUsername(
+    public async Task<IActionResult> GetRecipesByUsername(
         string username,
-        int? currentUserId)
+        int? currentUserId,
+        int page = 1,
+        int pageSize = 6,
+        string? search = null,
+        int sortBy = 1,
+        int? dietId = null,
+        int? cuisineId = null)
     {
         var user = await _context.Users
             .FirstOrDefaultAsync(u => u.Username == username);
-
+ 
         if (user == null)
             return NotFound("User not found");
-
-        var recipes = await _context.Recipes
+ 
+        var query = _context.Recipes
             .Where(r => r.UserId == user.Id)
             .Include(r => r.RecipeIngredients)
             .Include(r => r.Cuisine)
             .Include(r => r.Diet)
             .Include(r => r.User)
+            .AsQueryable();
+ 
+        // Search
+        if (!string.IsNullOrWhiteSpace(search))
+            query = query.Where(r => r.Title.ToLower().Contains(search.ToLower()));
+ 
+        // Filters
+        if (dietId.HasValue && dietId > 0)
+            query = query.Where(r => r.DietId == dietId);
+ 
+        if (cuisineId.HasValue && cuisineId > 0)
+            query = query.Where(r => r.CuisineId == cuisineId);
+ 
+        // Sort (same sortBy values as the main recipes endpoint)
+        query = sortBy switch
+        {
+            1 => query.OrderByDescending(r => r.Id),           // Newest
+            2 => query.OrderBy(r => r.Id),                     // Oldest
+            3 => query.OrderByDescending(r => r.Likes.Count), // Most liked
+            4 => query.OrderBy(r => r.Time),                   // Quickest
+            _ => query.OrderByDescending(r => r.Id)
+        };
+ 
+        var totalCount = await query.CountAsync();
+ 
+        var recipes = await query
+            .Skip((page - 1) * pageSize)
+            .Take(pageSize)
             .Select(r => new RecipeDto
             {
                 Id = r.Id,
@@ -138,8 +172,12 @@ public class UsersController : ControllerBase
                     r.Likes.Any(l => l.UserId == currentUserId.Value),
             })
             .ToListAsync();
-
-        return Ok(recipes);
+ 
+        return Ok(new
+        {
+            Recipes = recipes,
+            TotalCount = totalCount
+        });
     }
 
     [HttpGet("{username}")]
@@ -201,6 +239,21 @@ public class UsersController : ControllerBase
         await _context.SaveChangesAsync();
 
         return Ok(new { avatarUrl = user.Avatar });
+    }
+
+    [Authorize]
+    [HttpPatch("username")]
+    public async Task<IActionResult> UpdateUsername(UpdateUsernameDto dto)
+    {
+        var user = await _context.Users.FindAsync(GetUserIdFromToken());
+        if (user == null) return NotFound();
+
+        var taken = await _context.Users.AnyAsync(u => u.Username == dto.Username && u.Id != user.Id);
+        if (taken) return Conflict("Username already taken.");
+
+        user.Username = dto.Username;
+        await _context.SaveChangesAsync();
+        return Ok();
     }
 
 }

@@ -164,10 +164,14 @@
   transition: all 250ms ease;
 }
 
-.radio input:checked + .radioLabel::before,
-.checkbox input:checked + .checkboxLabel::before {
+.radio input:checked + .radioLabel::before {
   border-color: var(--green-300);
   background-color: var(--green-200);
+}
+
+.checkbox input:checked + .checkboxLabel::before {
+  border-color: var(--red-200);
+  background-color: var(--red-100);
 }
 
 .radio input:disabled + .radioLabel::before,
@@ -176,9 +180,12 @@
   cursor: default;
 }
 
-.radio input:checked:disabled + .radioLabel::before,
-.checkbox input:checked:disabled + .checkboxLabel::before {
+.radio input:checked:disabled + .radioLabel::before {
   background-color: var(--green-200);
+}
+
+.checkbox input:checked:disabled + .checkboxLabel::before {
+  background-color: var(--red-100);
 }
 
 .radio input:disabled + .radioLabel,
@@ -188,6 +195,46 @@
 
 .checkbox input + .checkboxLabel::before {
   border-radius: 0.25rem;
+}
+
+.AddAllergyButton {
+  color: var(--black);
+  display: flex;
+  flex-direction: row;
+  align-items: center;
+  padding-left: 1.2rem;
+  position: relative;
+  cursor: pointer;
+
+  &::before {
+    content: '';
+    color: red;
+    width: 1rem;
+    height: 1rem;
+    position: absolute;
+    left: 0;
+
+    background-image: url('/plus.svg');
+    background-size: contain;
+    background-repeat: no-repeat;
+    background-position: center;
+  }
+
+  @media (min-width: 1000px) {
+    border: 2px solid var(--gray-200);
+    border-radius: 0.5rem;
+    justify-content: center;
+    padding: 1rem;
+    gap: 0.5rem;
+    &::before {
+      position: relative;
+      left: auto;
+    }
+
+    &:hover {
+      background-color: var(--gray-100);
+    }
+  }
 }
 
 .header {
@@ -267,6 +314,9 @@
     padding: 1rem;
     transition: background-color 0.3s ease;
     cursor: pointer;
+    &:hover {
+      background-color: var(--gray-100);
+    }
   }
 
   .checkbox {

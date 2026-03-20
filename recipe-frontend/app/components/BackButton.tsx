@@ -12,7 +12,7 @@ export default function BackButton ({url, absolute} : Props) {
     return (
         <Link href={url} className={`${BackButtonStyles.backButton} ${absolute && BackButtonStyles.backAbsolute }`} >
             <ChevronIcon />
-            Back
+            <p>Back</p>
         </Link>
     )
 }

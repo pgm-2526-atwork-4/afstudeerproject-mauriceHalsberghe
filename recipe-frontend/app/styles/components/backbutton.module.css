@@ -18,7 +18,17 @@
         transform-box: fill-box;
         transform-origin: center;
     }
+
+    p {
+        display: none;
+    }
+    @media (min-width: 1000px) {
+        p {
+            display: block;
+        }
+    }
 }
+
 
 .backAbsolute {
     position: absolute;

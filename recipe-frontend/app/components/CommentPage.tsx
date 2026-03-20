@@ -9,6 +9,7 @@ import Link from "next/link";
 
 import CommentStyles from "@/app/styles/components/comment.module.css"
 import ButtonStyles from "@/app/styles/components/button.module.css"
+import ModalStyles from "@/app/styles/components/modal.module.css";
 
 import DotsIcon from "@/public/three_dots.svg"
 
@@ -33,6 +34,9 @@ export default function CommentPage({ recipeId, loggedUserId }: Props) {
     const [replyValue, setReplyValue] = useState("");
 
     const [replyingId, setReplyingId] = useState(0);
+
+    const [showModal, setShowModal] = useState(false);
+
 
     const auth = useContext(AuthContext);
 
@@ -122,6 +126,10 @@ export default function CommentPage({ recipeId, loggedUserId }: Props) {
                     placeholder="Add a comment..."
                     value={commentValue}
                     onChange={(e) => setCommentValue(e.target.value)}
+                    onFocus={() => {
+                        if (!auth?.user) setShowModal(true);
+                    }}
+
                 />
 
                 {
@@ -148,7 +156,14 @@ export default function CommentPage({ recipeId, loggedUserId }: Props) {
                                 <div className={CommentStyles.commentInfo}>
                                     <Link href={`/users/${comment.user.username}`} className={CommentStyles.username}>{comment.user.username}</Link>
                                     <time className={CommentStyles.date}>• {formatDistanceToNow(new Date(comment.createdAt), { addSuffix: true })}</time>
-                                    <button className={CommentStyles.replyButton} onClick={() => setReplyingId(comment.id)}>Reply</button>
+                                    {auth?.user && 
+                                        <button 
+                                            className={CommentStyles.replyButton} 
+                                            onClick={() => setReplyingId(comment.id)}
+                                        >
+                                            Reply
+                                        </button>
+                                    }
                                 </div>
                                 <p className={CommentStyles.comment}>{comment.message}</p>
                             </div>
@@ -185,7 +200,7 @@ export default function CommentPage({ recipeId, loggedUserId }: Props) {
                             <form className={CommentStyles.replyForm} onSubmit={handlePostComment(comment.id)}>
                                 <Image
                                     className={CommentStyles.replyAvatar}
-                                    src={comment.user.avatar ? `${API_URL}/uploads/avatars/${comment.user.avatar}` : '/avatar.svg'} 
+                                    src={auth?.user?.avatar ? `${API_URL}/uploads/avatars/${auth?.user?.avatar}` : '/avatar.svg'} 
                                     alt={`avatar`}
                                     width={64}
                                     height={64}
@@ -206,6 +221,35 @@ export default function CommentPage({ recipeId, loggedUserId }: Props) {
                     </div>
                 ))}
             </div>
+
+            {showModal && (
+                <div
+                    className={ModalStyles.modalOverlay}
+                    onClick={() => setShowModal(false)}
+                >
+                    <div
+                        className={ModalStyles.modal}
+                        onClick={(e) => e.stopPropagation()}
+                    >
+                        <div className={ModalStyles.text}>
+                        <h2 className={ModalStyles.title}>Not logged in</h2>
+                        <p className={ModalStyles.subtitle}>Log in to add a comment</p>
+                        </div>
+
+                        <div className={ModalStyles.buttons}>
+                        <button
+                            className={ButtonStyles.secondaryButton}
+                            onClick={() => setShowModal(false)}
+                        >
+                            Cancel
+                        </button>
+
+                        <Link className={ButtonStyles.button} href={'/login'}>Log in</Link>
+                        </div>
+
+                    </div>
+                </div>
+            )}
         </div>
     );
 }

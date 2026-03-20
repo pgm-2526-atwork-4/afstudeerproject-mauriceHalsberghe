@@ -40,4 +40,12 @@ public class IngredientsController : ControllerBase
         var ingredients = await query.ToListAsync();
         return Ok(ingredients);
     }
+
+    [HttpGet("{id}")]
+    public async Task<IActionResult> GetIngredient(int id)
+    {
+        var ingredient = await _context.Ingredients.FindAsync(id);
+        if (ingredient == null) return NotFound();
+        return Ok(ingredient);
+    }
 }
