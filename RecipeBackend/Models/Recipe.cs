@@ -15,6 +15,8 @@ public class Recipe
     public Cuisine? Cuisine { get; set; }
     public DishType? DishType { get; set; }
 
+    public int? Servings { get; set; }
+
     public List<Step> Steps { get; set; } = new();
     public List<RecipeIngredient> RecipeIngredients { get; set; } = new();
 

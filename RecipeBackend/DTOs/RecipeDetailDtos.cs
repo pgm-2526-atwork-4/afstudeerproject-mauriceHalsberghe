@@ -6,6 +6,7 @@ public class RecipeDetailDto
     public string? Title { get; set; }
     public string? ImageUrl { get; set; }
     public int? Time { get; set; }
+    public int? Servings { get; set; }
 
     public DietDto? Diet { get; set; }
     public CuisineDto? Cuisine { get; set; }

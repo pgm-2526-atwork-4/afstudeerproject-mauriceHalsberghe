@@ -149,6 +149,7 @@ public class RecipesController : ControllerBase
                 Title = r.Title,
                 ImageUrl = r.ImageUrl,
                 Time = r.Time,
+                Servings = r.Servings,
 
                 Diet = r.Diet == null ? null : new DietDto
                 {
