@@ -1,0 +1,22 @@
+{
+  "name": "Mealio",
+  "short_name": "Mealio",
+  "description": "Your ingredients, endless meals.",
+  "start_url": "/",
+  "scope": "/",
+  "display": "standalone",
+  "background_color": "#ececec",
+  "theme_color": "#3a8756",
+  "icons": [
+    {
+      "src": "/icons/icon-192x192.png",
+      "sizes": "192x192",
+      "type": "image/png"
+    },
+    {
+      "src": "/icons/icon-512x512.png",
+      "sizes": "512x512",
+      "type": "image/png"
+    }
+  ]
+}
