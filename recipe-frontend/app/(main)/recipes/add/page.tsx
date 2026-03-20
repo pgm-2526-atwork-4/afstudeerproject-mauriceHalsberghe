@@ -24,6 +24,7 @@ export default function AddRecipe() {
         const payload = {
             title: values.title,
             time: values.time ? parseInt(values.time) : null,
+            servings: values.servings ? parseInt(values.servings) : null,
             dietId: values.dietId ?? null,
             cuisineId: values.cuisineId ?? null,
             steps: values.steps

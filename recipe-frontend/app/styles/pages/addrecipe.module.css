@@ -31,7 +31,7 @@
     gap: 1.5rem;
 }
 
-.label, .labelDuration {
+.label, .labelDuration, .labelServings {
     display: flex;
     flex-direction: column;
     gap: 0.5rem;
@@ -39,8 +39,22 @@
     color: var(--gray-300);
 }
 
-.labelDuration {
-    width: 10rem;
+.labelDuration, .labelServings {
+    width: calc(50% - 0.25rem);
+}
+
+@media (min-width: 1000px) {
+    .labelDuration {
+        width: 8rem;
+    }
+    
+    .labelServings {
+        width: 4rem;
+        .input::placeholder {
+            opacity: 0;
+            color: transparent;
+        }
+    }
 }
 
 .input, .stepInput, .quantityInput {
@@ -61,8 +75,17 @@
 .divs {
     margin-top: 1rem;
     display: flex;
+    flex-direction: column;
     gap: 0.5rem;
     width: 100%;
+    @media (min-width: 1000px) {
+        flex-direction: row;
+    }
+}
+
+.secondaryInputs {
+    display: flex;
+    gap: 0.5rem;
 }
 
 .buttons {
@@ -117,8 +140,11 @@
 .steps {
     display: flex;
     flex-direction: column;
-    gap: 0.5rem;
+    gap: 1rem;
     margin-bottom: 1rem;
+    @media (min-width: 1000px) {
+        max-width: 39rem;
+    }
 }
 
 .step {

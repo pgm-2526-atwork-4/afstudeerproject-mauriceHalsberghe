@@ -30,6 +30,7 @@ type Step = {
 export interface RecipeFormValues {
     title: string;
     time: string;
+    servings: string;
     dietId: number | undefined;
     cuisineId: number | undefined;
     ingredients: RecipeIngredient[];
@@ -50,6 +51,7 @@ export default function RecipeForm({ initialValues, onSubmit, submitLabel = "Sav
 
     const [title, setTitle] = useState(initialValues?.title ?? "");
     const [time, setTime] = useState(initialValues?.time ?? "");
+    const [servings, setServings] = useState(initialValues?.servings ?? "");
     const [dietId, setDietId] = useState<number | undefined>(initialValues?.dietId);
     const [cuisineId, setCuisineId] = useState<number | undefined>(initialValues?.cuisineId);
     const [ingredients, setIngredients] = useState<RecipeIngredient[]>(
@@ -144,7 +146,7 @@ export default function RecipeForm({ initialValues, onSubmit, submitLabel = "Sav
             return;
         }
 
-        await onSubmit({ title, time, dietId, cuisineId, ingredients, steps, imageUrl }, pendingImageFile);
+        await onSubmit({ title, time, servings, dietId, cuisineId, ingredients, steps, imageUrl }, pendingImageFile);
     };
 
     const displayError = internalError || externalError;
@@ -177,17 +179,30 @@ export default function RecipeForm({ initialValues, onSubmit, submitLabel = "Sav
                         />
                     </label>
 
-                    <label className={AddRecipeStyles.labelDuration}>
-                        Duration (min)
-                        <input
-                            type="number"
-                            value={time}
-                            required
-                            onChange={(e) => setTime(e.target.value)}
-                            placeholder="Duration"
-                            className={AddRecipeStyles.input}
-                        />
-                    </label>
+                    <div className={AddRecipeStyles.secondaryInputs}>
+                        <label className={AddRecipeStyles.labelDuration}>
+                            Duration (min)
+                            <input
+                                type="number"
+                                value={time}
+                                required
+                                onChange={(e) => setTime(e.target.value)}
+                                placeholder="Duration"
+                                className={AddRecipeStyles.input}
+                            />
+                        </label>
+
+                        <label className={AddRecipeStyles.labelServings}>
+                            Servings
+                            <input
+                                type="number"
+                                value={servings}
+                                onChange={(e) => setServings(e.target.value)}
+                                placeholder="Servings"
+                                className={AddRecipeStyles.input}
+                            />
+                        </label>
+                    </div>
                 </div>
 
                 <label className={AddRecipeStyles.imageUpload}>
