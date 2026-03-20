@@ -32,22 +32,18 @@ export function InstallAppModal({ isOpen, onClose }: InstallAppModalProps) {
         {
           step: 1,
           title: 'Open Mealio in Safari',
-          description: 'Make sure you are using Safari browser (not Chrome or other browsers)',
         },
         {
           step: 2,
           title: 'Tap the Share button',
-          description: 'Look for the share icon at the bottom of the screen (square with an arrow pointing up)',
         },
         {
           step: 3,
-          title: 'Scroll and find "Add to Home Screen"',
-          description: 'Scroll down in the share menu until you see "Add to Home Screen" and tap it',
+          title: 'Press "Add to Home Screen"',
         },
         {
           step: 4,
           title: 'Confirm installation',
-          description: 'Tap "Add" in the top right corner. The app will now appear on your home screen',
         },
       ],
     },
@@ -57,22 +53,18 @@ export function InstallAppModal({ isOpen, onClose }: InstallAppModalProps) {
         {
           step: 1,
           title: 'Open Mealio in Chrome',
-          description: 'Navigate to Mealio using Google Chrome browser',
         },
         {
           step: 2,
           title: 'Tap the menu (three dots)',
-          description: 'Tap the three-dot menu icon in the top right corner of the browser',
         },
         {
           step: 3,
           title: 'Select "Add to Home screen" or "Install app"',
-          description: 'Look for either "Add to Home screen" or "Install app" option in the menu',
         },
         {
           step: 4,
           title: 'Confirm installation',
-          description: 'Tap "Install" or "Add" when prompted. The app will be added to your home screen',
         },
       ],
     },
@@ -82,22 +74,18 @@ export function InstallAppModal({ isOpen, onClose }: InstallAppModalProps) {
         {
           step: 1,
           title: 'Open Mealio in Chrome or Edge',
-          description: 'Navigate to Mealio using Google Chrome or Microsoft Edge browser',
         },
         {
           step: 2,
           title: 'Click the install icon',
-          description: 'Look for the install icon (computer with down arrow) in the address bar on the right',
         },
         {
           step: 3,
           title: 'Click "Install"',
-          description: 'A popup will appear asking if you want to install Mealio. Click "Install"',
         },
         {
           step: 4,
           title: 'Launch the app',
-          description: 'The app will open in its own window and be added to your Start Menu and taskbar',
         },
       ],
     },
@@ -107,22 +95,18 @@ export function InstallAppModal({ isOpen, onClose }: InstallAppModalProps) {
         {
           step: 1,
           title: 'Open Mealio in Chrome or Safari',
-          description: 'Navigate to Mealio using Google Chrome or Safari browser',
         },
         {
           step: 2,
-          title: 'Access the install option',
-          description: 'Chrome: Click the install icon in the address bar. Safari: Go to File > Add to Dock',
+          title: 'Chrome: Click the install icon. Safari: Go to Share > Add to Dock',
         },
         {
           step: 3,
           title: 'Click "Install"',
-          description: 'Confirm the installation when prompted',
         },
         {
           step: 4,
           title: 'Launch from Dock',
-          description: 'The app will be added to your Dock and Applications folder for easy access',
         },
       ],
     },
