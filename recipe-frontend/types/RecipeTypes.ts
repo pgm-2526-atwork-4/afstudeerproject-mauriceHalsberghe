@@ -36,7 +36,8 @@ export type RecipeDetails = {
     id: number;
     title: string;
     imageUrl: string;
-    time: number;
+    time?: number;
+    servings: number;
     diet?: Diet;
     cuisine?: Cuisine;
     dishType?: DishType;

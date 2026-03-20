@@ -146,7 +146,7 @@ export default function RecipeDetail() {
                 className={ButtonStyles.smallButton}
                 href={`/recipes/${recipeId}/${slugifyTitle(recipe.title)}/edit`}
               >
-                Edit Recipe
+                Edit <span className={DetailStyles.editSpan}>Recipe</span>
               </Link>
             ) : (
               <Link
@@ -203,6 +203,7 @@ export default function RecipeDetail() {
             )}
           </div>
           <p className={DetailStyles.duration}>{recipe.time} min</p>
+          <p className={DetailStyles.servings}>{recipe.servings}<span>servings</span></p>
 
           <p className={DetailStyles.likeCount}>
             {recipe.isLikedByCurrentUser ? (

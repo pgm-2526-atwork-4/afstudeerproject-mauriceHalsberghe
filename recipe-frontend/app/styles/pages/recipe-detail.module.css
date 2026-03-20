@@ -60,6 +60,13 @@
     width: 2rem;
 }
 
+.editSpan {
+    display: none;
+    @media (min-width: 1000px) {
+        display: block;
+    }
+}
+
 .image {
     width: 100%;
     height: 200px;
@@ -93,7 +100,7 @@
     margin-top: 0.5rem;
 }
 
-.rating, .duration, .ratingAmount {
+.rating, .duration, .ratingAmount, .servings {
     color: var(--green-200);
     font-size: 1rem;
     display: flex;
@@ -106,7 +113,8 @@
 }
 
 .rating::before,
-.duration::before {
+.duration::before,
+.servings::before {
     content: "";
     display: inline-block;
     width: 18px;
@@ -121,6 +129,17 @@
 
 .duration::before {
     background-image: url('/clock.svg');
+}
+
+.servings::before {
+    background-image: url('/cloche.svg');
+}
+
+.servings span {
+    display: none;
+    @media (min-width: 1000px) {
+        display: inline;
+    }
 }
 
 .likeCount {

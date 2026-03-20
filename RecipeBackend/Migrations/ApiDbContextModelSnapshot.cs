@@ -293,6 +293,9 @@ namespace RecipeBackend.Migrations
                     b.Property<string>("ImageUrl")
                         .HasColumnType("text");
 
+                    b.Property<int?>("Servings")
+                        .HasColumnType("integer");
+
                     b.Property<int?>("Time")
                         .HasColumnType("integer");
 
