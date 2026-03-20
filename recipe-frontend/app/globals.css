@@ -22,13 +22,21 @@
 
   --yellow-50: #fffadd;
   --yellow-100: #cbb771;
+
+  --skeleton-bg: linear-gradient(
+    100deg,
+    var(--gray-200),
+    var(--gray-200) 50%,
+    var(--white) 60%,
+    var(--gray-200) 70%
+  );
 }
 
 html {
   background-color: var(--gray-100);
 }
 
-@media (min-width: 1000px) {
+@media (min-width: 62.5rem) {
   body {
     display: flex;
   }

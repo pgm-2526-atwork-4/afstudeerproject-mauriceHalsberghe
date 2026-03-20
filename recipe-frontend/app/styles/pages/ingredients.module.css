@@ -310,13 +310,7 @@
 .skeletonRow {
   height: 2.5rem;
   border-radius: 0.5rem;
-  background: linear-gradient(
-    100deg,
-    var(--gray-200),
-    var(--gray-200) 50%,
-    var(--white) 60%,
-    var(--gray-200) 70%
-  );
+  background: var(--skeleton-bg);
   background-size: 200% 100%;
   animation: load 1s ease-out infinite;
   @media (min-width: 62.5rem) {
@@ -339,13 +333,7 @@
   width: 8rem;
   margin-top: 7rem;
   border-radius: 0.5rem;
-  background: linear-gradient(
-    100deg,
-    var(--gray-200),
-    var(--gray-200) 50%,
-    var(--white) 60%,
-    var(--gray-200) 70%
-  );
+  background: var(--skeleton-bg);
   background-size: 200% 100%;
   animation: load 1s ease-out infinite;
 }
