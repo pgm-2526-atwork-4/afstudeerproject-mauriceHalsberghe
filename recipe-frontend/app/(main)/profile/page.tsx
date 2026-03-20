@@ -12,21 +12,24 @@ import ProfileStyles from '@/app/styles/pages/profile.module.css'
 import ProfileLink from '@/app/components/ProfileLink';
 import EmptyView from '@/app/components/EmptyView';
 
+import AvatarUpload from '@/app/components/AvatarUpload';
+import { InstallAppModal } from "@/app/components/InstallAppModal";
+
 import EditIcon  from "@/public/edit.svg";
 import CrossIcon  from "@/public/cross.svg";
 import CheckIcon  from "@/public/checkmark.svg";
-
-
 import HeartIcon from "@/public/heart.svg";
 import ChefIcon from "@/public/chefhat.svg";
 import PreferencesIcon from "@/public/preferences.svg";
-import AvatarUpload from '@/app/components/AvatarUpload';
+import InstallIcon from "@/public/install.svg"
 
 export default function Profile() {
     const [editing, setEditing] = useState(false);
     const [usernameInput, setUsernameInput] = useState("");
     const [usernameError, setUsernameError] = useState<string | null>(null);
     const [saving, setSaving] = useState(false);
+
+    const [showInstallModal, setShowInstallModal] = useState(true);
 
     const auth = useContext(AuthContext);
 
@@ -133,9 +136,18 @@ export default function Profile() {
                     <ProfileLink url='/liked-recipes' title='Liked recipes' icon={HeartIcon}/>
                     <ProfileLink url={`/users/${auth.user.username}`} title='Your recipes' icon={ChefIcon}/>
                     <ProfileLink url='/profile/preferences' title='Preferences' icon={PreferencesIcon}/>
+                    <button className={ProfileStyles.installApp} onClick={() => setShowInstallModal(true)}>
+                        <InstallIcon />
+                        Install App
+                    </button>
                 </div>
 
                 <LogoutButton />
+
+                <InstallAppModal
+                    isOpen={showInstallModal}
+                    onClose={() => setShowInstallModal(false)}
+                />
 
         </main>
     )
