@@ -130,12 +130,43 @@ export default function RecipeForm({ initialValues, onSubmit, submitLabel = "Sav
         setUploaded(true);
     };
 
+    const handleStepNavigation = (targetStep: number) => {
+        setInternalError("");
+
+        if (targetStep === 2 && step === 1) {
+            if (!title.trim()) {
+                setInternalError("Please enter a recipe title.");
+                return;
+            }
+            if (!time.trim()) {
+                setInternalError("Please enter a duration.");
+                return;
+            }
+        }
+
+        if (targetStep === 3 && step === 2) {
+            const hasIngredient = ingredients.some((i) => i.ingredient !== null);
+            if (!hasIngredient) {
+                setInternalError("Please add at least one ingredient.");
+                return;
+            }
+        }
+
+        setStep(targetStep);
+    };
+
     const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
         setInternalError("");
 
         if (!title.trim()) {
             setInternalError("Please enter a recipe title.");
+            return;
+        }
+
+        const hasIngredient = ingredients.some((i) => i.ingredient !== null);
+        if (!hasIngredient) {
+            setInternalError("Please add at least one ingredient.");
             return;
         }
 
@@ -149,6 +180,12 @@ export default function RecipeForm({ initialValues, onSubmit, submitLabel = "Sav
 
         if (invalidIngredient) {
             setInternalError("Please fill both quantity and unit for each ingredient, or leave both empty.");
+            return;
+        }
+
+        const hasStep = steps.some((s) => s.description.trim() !== "");
+        if (!hasStep) {
+            setInternalError("Please add at least one step.");
             return;
         }
 
@@ -168,6 +205,8 @@ export default function RecipeForm({ initialValues, onSubmit, submitLabel = "Sav
                     <span style={{ width: `${progress}%` }}></span>
                 </div>
             </div>
+
+            {displayError && <p className={AddRecipeStyles.error}>{displayError}</p>}
             
             {step === 1 &&
 
@@ -275,7 +314,7 @@ export default function RecipeForm({ initialValues, onSubmit, submitLabel = "Sav
 
                 <div className={AddRecipeStyles.buttons}>
                     <Link className={ButtonStyles.secondaryButton} href={'/'}>Cancel</Link>
-                    <button className={ButtonStyles.button} onClick={() => setStep(2)}>Next</button>
+                    <button type="button" className={ButtonStyles.button} onClick={() => handleStepNavigation(2)}>Next</button>
                 </div>
             </>
             
@@ -319,8 +358,8 @@ export default function RecipeForm({ initialValues, onSubmit, submitLabel = "Sav
                     </div>
 
                     <div className={AddRecipeStyles.buttons}>
-                        <button className={ButtonStyles.button} onClick={() => setStep(1)}>Previous</button>
-                        <button className={ButtonStyles.button} onClick={() => setStep(3)}>Next</button>
+                        <button type="button" className={ButtonStyles.button} onClick={() => handleStepNavigation(1)}>Previous</button>
+                        <button type="button" className={ButtonStyles.button} onClick={() => handleStepNavigation(3)}>Next</button>
                     </div>
                 </>
             }
@@ -349,14 +388,12 @@ export default function RecipeForm({ initialValues, onSubmit, submitLabel = "Sav
                     </div>
 
                     <div className={AddRecipeStyles.buttons}>
-                        <button className={ButtonStyles.button} onClick={() => setStep(2)}>Previous</button>
+                        <button className={ButtonStyles.button} onClick={() => handleStepNavigation(2)}>Previous</button>
                         <button className={ButtonStyles.button} type="submit">{submitLabel}</button>
                     </div>
                 </>
 
             }
-
-            {displayError && <p>{displayError}</p>}
 
         </form>
     );
