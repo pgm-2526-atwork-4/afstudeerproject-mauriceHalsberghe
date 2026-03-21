@@ -32,7 +32,6 @@ export default function ShoppingList() {
     const [showIngredientOptions, setShowIngredientOptions ] = useState<number | null>(null);
     const [editingIngredient, setEditingIngredient] = useState<InventoryIngredient | null>(null);
     const [deletingId, setDeletingId] = useState<number | null>(null);
-    const [deleteLoading, setDeleteLoading] = useState(false);
 
     const auth = useContext(AuthContext);
     const loggedUserId = auth?.user?.id;

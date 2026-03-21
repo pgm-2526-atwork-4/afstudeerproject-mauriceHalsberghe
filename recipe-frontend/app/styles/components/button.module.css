@@ -1,4 +1,4 @@
-.button , .secondaryButton, .smallButton, .buttonRed, .thirdButton {
+.button , .secondaryButton, .smallButton, .xsButton, .buttonRed, .thirdButton {
     padding: 0 1.2rem;
     font-size: 1.2rem;
     min-width: fit-content;
@@ -50,11 +50,15 @@
 }
 
 
-.smallButton {
+.smallButton, .xsButton {
     font-size: 1rem;
     min-width: max-content;
     padding: 0 1rem;
     width: fit-content;
+}
+
+.xsButton {
+    max-height: 36px;
 }
 
 .secondaryButton {

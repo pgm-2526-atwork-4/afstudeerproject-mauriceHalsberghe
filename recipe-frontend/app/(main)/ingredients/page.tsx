@@ -12,6 +12,7 @@ import EditIngredientModal from "@/app/components/EditIngredientModal";
 
 import IngredientStyles from '@/app/styles/pages/ingredients.module.css';
 import DeleteIngredientModal from "@/app/components/DeleteIngredientModal";
+import ButtonStyles from "@/app/styles/components/button.module.css"
 
 import { formatQuantity } from "@/lib/formatQuantity";
 
@@ -33,7 +34,8 @@ export default function Ingredients() {
   const [showIngredientOptions, setShowIngredientOptions ] = useState<number | null>(null);
   const [editingIngredient, setEditingIngredient] = useState<InventoryIngredient | null>(null);
   const [deletingId, setDeletingId] = useState<number | null>(null);
-  const [deleteLoading, setDeleteLoading] = useState(false);
+
+  const [search, setSearch] = useState("");
 
   const auth = useContext(AuthContext);
   const loggedUserId = auth?.user?.id;
@@ -102,29 +104,13 @@ export default function Ingredients() {
     loadIngredients();
   }, [loggedUserId]);
 
-  const handleDelete = async () => {
-    if (deletingId === null) return;
-    setDeleteLoading(true);
-    try {
-      await fetch(`${API_URL}/api/InventoryIngredient/${deletingId}`, {
-        method: "DELETE",
-      });
-      setDeletingId(null);
-      setShowIngredientOptions(null);
-      await fetchIngredients();
-    } catch (err) {
-      console.error(err);
-    } finally {
-      setDeleteLoading(false);
-    }
-  };
-
-
-  const filteredIngredients = selectedIngredientType
-  ? ingredients.filter(
-      (item) => item.ingredient.ingredientTypeId === selectedIngredientType
+  const filteredIngredients = ingredients
+    .filter((item) =>
+      selectedIngredientType ? item.ingredient.ingredientTypeId === selectedIngredientType : true
     )
-  : ingredients;
+    .filter((item) =>
+      search ? item.ingredient.name.toLowerCase().includes(search.toLowerCase()) : true
+    );
 
   const groupedIngredients = ingredientTypes
     .map((type) => ({
@@ -174,8 +160,18 @@ export default function Ingredients() {
 
         <div className={IngredientStyles.filters}>
 
+          <div className={IngredientStyles.searchIngWrapper}>
+            <input 
+              className={IngredientStyles.searchIng}
+              placeholder="Search..."
+              value={search}
+              onChange={(e) => setSearch(e.target.value)}
+            />
+          </div>
+
           <select
             className={IngredientStyles.select}
+            value={selectedIngredientType ?? ""}
             onChange={(e) =>
               setSelectedIngredientType(e.target.value === "" ? undefined : Number(e.target.value))}
           >
@@ -187,12 +183,21 @@ export default function Ingredients() {
             ))}
           </select>
 
+          <button 
+            className={`${ButtonStyles.xsButton} ${!search && !selectedIngredientType ? ButtonStyles.disabledButton : ""}`}
+            onClick={() => { setSearch(""); setSelectedIngredientType(undefined); }}
+          >
+            Clear
+          </button>
+
         </div>
 
         {loading ? (
           <p className={IngredientStyles.loader}>Loading Ingredients</p>
-        ) : filteredIngredients.length === 0 ? (
+        ) : ingredients.length === 0 ? (
           <EmptyView title='No ingredients yet' text='Add ingredients so you always know what’s in your kitchen.' icon="ingredient" />
+        ) : filteredIngredients.length === 0 ? (
+          <p className={IngredientStyles.noResults}>No ingredients match your search</p>
         ) : (
           
           <div className={IngredientStyles.groupedList}>
