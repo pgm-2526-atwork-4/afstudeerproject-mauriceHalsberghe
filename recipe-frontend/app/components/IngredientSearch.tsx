@@ -17,9 +17,10 @@ type Props = {
   value: IngredientOption | null;
   onIngredientChange?: (ingredient: IngredientOption | null) => void;
   placeholder?: string;
+  instanceId?: string;
 };
 
-export default function IngredientSearch({ value, onIngredientChange, placeholder }: Props) {
+export default function IngredientSearch({ value, onIngredientChange, placeholder, instanceId }: Props) {
 
   const loadOptions: LoadOptions<
     IngredientOption,
@@ -57,6 +58,7 @@ export default function IngredientSearch({ value, onIngredientChange, placeholde
 
   return (
     <AsyncPaginate
+      instanceId={instanceId ?? "ingredient-search"}
       value={value}
       placeholder={placeholder || "Add Ingredient..." }
       onChange={(option) => {

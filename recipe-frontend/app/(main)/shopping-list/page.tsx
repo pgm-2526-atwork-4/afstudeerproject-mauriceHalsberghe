@@ -127,6 +127,7 @@ export default function ShoppingList() {
         return <main className={IngredientStyles.page}>
             <div className={IngredientStyles.header}>
                 <h1 className={IngredientStyles.title}><CartIcon />Shopping List</h1>
+                <AddIngredientHeader />
             </div>
             <div className={IngredientStyles.mainList}>
                 <div className={IngredientStyles.skeletonGridShopping}>

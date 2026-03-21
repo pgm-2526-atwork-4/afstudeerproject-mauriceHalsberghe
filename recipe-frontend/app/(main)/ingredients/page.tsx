@@ -125,6 +125,7 @@ export default function Ingredients() {
     return <main className={IngredientStyles.page}>
         <div className={IngredientStyles.header}>
             <h1 className={IngredientStyles.title}><AppleIcon />Ingredient Inventory</h1>
+            <AddIngredientHeader />
         </div>
         <div className={IngredientStyles.main}>
           <span className={IngredientStyles.skeletonText}></span>

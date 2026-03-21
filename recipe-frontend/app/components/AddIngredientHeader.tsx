@@ -13,7 +13,7 @@ import { IngredientOption } from "@/app/components/IngredientSearch";
 import { QuantityUnit } from "@/types/IngredientTypes";
 
 type Props = {
-  postUrl: string;
+  postUrl?: string;
   onSuccess?: () => void;
 };
 
@@ -56,6 +56,29 @@ export default function AddIngredientHeader({ postUrl, onSuccess }: Props) {
 
     loadData();
   }, [loggedUserId]);
+
+  if (!postUrl) {
+    return (
+      <div className={IngredientStyles.form}>
+        <div className={IngredientStyles.input}>
+          <div className={IngredientStyles.searchWrapper}>
+            <IngredientSearch
+              instanceId="ingredient-search-placeholder"
+              value={null}
+              onIngredientChange={() => {}}
+            />
+          </div>
+          <button
+            className={`${ButtonStyles.button} ${ButtonStyles.smallButton} ${ButtonStyles.disabledButton}`}
+            type="button"
+            disabled
+          >
+            + Add
+          </button>
+        </div>
+      </div>
+    );
+  }
 
   const handleSubmit = async (e: React.FormEvent<HTMLFormElement>) => {
 
@@ -103,6 +126,7 @@ export default function AddIngredientHeader({ postUrl, onSuccess }: Props) {
     <div className={IngredientStyles.input}>
         <div className={IngredientStyles.searchWrapper}>
         <IngredientSearch
+          instanceId="ingredient-search-active"
           value={selectedIngredient}
           onIngredientChange={(ingredient) => {
             setSelectedIngredient(ingredient);
