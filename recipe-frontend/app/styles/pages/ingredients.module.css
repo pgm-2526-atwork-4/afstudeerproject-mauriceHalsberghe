@@ -1,5 +1,5 @@
 .page {
-  padding-bottom: 10rem;
+  padding-bottom: 13rem;
 
   @media (min-width: 62.5rem) {
     margin-left: 16rem;
@@ -281,7 +281,7 @@
   align-items: center;
   justify-content: flex-end;
   position: fixed;
-  bottom: 5rem;
+  bottom: 6rem;
   padding-bottom: 1rem;
   left: 50%;
   transform: translateX(-50%);
@@ -296,6 +296,7 @@
   }
 
   @media (min-width: 62.5rem) {
+    bottom: 2rem;
     margin-left: 8rem;
   }
 }
