@@ -210,7 +210,7 @@ export default function Preferences() {
                             </button>
                         ) : (
                             <>
-                                <button className={ButtonStyles.button} onClick={handleCancel}>Cancel</button>
+                                <button className={ButtonStyles.secondaryButton} onClick={handleCancel}>Cancel</button>
                                 <button className={ButtonStyles.button} onClick={handleSave}>Save Changes</button>
                             </>
                         )}

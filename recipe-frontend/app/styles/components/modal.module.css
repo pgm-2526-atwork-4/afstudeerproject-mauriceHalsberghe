@@ -23,6 +23,10 @@
   @media (min-width: 62.5rem) {
     max-width: 30rem;
   }
+
+  .div {
+    min-width: 18rem;
+  }
 }
 
 .text {

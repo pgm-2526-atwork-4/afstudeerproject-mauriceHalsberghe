@@ -16,6 +16,7 @@
   }
   @media (min-width: 87.5rem) {
     padding: 2rem 6rem;
+    padding-bottom: 0;
     width: calc(100% - 16rem);
   }
 }

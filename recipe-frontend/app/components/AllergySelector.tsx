@@ -86,13 +86,15 @@ export default function AllergySelector({allergies, selectedAllergies, onToggle,
         <div className={ModalStyles.modalOverlay}>
           <div className={ModalStyles.modal}>
             <h2 className={ModalStyles.title}>Add custom allergy</h2>
-            <IngredientSearch
-              value={selectedIngredient}
-              onIngredientChange={setSelectedIngredient}
-              placeholder="Search ingredient..."
-            />
+            <div className={ModalStyles.div}>
+              <IngredientSearch
+                value={selectedIngredient}
+                onIngredientChange={setSelectedIngredient}
+                placeholder="Search ingredient..."
+              />
+            </div>
             <div className={ModalStyles.buttons}>
-              <button className={ButtonStyles.button} onClick={handleCancel}>Cancel</button>
+              <button className={ButtonStyles.secondaryButton} onClick={handleCancel}>Cancel</button>
               <button className={ButtonStyles.button} onClick={handleSave} disabled={!selectedIngredient}>Add</button>
             </div>
           </div>
