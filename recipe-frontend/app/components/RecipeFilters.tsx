@@ -2,13 +2,14 @@
 
 import { API_URL } from "@/lib/api";
 
-import { useEffect, useState } from "react";
+import { useContext, useEffect, useState } from "react";
 import filtersStyles from "@/app/styles/components/recipefilters.module.css";
 import ButtonStyles from "@/app/styles/components/button.module.css";
 
 import { Cuisine, Diet, DishType } from "@/types/RecipeTypes";
 
 import CrossIcon from "@/public/cross.svg";
+import { AuthContext } from "@/context/AuthContext";
 
 export type RecipeFiltersState = {
   search: string;
@@ -41,6 +42,8 @@ export default function RecipeFilters({ filters, onChange, onlyUsersFilter, user
   const [selectOpen, setSelectOpen] = useState(false);
 
   const filtersVisible = !scrolled || searchFocused || selectOpen;
+
+  const auth = useContext(AuthContext);
 
   const defaultFilters: RecipeFiltersState = {
     search: "",
@@ -183,20 +186,24 @@ export default function RecipeFilters({ filters, onChange, onlyUsersFilter, user
             />
             <output>{displayTime}</output>
           </div> */}
+          {
+            auth?.user && 
+            
+            <div className={filtersStyles.checkbox}>
+              <input
+                type="checkbox"
+                id="ingredientsCheck"
+                className={filtersStyles.checkboxInput}
+                checked={filters.onlyInStock}
+                onChange={(e) => update({ onlyInStock: e.target.checked })}
+              />
 
-          <div className={filtersStyles.checkbox}>
-            <input
-              type="checkbox"
-              id="ingredientsCheck"
-              className={filtersStyles.checkboxInput}
-              checked={filters.onlyInStock}
-              onChange={(e) => update({ onlyInStock: e.target.checked })}
-            />
+              <label className={filtersStyles.checkboxLabel} htmlFor="ingredientsCheck" >
+                In stock
+              </label>
+            </div>
+          }
 
-            <label className={filtersStyles.checkboxLabel} htmlFor="ingredientsCheck" >
-              In stock
-            </label>
-          </div>
           
           {onlyUsersFilter && 
 
