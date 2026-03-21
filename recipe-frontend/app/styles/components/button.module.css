@@ -59,6 +59,7 @@
 
 .xsButton {
     max-height: 36px;
+    padding: 0 0.5rem;
 }
 
 .secondaryButton {
