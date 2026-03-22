@@ -85,6 +85,7 @@ app.UseStaticFiles();
 app.UseCors("AllowFrontend");
 app.UseAuthentication();
 app.UseAuthorization();
+app.UseMiddleware<RecipeBackend.Middleware.RlsMiddleware>();
 app.MapControllers();
 
 app.Run();
