@@ -4,7 +4,7 @@ using Microsoft.EntityFrameworkCore.Diagnostics;
 
 namespace RecipeBackend.Data;
 
-public class RlsInterceptor : DbCommandInterceptor
+public class RlsInterceptor : IDbConnectionInterceptor
 {
     private readonly IHttpContextAccessor _httpContextAccessor;
 
@@ -13,37 +13,10 @@ public class RlsInterceptor : DbCommandInterceptor
         _httpContextAccessor = httpContextAccessor;
     }
 
-    public override async ValueTask<InterceptionResult<DbDataReader>> ReaderExecutingAsync(
-        DbCommand command,
-        CommandEventData eventData,
-        InterceptionResult<DbDataReader> result,
+    public async Task ConnectionOpenedAsync(
+        DbConnection connection,
+        ConnectionEndEventData eventData,
         CancellationToken cancellationToken = default)
-    {
-        SetRlsConfig(command);
-        return await base.ReaderExecutingAsync(command, eventData, result, cancellationToken);
-    }
-
-    public override async ValueTask<InterceptionResult<int>> NonQueryExecutingAsync(
-        DbCommand command,
-        CommandEventData eventData,
-        InterceptionResult<int> result,
-        CancellationToken cancellationToken = default)
-    {
-        SetRlsConfig(command);
-        return await base.NonQueryExecutingAsync(command, eventData, result, cancellationToken);
-    }
-
-    public override async ValueTask<InterceptionResult<object>> ScalarExecutingAsync(
-        DbCommand command,
-        CommandEventData eventData,
-        InterceptionResult<object> result,
-        CancellationToken cancellationToken = default)
-    {
-        SetRlsConfig(command);
-        return await base.ScalarExecutingAsync(command, eventData, result, cancellationToken);
-    }
-
-    private void SetRlsConfig(DbCommand command)
     {
         var user = _httpContextAccessor.HttpContext?.User;
         var userId = user?.FindFirst(ClaimTypes.NameIdentifier)?.Value
@@ -51,8 +24,9 @@ public class RlsInterceptor : DbCommandInterceptor
 
         if (!string.IsNullOrEmpty(userId))
         {
-            command.CommandText =
-                $"SET LOCAL app.current_user_id = '{userId}';\n" + command.CommandText;
+            await using var cmd = connection.CreateCommand();
+            cmd.CommandText = $"SET app.current_user_id = '{userId}'";
+            await cmd.ExecuteNonQueryAsync(cancellationToken);
         }
     }
 }
