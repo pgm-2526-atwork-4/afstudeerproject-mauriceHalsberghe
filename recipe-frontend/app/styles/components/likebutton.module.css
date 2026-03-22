@@ -15,7 +15,9 @@
     width: 1.5rem;
 
     &:hover {
-      fill: var(--red-50);
+      @media (min-width: 62.5rem) {
+        fill: var(--red-50);
+      }
     }
   }
 }
